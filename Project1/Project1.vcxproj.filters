@@ -1,0 +1,251 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="File di origine">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="File di intestazione">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="File di risorse">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="File di origine\Source">
+      <UniqueIdentifier>{7f69dac6-1c5c-4777-8c79-5a88a7ceb3d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="File di origine\Source\Public">
+      <UniqueIdentifier>{caff7464-591d-41cc-b12f-6834fd41e020}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="File di origine\Source\Public\Core">
+      <UniqueIdentifier>{e4bff568-12c2-426e-bb49-97a5dc6f2165}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="File di origine\Source\Public\DebugModule">
+      <UniqueIdentifier>{30301049-5d79-4bb9-bcb9-6f0c0845c12f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="File di origine\Source\Private">
+      <UniqueIdentifier>{3c562511-685e-48e0-bdf3-a5efc251c79a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="File di origine\Source\Private\Core">
+      <UniqueIdentifier>{4c2e2782-3b46-42ae-806a-4ca2746f78b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="File di origine\Source\Private\DebugModule">
+      <UniqueIdentifier>{e649f7f6-05cd-4a24-b22d-1dac900f6f38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="File di origine\Source\Public\Graphics">
+      <UniqueIdentifier>{5a6ad987-8790-4c1c-ae5a-f7b684165043}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="File di origine\Source\Private\Graphics">
+      <UniqueIdentifier>{a96d0cfe-a2ac-433d-9ecb-25820a5a90f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="File di origine\Source\Shaders">
+      <UniqueIdentifier>{2584eebd-188e-44fd-8798-b69826838c89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="File di origine\Source\Shaders\Grid">
+      <UniqueIdentifier>{352f5be5-372d-4905-b126-0cd2b24a8e82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="File di origine\Source\Shaders\Fonts">
+      <UniqueIdentifier>{4a8ab5eb-e55a-4723-9347-056b0950d1c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="File di origine\Source\imgui">
+      <UniqueIdentifier>{77ae510e-f6bb-4b45-952e-b6c12c2a8354}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="File di origine\Source\Public\InspectorModule">
+      <UniqueIdentifier>{fd506855-47fe-4a94-a539-bf52fdf96c51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="File di origine\Source\Private\InspectorModule">
+      <UniqueIdentifier>{56bf2b0f-f805-4301-b0f1-6b717742dfdd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="File di origine\Source\Public\ConsoleModule">
+      <UniqueIdentifier>{5267d10a-28cf-4faa-b770-69092b18b90a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="File di origine\Source\Private\ConsoleModule">
+      <UniqueIdentifier>{cb5a4752-49ed-4125-a0cb-816cb2a25f8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="File di origine\Source\Public\Editor">
+      <UniqueIdentifier>{6f5f1f91-4967-418d-89a5-2abb1fc6f62e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="File di origine\Source\Private\Editor">
+      <UniqueIdentifier>{51e21f44-1982-4858-9ea9-ac5ede13e7d9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>File di origine\Source\Private\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Private\Core\Application.cpp">
+      <Filter>File di origine\Source\Private\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugModule.cpp">
+      <Filter>File di origine\Source\Private\DebugModule</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Private\Core\Scene.cpp">
+      <Filter>File di origine\Source\Private\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Private\Core\SceneObject.cpp">
+      <Filter>File di origine\Source\Private\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Private\Core\MeshRendererComponent.cpp">
+      <Filter>File di origine\Source\Private\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Private\Graphics\BaseMaterial.cpp">
+      <Filter>File di origine\Source\Private\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Private\Core\InputSystem.cpp">
+      <Filter>File di origine\Source\Private\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Private\Graphics\MaterialLibrary.cpp">
+      <Filter>File di origine\Source\Private\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Private\Graphics\Fonts.cpp">
+      <Filter>File di origine\Source\Private\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Private\Core\Viewport.cpp">
+      <Filter>File di origine\Source\Private\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui\imgui.cpp">
+      <Filter>File di origine\Source\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui\imgui_demo.cpp">
+      <Filter>File di origine\Source\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui\imgui_draw.cpp">
+      <Filter>File di origine\Source\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui\imgui_impl_glut.cpp">
+      <Filter>File di origine\Source\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui\imgui_impl_opengl3.cpp">
+      <Filter>File di origine\Source\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui\imgui_tables.cpp">
+      <Filter>File di origine\Source\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui\imgui_widgets.cpp">
+      <Filter>File di origine\Source\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Private\InspectorModule\InspectorModule.cpp">
+      <Filter>File di origine\Source\Private\InspectorModule</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Private\Core\ObjectComponent.cpp">
+      <Filter>File di origine\Source\Private\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Private\ConsoleModule\ConsoleModule.cpp">
+      <Filter>File di origine\Source\Private\ConsoleModule</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui\imgui_impl_glfw.cpp">
+      <Filter>File di origine\Source\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Private\Editor\EditorGUIModule.cpp">
+      <Filter>File di origine\Source\Private\Editor</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="Shaders\DefaultShader.vs">
+      <Filter>File di origine\Source\Shaders</Filter>
+    </None>
+    <None Include="Shaders\DefaultShader.fs">
+      <Filter>File di origine\Source\Shaders</Filter>
+    </None>
+    <None Include="Shaders\Grid\GridShader.vs">
+      <Filter>File di origine\Source\Shaders\Grid</Filter>
+    </None>
+    <None Include="Shaders\Grid\GridShader.fs">
+      <Filter>File di origine\Source\Shaders\Grid</Filter>
+    </None>
+    <None Include="Shaders\Fonts\FontShader.vs">
+      <Filter>File di origine\Source\Shaders\Fonts</Filter>
+    </None>
+    <None Include="Shaders\Fonts\FontShader.fs">
+      <Filter>File di origine\Source\Shaders\Fonts</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\Public\Core\Application.h">
+      <Filter>File di origine\Source\Public\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\Core\ApplicationModule.h">
+      <Filter>File di origine\Source\Public\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugModule.h">
+      <Filter>File di origine\Source\Public\DebugModule</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\Core\Scene.h">
+      <Filter>File di origine\Source\Public\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\Core\SceneObject.h">
+      <Filter>File di origine\Source\Public\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\Core\ObjectComponent.h">
+      <Filter>File di origine\Source\Public\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\Core\MeshRendererComponent.h">
+      <Filter>File di origine\Source\Public\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\Core\Core.h">
+      <Filter>File di origine\Source\Public\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\Graphics\BaseMaterial.h">
+      <Filter>File di origine\Source\Public\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\Graphics\Primitives.h">
+      <Filter>File di origine\Source\Public\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\Core\InputSystem.h">
+      <Filter>File di origine\Source\Public\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\Graphics\MaterialLibrary.h">
+      <Filter>File di origine\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\Graphics\Fonts.h">
+      <Filter>File di origine\Source\Public\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\Core\Viewport.h">
+      <Filter>File di origine\Source\Public\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\imgui\imconfig.h">
+      <Filter>File di origine\Source\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\imgui\imgui.h">
+      <Filter>File di origine\Source\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\imgui\imgui_impl_glut.h">
+      <Filter>File di origine\Source\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\imgui\imgui_impl_opengl3.h">
+      <Filter>File di origine\Source\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\imgui\imgui_internal.h">
+      <Filter>File di origine\Source\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\imgui\imstb_rectpack.h">
+      <Filter>File di origine\Source\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\imgui\imstb_textedit.h">
+      <Filter>File di origine\Source\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\imgui\imstb_truetype.h">
+      <Filter>File di origine\Source\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\InspectorModule\InspectorModule.h">
+      <Filter>File di origine\Source\Public\InspectorModule</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\ConsoleModule\ConsoleModule.h">
+      <Filter>File di origine\Source\Public\ConsoleModule</Filter>
+    </ClInclude>
+    <ClInclude Include="..\imgui\imgui_impl_glfw.h">
+      <Filter>File di origine\Source\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\Editor\EditorGUIModule.h">
+      <Filter>File di origine\Source\Public\Editor</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="TestInSource.txt">
+      <Filter>File di origine\Source</Filter>
+    </Text>
+  </ItemGroup>
+</Project>
