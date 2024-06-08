@@ -24,7 +24,7 @@ public:
 	virtual void Tick(float Delta) override;
 	virtual void Initialize(FSceneObject* Owner) override;
 
-	virtual void Render(glm::mat4 M, glm::mat4 V, glm::mat4 P);
+	virtual void Render(glm::mat4 V, glm::mat4 P);
 	virtual void DrawInspector() override;
 
 	Vector3F Color = Vector3F(1.0f, 1.0f, 1.0f);

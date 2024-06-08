@@ -4,12 +4,7 @@
 
 void FSceneHierarchyModule::OnGUIRender()
 {
-	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar;
-	static bool open = true;
-	ImGui::SetNextWindowSize(ImVec2(FApplication::Get()->InspectorViewport->GetWidth(), FApplication::Get()->InspectorViewport->GetHeight()));
-	ImGui::SetNextWindowPos(ImVec2(0, 0));
-	ImGui::Begin("Inspector", &open, window_flags);
-	
+	MAKE_WINDOW("Scene Hierarchy");
 	SharedPtr<FScene> CurrentScene = FApplication::Get()->GetCurrentScene();
 
 	if (CurrentScene != nullptr) {
@@ -22,8 +17,7 @@ void FSceneHierarchyModule::OnGUIRender()
 			}
 		}
 	}
-
-	ImGui::End();
+	END_WINDOW
 }
 
 void FSceneHierarchyModule::SetCurrentSelectedObject(SharedPtr<FSceneObject> Obj)

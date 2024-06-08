@@ -5,7 +5,10 @@
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include "GLFW/glfw3.h"
 #include "GLFW/glfw3native.h"
-
+#include <glm/ext/matrix_float4x4.hpp>
+#include <glm/ext/matrix_clip_space.hpp>
+#include <glm/ext/matrix_transform.hpp>
+#include <glm/trigonometric.hpp>
 
 typedef std::function<void()> OnViewportRenderDelegate;
 typedef std::function<void(int, int, int)> OnMouseButtonDelegate;
@@ -42,6 +45,18 @@ public:
 	virtual void HandleMouseButton(int Button, int Action, int Mods);
 	virtual void HandleMouseMotion(double x, double y);
 	virtual void HandleKeyboardButton(int Key, int scanCode, int action, int mods);
+
+	glm::mat4 GetProjectionMatrix() {
+		float aspect = float(Width) / float(Height);
+
+		glm::mat4 ProjectionMatrix = glm::perspective<float>(
+			glm::radians(45.0f),
+			aspect,
+			0.1f,
+			100.0f
+		);
+		return ProjectionMatrix;
+	}
 
 	GLFWwindow* ViewportContext;
 protected:

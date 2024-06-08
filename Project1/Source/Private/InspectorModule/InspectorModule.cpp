@@ -19,15 +19,7 @@ void FInspectorModule::OnTick(float Delta)
 
 void FInspectorModule::OnGUIRender()
 {
-	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar;
-	static bool open = true;
-	ImGui::SetNextWindowSize(ImVec2(FApplication::Get()->InspectorViewport->GetWidth(), FApplication::Get()->InspectorViewport->GetHeight()));
-	ImGui::SetNextWindowPos(ImVec2(0, 0));
-	ImGui::Begin("Inspector", &open, window_flags);
-	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-	ImVec2 p = ImGui::GetMousePos();
-	ImGui::Text("MousePos: %.2f %.2f", p.x, p.y);
-	ImGui::SeparatorText("Scene Object");
+	MAKE_WINDOW("Inspector");
 	if (CurrentDisplayedObject != nullptr) {
 		CurrentDisplayedObject->DrawInspector();
 	}
@@ -50,14 +42,9 @@ void FInspectorModule::OnGUIRender()
 		
 		FApplication::Get()->GetCurrentScene()->RegisterSceneObject(newObj);
 
-		float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-		float g = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-		float b = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-		//newObj->Transform.Position = Vector3F(r * 5.0f, g * 10.0f, b * 8.0f);
 		glfwMakeContextCurrent(FApplication::Get()->InspectorViewport->ViewportContext);
 	}
-
-	ImGui::End();
+	END_WINDOW;
 
 }
 

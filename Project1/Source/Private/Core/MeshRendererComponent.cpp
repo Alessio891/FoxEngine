@@ -36,19 +36,20 @@ void FMeshRendererComponent::Initialize(FSceneObject* Owner)
 
 }
 
-void FMeshRendererComponent::Render(glm::mat4 M, glm::mat4 V, glm::mat4 P)
+void FMeshRendererComponent::Render(glm::mat4 V, glm::mat4 P)
 {
 	
 	glUseProgram(Material->GetProgram());
 	
 	// Normal Pass
 	// In this pass the Object ID is written to the stencil buffer
-	glm::mat4 MVP = P * V * M;
+	glm::mat4 MVP = P * V * Owner->Transform.GetTransformMatrix();
 	GLuint MatrixID = glGetUniformLocation(Material->GetProgram(), "MVP");
 	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
 
+	glm::mat4 m = Owner->Transform.GetTransformMatrix();
 	GLuint M_MatrixID = glGetUniformLocation(Material->GetProgram(), "_M");
-	glUniformMatrix4fv(M_MatrixID, 1, GL_FALSE, &M[0][0]);
+	glUniformMatrix4fv(M_MatrixID, 1, GL_FALSE, &m[0][0]);
 	GLuint V_MatrixID = glGetUniformLocation(Material->GetProgram(), "_V");
 	glUniformMatrix4fv(V_MatrixID, 1, GL_FALSE, &V[0][0]);
 	GLuint P_MatrixID = glGetUniformLocation(Material->GetProgram(), "_P");
@@ -63,7 +64,7 @@ void FMeshRendererComponent::Render(glm::mat4 M, glm::mat4 V, glm::mat4 P)
 	// Render the object scaled up, masked with the stencil buffer
 	// Where Stencil != ObjectID
 	if (Owner->Outlined) {
-		M = glm::scale(M, glm::vec3(1.05f, 1.05f, 1.05f));
+		glm::mat4 M = glm::scale(Owner->Transform.GetTransformMatrix(), glm::vec3(1.01f, 1.01f, 1.01f));
 		MVP = P * V * M;
 		MatrixID = glGetUniformLocation(Material->GetProgram(), "MVP");
 		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
@@ -75,7 +76,7 @@ void FMeshRendererComponent::Render(glm::mat4 M, glm::mat4 V, glm::mat4 P)
 		P_MatrixID = glGetUniformLocation(Material->GetProgram(), "_P");
 		glUniformMatrix4fv(P_MatrixID, 1, GL_FALSE, &P[0][0]);
 
-		Material->SetVec3("_Color", Vector3F(0.6f, 0.8f, 0.0f));
+		Material->SetVec3("_Color", Vector3F(0.02f, 0.373f, 0.95f));
 		Material->UploadParameters();
 		glStencilFunc(GL_NOTEQUAL, Owner->ObjectID, 0xFF);
 		glStencilMask(0x00);

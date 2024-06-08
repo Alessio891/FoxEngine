@@ -154,7 +154,7 @@ int main(int argc, char* argv[]) {
 	FLogger::LogInfo("Starting Engine...");
 	REGISTER_GUI_MODULE(FInspectorModule, MainApplication->InspectorViewport);
 	REGISTER_GUI_MODULE(FSceneHierarchyModule, MainApplication->HierarchyViewport);
-	REGISTER_MODULE(FEditorSceneModule);
+	REGISTER_GUI_MODULE(FEditorSceneModule, MainApplication->SceneViewport);
 	FLogger::LogInfo("Core Modules Loaded");
 	FLogger::LogWarning("This is a warning");
 	FLogger::LogError("And this is an error");

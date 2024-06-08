@@ -72,13 +72,13 @@ void FApplication::Start(int argc, char** argv, int width, int height, GLFWwindo
 
 void FApplication::MainIdleLoop(float DeltaTime)
 {
-	glfwMakeContextCurrent(MainWindow);
+	/*glfwMakeContextCurrent(MainWindow);
 	ImGui::SetCurrentContext(MainImGuiContext.get());
 
 	for (SharedPtr<FViewport> viewport : Viewports) {
 		glfwMakeContextCurrent(viewport->ViewportContext);
 	//	glfwPollEvents();
-	}
+	}*/
 	for (FApplicationModule* module : ApplicationModules) {
 		module->OnTick(DeltaTime);
 	}

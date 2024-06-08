@@ -63,7 +63,7 @@ void FViewport::InitializeViewport(GLFWwindow* ParentWindow)
 
 void FViewport::UpdateViewport()
 {
-	glfwMakeContextCurrent(ViewportContext);
+	//glfwMakeContextCurrent(ViewportContext);
 	
 	/*	int deltaw = TargetWidth - Width;
 	if (abs(deltaw) > 2) {

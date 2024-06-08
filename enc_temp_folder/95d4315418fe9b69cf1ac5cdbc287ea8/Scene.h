@@ -12,11 +12,17 @@ public:
 
 	virtual void TickScene(float Delta);
 
+	virtual void RenderScene();
+	virtual void PostRender();
+
 	FScene() {}
 
-	// TODO: Wrap this in a way so that the camera transform is based on an object and not on a fixed FTransform in the Scene
+	//float horizontalAngle;
+	//float verticalAngle;
 	FTransform CameraTransform;
 
+	//Vector3F CurrentViewPosition;
+	//Vector3F CurrentViewDirection = Vector3F(0,0,1);
 protected:
 private:
 	std::list<SharedPtr<FSceneObject>> SceneObjects;

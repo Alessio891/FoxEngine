@@ -156,6 +156,9 @@
     <ClCompile Include="..\imgui\imgui_stdlib.cpp">
       <Filter>File di origine\Source\imgui</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Private\Graphics\RenderingPipeline.cpp">
+      <Filter>File di origine\Source\Private\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -271,6 +274,9 @@
     </ClInclude>
     <ClInclude Include="..\imgui\imgui_stdlib.h">
       <Filter>File di origine\Source\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\Graphics\RenderingPipeline.h">
+      <Filter>File di origine\Source\Public\Graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

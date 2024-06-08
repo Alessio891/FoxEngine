@@ -1,6 +1,7 @@
 #pragma once
 #include "Core.h"
 #include <string>
+#include <glm/gtx/euler_angles.hpp>
 
 class FObjectComponent;
 class FMeshRendererComponent;
@@ -38,6 +39,26 @@ struct FTransform {
 		Vector3F up = glm::cross(right, Vector3F(0,0,1));
 		return up;
 	}
+
+	glm::mat4 GetTransformMatrix() {
+		glm::mat4 ModelMatrix = glm::translate(glm::mat4(1.0f), Position);
+		ModelMatrix *= glm::eulerAngleXYX(Rotation.x, Rotation.y, Rotation.z);
+		ModelMatrix = glm::scale(ModelMatrix, Scale);
+		return ModelMatrix;
+	}
+
+	glm::mat4 GetPointOfViewMatrix() {
+		Vector3F right = GetRightVector();
+		Vector3F up = GetUpVector();
+
+		glm::mat4 CameraMatrix = glm::lookAt(
+			Position,
+			Position + GetForwardVector(),
+			up
+		);
+
+		return CameraMatrix;
+	}
 };
 
 class FSceneObject {
@@ -73,6 +94,7 @@ public:
 	}
 
 	bool Outlined = false;
+
 protected:
 	std::list<FObjectComponent*> Components;
 

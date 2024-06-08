@@ -17,12 +17,7 @@ void FConsoleModule::OnStartup()
 
 void FConsoleModule::OnGUIRender()
 {
-	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar;
-	static bool open = true;
-	ImGui::SetNextWindowSize(ImVec2(FApplication::Get()->ConsoleViewport->GetWidth(), FApplication::Get()->ConsoleViewport->GetHeight()));
-	ImGui::SetNextWindowPos(ImVec2(0, 0));
-	ImGui::Begin("Console", &open, window_flags);
-	
+	MAKE_WINDOW("Console");
 	for (FLogMessage m : LogMessages) {
 		auto color = IM_COL32(255,255,255,255);
 		if (m.Severity == ELogSeverity::Warning) color = IM_COL32(150, 150, 0, 255);
@@ -36,7 +31,7 @@ void FConsoleModule::OnGUIRender()
 		
 	}
 	ImGui::SetScrollHereY();
-	ImGui::End();
+	END_WINDOW
 
 }
 

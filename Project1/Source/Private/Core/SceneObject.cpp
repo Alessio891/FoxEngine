@@ -18,9 +18,7 @@ void FSceneObject::Tick(float DeltaTime)
 
 void FSceneObject::Draw(glm::mat4 V, glm::mat4 P)
 {
-	glm::mat4 ModelMatrix = glm::translate(glm::mat4(1.0f), Transform.Position);
-	ModelMatrix *= glm::eulerAngleXYX(Transform.Rotation.x, Transform.Rotation.y, Transform.Rotation.z);
-	ModelMatrix = glm::scale(ModelMatrix, Transform.Scale);
+	glm::mat4 ModelMatrix = Transform.GetTransformMatrix();
 
 	if (Renderer != nullptr) {
 		if (RenderingQueue == ERenderingQueue::Depth) {
@@ -28,7 +26,7 @@ void FSceneObject::Draw(glm::mat4 V, glm::mat4 P)
 			glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 			glStencilMask(0xFF);
 		}
-		Renderer->Render(ModelMatrix, V, P);
+		Renderer->Render(V, P);
 	}
 }
 
@@ -60,7 +58,9 @@ void FSceneObject::SetupRenderer(FMeshRendererComponent* Renderer)
 
 void FSceneObject::DrawInspector()
 {	
-	ImGui::InputText("Name", &Name );
+	ImGui::Text("Name:");
+	ImGui::SameLine();
+	ImGui::InputText("_", &Name );
 	
 	if (ImGui::CollapsingHeader("Transform")) {
 		Transform.Position = FImGui::Vec3("Position", Transform.Position);

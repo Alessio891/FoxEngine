@@ -35,7 +35,6 @@ void FEditorGUIModule::OnStartup()
 		});
     glfwSetCursorEnterCallback(Viewport->ViewportContext, [](GLFWwindow* w, int enter) {
 		if (enter) CurrentOveredGui = w;
-        else FLogger::LogInfo("Exited window " + std::to_string((int)w));
     });
 	Viewport->RegisterKeyboardButtonCallback([this](int Key, int Scancode, int Action, int Mods) {
 		// FIXME: ImGui doesn't like to work with multiple windows. While working fine for mouse events,
@@ -73,9 +72,7 @@ void FEditorGUIModule::BeginGUIRender()
 void FEditorGUIModule::EndGUIRender()
 {
 	ImGui::Render();
-	glClearColor(0.4f, 0.0f, 0.6f, 1.0f);
-	glViewport(0, 0, FApplication::Get()->ConsoleViewport->GetWidth(), FApplication::Get()->ConsoleViewport->GetHeight());
-	glClear(GL_COLOR_BUFFER_BIT);
+	glViewport(0, 0, Viewport->GetWidth(), Viewport->GetHeight());
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 

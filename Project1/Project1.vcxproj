@@ -164,6 +164,7 @@
     <ClCompile Include="Source\Private\Graphics\BaseMaterial.cpp" />
     <ClCompile Include="Source\Private\Graphics\Fonts.cpp" />
     <ClCompile Include="Source\Private\Graphics\MaterialLibrary.cpp" />
+    <ClCompile Include="Source\Private\Graphics\RenderingPipeline.cpp" />
     <ClCompile Include="Source\Private\InspectorModule\InspectorModule.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -208,6 +209,7 @@
     <ClInclude Include="Source\Public\Graphics\Fonts.h" />
     <ClInclude Include="Source\Public\Graphics\MaterialLibrary.h" />
     <ClInclude Include="Source\Public\Graphics\Primitives.h" />
+    <ClInclude Include="Source\Public\Graphics\RenderingPipeline.h" />
     <ClInclude Include="Source\Public\InspectorModule\InspectorModule.h" />
   </ItemGroup>
   <ItemGroup>

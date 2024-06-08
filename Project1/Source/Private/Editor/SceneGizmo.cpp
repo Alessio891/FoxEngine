@@ -63,8 +63,8 @@ void FSceneGizmo::Draw(glm::mat4 V, glm::mat4 P)
 	ModelMatrix *= glm::eulerAngleXYX(Transform.Rotation.x, Transform.Rotation.y, Transform.Rotation.z);
 	ModelMatrix = glm::scale(ModelMatrix, Transform.Scale);
 	glDisable(GL_CULL_FACE);
-	YRenderer->Render(ModelMatrix, V, P);
-	XRenderer->Render(ModelMatrix, V, P);
-	ZRenderer->Render(ModelMatrix, V, P);
+	YRenderer->Render(V, P);
+	XRenderer->Render(V, P);
+	ZRenderer->Render(V, P);
 	
 }

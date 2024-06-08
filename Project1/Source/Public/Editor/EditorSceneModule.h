@@ -2,19 +2,25 @@
 
 #include "Core.h"
 #include "ApplicationModule.h"
+#include "EditorGUIModule.h"
 #include <Scene.h>
 #include "Editor\SceneGizmo.h"
-class FEditorSceneModule : public FApplicationModule {
+#include <Graphics/RenderingPipeline.h>
+class FEditorSceneModule : public FEditorGUIModule {
 
 public:
+	FEditorSceneModule(SharedPtr<FViewport> VP) : FEditorGUIModule(VP) {}
 	virtual void OnStartup() override;
 	virtual void OnTick(float Delta) override;
 
 	SharedPtr<FScene> GetScene() { return Scene; }
 
+	virtual void OnGUIRender() override;
+
 protected:
 	
 	SharedPtr<FScene> Scene;
+	SharedPtr<FRenderingPipeline> RenderingPipeline;
 
 private:
 	SharedPtr<FSceneGizmo> PositionGizmo;

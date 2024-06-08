@@ -13,7 +13,6 @@
 
 void FEditorSceneModule::OnStartup()
 {
-	FApplicationModule::OnStartup();
 	SharedPtr<FViewport> SceneViewport = FApplication::Get()->SceneViewport;
 	glfwMakeContextCurrent(SceneViewport->ViewportContext);
 
@@ -65,10 +64,19 @@ void FEditorSceneModule::OnStartup()
 	Scene->RegisterSceneObject(EditorGrid);
 	FApplication::Get()->GetCurrentScene()->RegisterSceneObject(newObj);
 	FApplication::Get()->GetCurrentScene()->RegisterSceneObject(PositionGizmo);
+
+	RenderingPipeline = SharedPtr<FRenderingPipeline>(new FRenderingPipeline(SceneViewport));
+
+
 	SceneViewport->RegisterRenderCallback([this, Material]() {
 		glLineWidth(3.0f);
 		
-		Scene->RenderScene();
+		RenderingPipeline->PreRender(Scene->CameraTransform, Scene);
+
+		RenderingPipeline->Render(Scene->CameraTransform, Scene);
+
+		RenderingPipeline->PostRender(Scene->CameraTransform, Scene);
+		
 		if (FInputSystem::IsMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)) {
 			GLfloat _z = 0;
 			unsigned char stencil;
@@ -91,13 +99,15 @@ void FEditorSceneModule::OnStartup()
 			}
 		}
 
-		Scene->PostRender();
+		//Scene->PostRender();
 	});
+	FEditorGUIModule::OnStartup();
+
 }
 
 void FEditorSceneModule::OnTick(float Delta)
 {
-	FApplicationModule::OnTick(Delta);
+	//FEditorGUIModule::OnTick(Delta);
 
 	HandleCameraInput(Delta);
 
@@ -110,6 +120,17 @@ void FEditorSceneModule::OnTick(float Delta)
 	}
 
 	
+}
+
+void FEditorSceneModule::OnGUIRender()
+{
+	ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.6f);
+	ImGui::Begin("TestWin", NULL, BASE_GUI_WINDOW_FLAGS | ImGuiWindowFlags_NoTitleBar);
+	ImGui::PopStyleVar();
+	ImGui::SetWindowPos(ImVec2(10,10));
+	ImGui::SetWindowSize(ImVec2(50, 200));
+	ImGui::Text("%.1f", ImGui::GetIO().Framerate );
+	ImGui::End();
 }
 
 void FEditorSceneModule::HandleCameraInput(float Delta)
