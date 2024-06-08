@@ -12,8 +12,6 @@ public:
 
 	virtual void EnqueueRenderer(SharedPtr<FMeshRendererComponent> Renderer);
 
-	virtual void PrepareForRendering(FTransform PointOfView, SharedPtr<FScene> Scene);
-
 	virtual void PreRender(FTransform PointOfView, SharedPtr<FScene> Scene);
 	virtual void Render(FTransform PointOfView, SharedPtr<FScene> Scene);
 	virtual void PostRender(FTransform PointOfView, SharedPtr<FScene> Scene);

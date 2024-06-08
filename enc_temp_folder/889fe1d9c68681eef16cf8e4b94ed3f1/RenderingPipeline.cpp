@@ -8,13 +8,6 @@ void FRenderingPipeline::EnqueueRenderer(SharedPtr<FMeshRendererComponent> Rende
 	}
 }
 
-void FRenderingPipeline::PrepareForRendering(FTransform PointOfView, SharedPtr<FScene> Scene)
-{
-	EnqueuedRenderers.empty();
-
-	// Here we will order rendering to reduce draw calls 
-}
-
 void FRenderingPipeline::PreRender(FTransform PointOfView, SharedPtr<FScene> Scene)
 {
 	if (Viewport == nullptr) return;
