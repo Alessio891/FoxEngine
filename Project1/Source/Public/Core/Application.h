@@ -2,6 +2,7 @@
 #include <list>
 #include "ApplicationModule.h"
 #include "Viewport.h"
+#include <Scene.h>
 
 #define REGISTER_MODULE(ModuleClass) \
 ModuleClass##* ModuleClass##_Instance = new ModuleClass##(); \
@@ -36,6 +37,8 @@ public:
 		}
 		return nullptr;
 	}
+
+	SharedPtr<FScene> GetCurrentScene();
 
 	static FApplication* Get();
 

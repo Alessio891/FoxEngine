@@ -8,9 +8,12 @@ public:
 	virtual void RegisterSceneObject(SharedPtr<FSceneObject> SceneObject);
 	virtual void UnregisterSceneObject(SharedPtr<FSceneObject> SceneObject);
 
+	List<SharedPtr<FSceneObject>> GetSceneObjects() { return SceneObjects; }
+
 	virtual void TickScene(float Delta);
 
 	virtual void RenderScene();
+	virtual void PostRender();
 
 	FScene() {}
 

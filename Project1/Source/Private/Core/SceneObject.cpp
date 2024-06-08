@@ -6,6 +6,7 @@
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
 #include "InspectorModule/InspectorModule.h"
+#include "imgui_stdlib.h"
 
 void FSceneObject::Tick(float DeltaTime)
 {
@@ -22,6 +23,11 @@ void FSceneObject::Draw(glm::mat4 V, glm::mat4 P)
 	ModelMatrix = glm::scale(ModelMatrix, Transform.Scale);
 
 	if (Renderer != nullptr) {
+		if (RenderingQueue == ERenderingQueue::Depth) {
+			glStencilFunc(GL_ALWAYS, ObjectID, 0xFF);
+			glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+			glStencilMask(0xFF);
+		}
 		Renderer->Render(ModelMatrix, V, P);
 	}
 }
@@ -53,7 +59,9 @@ void FSceneObject::SetupRenderer(FMeshRendererComponent* Renderer)
 }
 
 void FSceneObject::DrawInspector()
-{
+{	
+	ImGui::InputText("Name", &Name );
+	
 	if (ImGui::CollapsingHeader("Transform")) {
 		Transform.Position = FImGui::Vec3("Position", Transform.Position);
 		Transform.Rotation = FImGui::Vec3("Rotation", Transform.Rotation);

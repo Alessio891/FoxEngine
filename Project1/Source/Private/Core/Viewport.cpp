@@ -30,7 +30,9 @@ void FViewport::InitializeViewport(GLFWwindow* ParentWindow)
 	SetWindowLong(hwNative, GWL_STYLE, style);
 
 	glfwSetWindowPos(ViewportContext, X, Y);
+	glfwSetInputMode(ViewportContext, GLFW_STICKY_KEYS, GLFW_TRUE);
 	glfwMakeContextCurrent(ViewportContext);
+	
 	glewInit();
 	glfwInit();
 	glfwSwapInterval(1);
@@ -43,15 +45,26 @@ void FViewport::InitializeViewport(GLFWwindow* ParentWindow)
 		SharedPtr<FViewport> vp = FApplication::Get()->GetViewportWithContext(w);
 		vp->HandleMouseMotion(x, y);
 	});
+	
 	glfwSetKeyCallback(ViewportContext, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
-		SharedPtr<FViewport> vp = FApplication::Get()->GetViewportWithContext(window);
-		vp->HandleKeyboardButton(key, scancode, action, mods);
+		printf("Pressed");
+		/*SharedPtr<FViewport> vp = FApplication::Get()->GetViewportWithContext(window);
+		if (vp != nullptr)
+			vp->HandleKeyboardButton(key, scancode, action, mods);*/
 	});
+
+	/*unsigned int rbo;
+	glGenRenderbuffers(1, &rbo);
+	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, Width, Height);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);*/
 	ShowWindow(hwNative, SW_SHOW);
 }
 
 void FViewport::UpdateViewport()
 {
+	glfwMakeContextCurrent(ViewportContext);
+	
 	/*	int deltaw = TargetWidth - Width;
 	if (abs(deltaw) > 2) {
 		int step = 10 * (deltaw > 0 ? 1 : -1);
@@ -64,19 +77,21 @@ void FViewport::UpdateViewport()
 	}
 	
 	glfwSetWindowSize(ViewportContext, Width, Height);*/
+	//
 }
 
 void FViewport::RenderViewport()
 {
-	
 	glfwMakeContextCurrent(ViewportContext);
-	glfwPollEvents();
+
 
 	glfwGetFramebufferSize(ViewportContext, &Width, &Height);
 	glClearColor(0.01f,0.1f,0.1f,1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	glViewport(0, 0, Width, Height);
 	glDepthMask(GL_TRUE);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_STENCIL_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	for (OnViewportRenderDelegate onRender : OnRenderCallbacks) {

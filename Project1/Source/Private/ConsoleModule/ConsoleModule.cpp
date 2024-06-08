@@ -10,6 +10,9 @@ void FConsoleModule::OnStartup()
 {
 	FEditorGUIModule::OnStartup();
 	Instance = SharedPtr<FConsoleModule>(this);
+	FLogger::RegisterLogCallback([this](const FLogMessage& msg) {
+		LogMessages.push_back(msg);
+	});
 }
 
 void FConsoleModule::OnGUIRender()
@@ -20,10 +23,10 @@ void FConsoleModule::OnGUIRender()
 	ImGui::SetNextWindowPos(ImVec2(0, 0));
 	ImGui::Begin("Console", &open, window_flags);
 	
-	for (FConsoleLogMessage m : LogMessages) {
+	for (FLogMessage m : LogMessages) {
 		auto color = IM_COL32(255,255,255,255);
-		if (m.Severity == EConsoleLogSeverity::Warning) color = IM_COL32(150, 150, 0, 255);
-		if (m.Severity == EConsoleLogSeverity::Error) color = IM_COL32(160, 10, 10, 255);
+		if (m.Severity == ELogSeverity::Warning) color = IM_COL32(150, 150, 0, 255);
+		if (m.Severity == ELogSeverity::Error) color = IM_COL32(160, 10, 10, 255);
 		ImGui::PushStyleColor(ImGuiCol_Text, color);
 		char buffer[80];
 		strftime(buffer, 80, "%I:%M", localtime(&m.Time));
@@ -35,16 +38,6 @@ void FConsoleModule::OnGUIRender()
 	ImGui::SetScrollHereY();
 	ImGui::End();
 
-}
-
-void FConsoleModule::LogInfo(String Message)
-{
-	auto start = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-	FConsoleLogMessage log;
-	log.Message = std::string(Message);
-	log.Time = start;
-	log.Severity = EConsoleLogSeverity::Warning;
-	LogMessages.push_back(log);
 }
 
 SharedPtr<FConsoleModule> FConsoleModule::Instance;

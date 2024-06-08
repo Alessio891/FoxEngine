@@ -15,6 +15,7 @@ void FScene::RegisterSceneObject(SharedPtr<FSceneObject> SceneObject)
 	std::list<SharedPtr<FSceneObject>>::iterator it = std::find(SceneObjects.begin(), SceneObjects.end(), SceneObject);
 	if (it == SceneObjects.end())
 	{
+		SceneObject->ObjectID = SceneObjects.size();
 		SceneObjects.push_back(SceneObject);
 		SceneObject->Begin();
 	}
@@ -60,6 +61,51 @@ void FScene::RenderScene()
 	);
 	
 	for (SharedPtr<FSceneObject> object : SceneObjects) {
-		object->Draw(CameraMatrix, ProjectionMatrix);
+		if (object->RenderingQueue == ERenderingQueue::PreRender)
+		{
+			object->Draw(CameraMatrix, ProjectionMatrix);
+		}
+	}
+	
+	glClear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+	for (SharedPtr<FSceneObject> object : SceneObjects) {
+		if (object->RenderingQueue == ERenderingQueue::Depth)
+		{
+			object->Draw(CameraMatrix, ProjectionMatrix);
+		}
+	}
+
+	
+}
+
+void FScene::PostRender()
+{
+	Vector3F right = CameraTransform.GetRightVector();
+	Vector3F up = CameraTransform.GetUpVector();
+
+	glm::mat4 CameraMatrix = glm::lookAt(
+		CameraTransform.Position,
+		CameraTransform.Position + CameraTransform.GetForwardVector(),
+		up
+	);
+
+	FViewport viewport = *FApplication::Get()->SceneViewport;
+	float aspect = float(viewport.GetWidth()) / float(viewport.GetHeight());
+
+	glm::mat4 ProjectionMatrix = glm::perspective<float>(
+		glm::radians(45.0f),
+		aspect,
+		0.1f,
+		100.0f
+	);
+
+	glClear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+	for (SharedPtr<FSceneObject> object : SceneObjects) {
+		if (object->RenderingQueue == ERenderingQueue::Overlay)
+		{
+			object->Draw(CameraMatrix, ProjectionMatrix);
+		}
 	}
 }

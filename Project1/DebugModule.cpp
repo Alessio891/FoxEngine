@@ -68,16 +68,6 @@ void FDebugModule::OnStartup()
 
 	FApplication::Get()->SceneViewport->RegisterRenderCallback([this, CubeMeshData]() {
 		Scene->RenderScene();
-		/*
-		glBindVertexArray(CubeMeshData->VAO);
-		// 2. copy our vertices array in a buffer for OpenGL to use
-		glBindBuffer(GL_ARRAY_BUFFER, CubeMeshData->VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(TRIANGLE_MESH_VERTEX_ARRAY), TRIANGLE_MESH_VERTEX_ARRAY, GL_STATIC_DRAW);
-		// 3. then set our vertex attributes pointers
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-		glEnableVertexAttribArray(0);
-		glBindVertexArray(CubeMeshData->VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 3);*/
 	});
 	FInspectorModule::Get()->SetDisplayedObject(Cube);
 	
@@ -101,7 +91,6 @@ void FDebugModule::OnTick(float Delta)
 	}
 	if (FInputSystem::LeftButtonDown == true) {
 		std::string mouseY = std::to_string(FInputSystem::MouseDeltaY);
-		//font->RenderText(FontMat, "Y: " + mouseY, 10.0f, 80.0f, 0.4f, Vector3F(1.0f, 1.0f, 1.0f));
 		Scene->CameraTransform.Rotation.x -= FInputSystem::MouseDeltaY * Delta * 150.0f;
 		Scene->CameraTransform.Rotation.y -= FInputSystem::MouseDeltaX * Delta * 150.0f;
 	}

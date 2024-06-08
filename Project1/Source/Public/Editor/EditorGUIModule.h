@@ -3,6 +3,7 @@
 #include "Core.h"
 #include <Application.h>
 #include "ApplicationModule.h"
+#include "imgui_impl_glfw.h"
 
 class FEditorGUIModule : public FApplicationModule {
 public:
@@ -13,10 +14,15 @@ public:
 	virtual void OnStartup() override;
 	virtual void OnGUIRender();
 
+	SharedPtr<ImGuiContext> GetGuiContext() { return GuiContext; }
+
 protected:
 	SharedPtr<ImGuiContext> GuiContext;
 	SharedPtr<FViewport> Viewport;
 
 	virtual void BeginGUIRender();
 	virtual void EndGUIRender();
+	ImGuiKey KeyToImGuiKey(int key);
+
+	static GLFWwindow* CurrentOveredGui;
 };

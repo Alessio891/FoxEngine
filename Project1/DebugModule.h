@@ -7,7 +7,6 @@
 class FDebugModule : public FApplicationModule {
 public:
 	virtual void OnStartup() override;
-
 	virtual void OnTick(float Delta) override;
 
 	SharedPtr<FScene> Scene;

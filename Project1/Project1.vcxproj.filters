@@ -141,6 +141,21 @@
     <ClCompile Include="Source\Private\Editor\EditorGUIModule.cpp">
       <Filter>File di origine\Source\Private\Editor</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Private\Editor\EditorSceneModule.cpp">
+      <Filter>File di origine\Source\Private\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Private\Editor\SceneHierarchyModule.cpp">
+      <Filter>File di origine\Source\Private\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Private\Editor\SceneGizmo.cpp">
+      <Filter>File di origine\Source\Private\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Private\Core\Logger.cpp">
+      <Filter>File di origine\Source\Private\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui\imgui_stdlib.cpp">
+      <Filter>File di origine\Source\imgui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -241,6 +256,21 @@
     </ClInclude>
     <ClInclude Include="Source\Public\Editor\EditorGUIModule.h">
       <Filter>File di origine\Source\Public\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\Editor\EditorSceneModule.h">
+      <Filter>File di origine\Source\Public\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\Editor\SceneHierarchyModule.h">
+      <Filter>File di origine\Source\Public\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\Editor\SceneGizmo.h">
+      <Filter>File di origine\Source\Public\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\Core\Logger.h">
+      <Filter>File di origine\Source\Public\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\imgui\imgui_stdlib.h">
+      <Filter>File di origine\Source\imgui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

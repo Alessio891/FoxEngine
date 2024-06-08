@@ -1,8 +1,16 @@
 #pragma once
 #include "Core.h"
+#include <string>
 
 class FObjectComponent;
 class FMeshRendererComponent;
+
+enum ERenderingQueue {
+	PreRender = 0,
+	Depth = 1,
+	Overlay = 2
+};
+
 
 struct FTransform {
 	Vector3F Position = Vector3F(0.0f,0.0f,0.0f);
@@ -35,6 +43,9 @@ struct FTransform {
 class FSceneObject {
 
 public:
+	FSceneObject() : Name("[Object]") {}
+	FSceneObject(String name) : Name(name) {}
+
 	virtual void Begin() {};
 	virtual void End() {};
 	virtual void Tick(float DeltaTime);
@@ -49,10 +60,19 @@ public:
 	virtual void DrawInspector();
 	FTransform Transform;
 
-	/*Vector3F Position;
-	Vector3F Rotation;
-	Vector3F Scale = Vector3F(1.0f,1.0f,1.0f);*/
+	std::string Name = "[Object]";
 
+	bool HideInHierarchy = false;
+
+	ERenderingQueue RenderingQueue = ERenderingQueue::Depth;
+
+	int ObjectID = -1;
+
+	friend bool const operator==(const FSceneObject& lhs, const FSceneObject& rhs) {
+		return lhs.ObjectID == rhs.ObjectID;
+	}
+
+	bool Outlined = false;
 protected:
 	std::list<FObjectComponent*> Components;
 

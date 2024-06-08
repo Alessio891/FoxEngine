@@ -2,18 +2,7 @@
 #include "Core.h"
 #include "Editor/EditorGUIModule.h"
 #include <string>
-enum EConsoleLogSeverity {
-	Log = 0,
-	Warning = 1,
-	Error = 2
-};
-
-struct FConsoleLogMessage {
-public:
-	EConsoleLogSeverity Severity;
-	time_t Time;
-	std::string Message;
-};
+#include "Logger.h"
 
 class FConsoleModule : public FEditorGUIModule {
 public:
@@ -28,6 +17,6 @@ public:
 		return Instance;
 	}
 protected:
-	List<FConsoleLogMessage> LogMessages;
+	List<FLogMessage> LogMessages;
 	static SharedPtr<FConsoleModule> Instance;
 };

@@ -3,12 +3,17 @@
 #include <stdio.h>
 #include <chrono>
 #include <filesystem>
+#include <format>
 #include <iostream>
+#include <string>
+#include <string_view>
 #include "Application.h"
 #include "DebugModule.h"
 #include <InputSystem.h>
 #include "InspectorModule\InspectorModule.h"
 #include "ConsoleModule\ConsoleModule.h"
+#include "Editor/EditorSceneModule.h"
+#include "Editor/SceneHierarchyModule.h"
 #include "Graphics\BaseMaterial.h"
 
 #include "GLFW/glfw3.h"
@@ -19,14 +24,6 @@ FApplication* MainApplication;
 
 int64_t getCurrentTime() {
 	return duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-}
-
-void mainDisplayFunc() {
-	if (MainApplication != nullptr) {
-		MainApplication->MainDisplayLoop();
-	}
-	glutSetWindow(1);
-	glutPostRedisplay();
 }
 
 void mainIdleFunc() {
@@ -86,7 +83,9 @@ void OnMouseButtonState(int button, int state, int x, int y) {
 
 
 void OnGLFWError(int error, const char* description) {
-	printf("Error: %s\n", description);
+	char buffer[100];
+	sprintf(buffer, "Error %s\n", description);
+	FLogger::LogError( buffer );
 	//MessageBox(NULL, description, "GLFW error", MB_OK);
 }
 static void OnGLFWKeyPress(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -116,27 +115,30 @@ int main(int argc, char* argv[]) {
 	
 	GLFWwindow* MainWindow;
 	
+	// Setup Error Callback
 	glfwSetErrorCallback(OnGLFWError);
 
+	// Init Glew
 	glewInit();
 
+	// Init GLFW
 	if (!glfwInit()) {
 		exit(EXIT_FAILURE);
 	}
 
+	// Create Main Window
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
-
 	MainWindow = glfwCreateWindow(1920, 1080, "FoxEngine Editor", NULL, NULL);
-
 	if (!MainWindow) {
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}
 
+	// Setup Callback on Main Window
 	glfwMakeContextCurrent(MainWindow);
-	glfwSetKeyCallback(MainWindow, OnGLFWKeyPress);
+	//glfwSetKeyCallback(MainWindow, OnGLFWKeyPress);
 	glfwSetMouseButtonCallback(MainWindow, glfwOnMouseBtn);
 	glfwSetCursorPosCallback(MainWindow, glfwOnMouseMotion);
 	glfwSetWindowSizeCallback(MainWindow, [](GLFWwindow* window, int width, int height) {
@@ -144,19 +146,31 @@ int main(int argc, char* argv[]) {
 	});
 	//
 
+	// Create Main Application
 	MainApplication = new FApplication();
 	MainApplication->Start(argc, argv, 1920, 1080, MainWindow);
-	REGISTER_GUI_MODULE(FInspectorModule, MainApplication->InspectorViewport);
+	// Register Application Modules
 	REGISTER_GUI_MODULE(FConsoleModule, MainApplication->ConsoleViewport);
-	REGISTER_MODULE(FDebugModule);
-	FConsoleModule_Instance->LogInfo("Console Started");
-	FConsoleModule_Instance->LogInfo("Debug Module Started");
+	FLogger::LogInfo("Starting Engine...");
+	REGISTER_GUI_MODULE(FInspectorModule, MainApplication->InspectorViewport);
+	REGISTER_GUI_MODULE(FSceneHierarchyModule, MainApplication->HierarchyViewport);
+	REGISTER_MODULE(FEditorSceneModule);
+	FLogger::LogInfo("Core Modules Loaded");
+	FLogger::LogWarning("This is a warning");
+	FLogger::LogError("And this is an error");
+	//
 
+	// Main Loop
 	while (!glfwWindowShouldClose(MainWindow)) {
-		glfwPollEvents();
+
+		// Game Update
 		mainIdleFunc();
 
+		// Render Loop
 		MainApplication->MainDisplayLoop();
+
+		// Update Input System State
+		FInputSystem::LateUpdate(0.0f);
 
 		glfwSwapBuffers(MainWindow);
 

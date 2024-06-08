@@ -1,6 +1,7 @@
 #pragma once
-
-float PLANE_MESH_VERTEX_ARRAY[3*6] = {
+#ifndef _H_PRIMITIVES
+#define _H_PRIMITIVES
+static float PLANE_MESH_VERTEX_ARRAY[3*6] = {
 	 -1.0f, -1.0f, 0.0f,  // Bottom-left
 	 1.0f, -1.0f, 0.0f, // Bottom-right
 	 1.0f, 1.0f, 0.0f,  // Top-right
@@ -11,13 +12,13 @@ float PLANE_MESH_VERTEX_ARRAY[3*6] = {
 	 -1.0f, -1.0f, 0.0f
 };
 
-float TRIANGLE_MESH_VERTEX_ARRAY[9] = {
+static float TRIANGLE_MESH_VERTEX_ARRAY[9] = {
 	-0.5f, -0.5f, -0.5f,  // 0
 	 0.5f, -0.5f, -0.5f,  // 1
 	 0.5f,  0.5f, -0.5f
 };
 
-float CUBE_MESH_VERTEX_ARRAY[18 * 6] = {
+static float CUBE_MESH_VERTEX_ARRAY[18 * 6] = {
 	// Positions          
 	-0.5f, -0.5f, -0.5f,  // 0
 	 0.5f, -0.5f, -0.5f,  // 1
@@ -61,3 +62,4 @@ float CUBE_MESH_VERTEX_ARRAY[18 * 6] = {
 	-0.5f,  0.5f,  0.5f,  // 7
 	-0.5f,  0.5f, -0.5f   // 3
 };
+#endif

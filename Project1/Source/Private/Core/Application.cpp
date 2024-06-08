@@ -8,10 +8,24 @@
 #include "ApplicationModule.h"
 #include <InputSystem.h>
 #include <functional>
-
+#include <Editor/EditorSceneModule.h>
+#include "Logger.h"
+#include <format>
+#include <iostream>
 void FApplication::Start(int argc, char** argv, int width, int height, GLFWwindow* MainWindow)
 {
+	FLogger::RegisterLogCallback([this](const FLogMessage& msg) {
+		char buffer[80];
+		strftime(buffer, 80, "%I:%M", localtime(&msg.Time));
+		printf("[%s][%d] %s\n", buffer, msg.Severity, msg.Message.c_str());
+	});
+
 	this->MainWindow = MainWindow;
+	glfwSetKeyCallback(MainWindow, [](GLFWwindow* w, int btn, int scan, int act, int mods) {
+		for (SharedPtr<FViewport> viewport : FApplication::Get()->Viewports) {
+			viewport->HandleKeyboardButton(btn, scan, act, mods);
+		}
+	});
 
 	int consoleHeight = 200;
 	int hierarchyWidth = width * 0.15;
@@ -26,8 +40,8 @@ void FApplication::Start(int argc, char** argv, int width, int height, GLFWwindo
 	SceneViewport->InitializeViewport(MainWindow);
 
 	SceneViewport->RegisterMouseButtonCallback([this](int btn, int act, int mods) {
-		if (btn == 0) FInputSystem::LeftButtonDown = act == 1;
-		if (btn == 1) FInputSystem::RightButtonDown = act == 1;
+		FInputSystem::SetMouseButtonState(btn, act);
+		
 	});
 	SceneViewport->RegisterMouseMotionCallback([this](double x, double y) {
 		FInputSystem::OnMouseMove(x, y);
@@ -52,16 +66,18 @@ void FApplication::Start(int argc, char** argv, int width, int height, GLFWwindo
 	Viewports.push_back(HierarchyViewport);
 
 	ImGui::SetCurrentContext(MainImGuiContext.get());
+	//glfwSetInputMode(MainWindow, GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE);
+	
 }
 
 void FApplication::MainIdleLoop(float DeltaTime)
 {
 	glfwMakeContextCurrent(MainWindow);
 	ImGui::SetCurrentContext(MainImGuiContext.get());
-	glfwPollEvents();
+
 	for (SharedPtr<FViewport> viewport : Viewports) {
 		glfwMakeContextCurrent(viewport->ViewportContext);
-		glfwPollEvents();
+	//	glfwPollEvents();
 	}
 	for (FApplicationModule* module : ApplicationModules) {
 		module->OnTick(DeltaTime);
@@ -78,6 +94,8 @@ void FApplication::MainIdleLoop(float DeltaTime)
 void FApplication::MainDisplayLoop()
 {
 	glfwMakeContextCurrent(MainWindow);
+	glfwPollEvents();
+
 	glClearColor(1.0f, 0.5f, 0.5f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	for (SharedPtr<FViewport> viewport : Viewports) {
@@ -137,6 +155,17 @@ void FApplication::HandleMouseMotion(GLFWwindow* Window, double x, double y)
 			viewport->HandleMouseMotion(x,y);
 		}
 	}
+}
+
+SharedPtr<FScene> FApplication::GetCurrentScene()
+{
+	for (auto module : ApplicationModules) {
+		FEditorSceneModule* m = dynamic_cast<FEditorSceneModule*>(module);
+		if (m != nullptr) {
+			return m->GetScene();
+		}
+	}
+	return nullptr;
 }
 
 FApplication* FApplication::Get()

@@ -6,6 +6,7 @@
 struct MeshData {
 
 public:
+	GLuint DrawType = GL_TRIANGLES;
 	GLuint VBO;
 	GLuint VAO;
 
@@ -18,6 +19,7 @@ public:
 	SharedPtr<MeshData> MeshData;
 	SharedPtr<FBaseMaterial> Material;
 	List<float> VertexColorsArray;
+
 
 	virtual void Tick(float Delta) override;
 	virtual void Initialize(FSceneObject* Owner) override;
