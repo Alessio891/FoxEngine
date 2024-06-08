@@ -8,28 +8,22 @@ void FSceneGizmo::Begin()
 {
 	FSceneObject::Begin();
 
-	YAxis = SharedPtr<MeshData>(new MeshData());
-	std::vector<float> vertices = {
+	YAxis = SharedPtr<MeshData>(new MeshData({
 			 0.0f, 0.0f, 0.0f,
 			 0.0f, 1.0f, 0.0f
-	};
-	YAxis->VertexArray = std::list<float>(std::begin(vertices), std::end(vertices));
+		}));
 	YAxis->DrawType = GL_LINES;
 
-	XAxis = SharedPtr<MeshData>(new MeshData());
-	std::vector<float> xvertices = {
+	XAxis = SharedPtr<MeshData>(new MeshData({
 			 0.0f, 0.0f, 0.0f,
 			 1.0f, 0.0f, 0.0f
-	};
-	XAxis->VertexArray = std::list<float>(std::begin(xvertices), std::end(xvertices));
+		}));
 	XAxis->DrawType = GL_LINES;
 
-	ZAxis = SharedPtr<MeshData>(new MeshData());
-	std::vector<float> zvertices = {
+	ZAxis = SharedPtr<MeshData>(new MeshData({
 			 0.0f, 0.0f, 0.0f,
 			 0.0f, 0.0f, 1.0f
-	};
-	ZAxis->VertexArray = std::list<float>(std::begin(zvertices), std::end(zvertices));
+		}));
 	ZAxis->DrawType = GL_LINES;
 
 	YRenderer = new FMeshRendererComponent();

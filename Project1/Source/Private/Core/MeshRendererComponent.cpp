@@ -14,24 +14,7 @@ void FMeshRendererComponent::Initialize(FSceneObject* Owner)
 	
 	if (MeshData->VBO <= 0) {
 		
-		glGenVertexArrays(1, &MeshData->VAO);
-		glGenBuffers(1, &MeshData->VBO);
-
-		glBindVertexArray(MeshData->VAO);
-
-		glBindBuffer(GL_ARRAY_BUFFER, MeshData->VBO);
 		
-		const int size = MeshData->VertexArray.size();
-		float* arr = new float[size];
-		std::copy(MeshData->VertexArray.begin(), MeshData->VertexArray.end(), arr);
-
-		glBufferData(GL_ARRAY_BUFFER, sizeof(arr) * MeshData->VertexArray.size(), arr, GL_STATIC_DRAW);
-
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-		glEnableVertexAttribArray(0);
-
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindVertexArray(0);
 	}
 
 }
@@ -56,15 +39,33 @@ void FMeshRendererComponent::Render(glm::mat4 V, glm::mat4 P)
 	glUniformMatrix4fv(P_MatrixID, 1, GL_FALSE, &P[0][0]);
 
 	Material->SetVec3("_Color", Color);
+	Material->SetFloat("_Unlit", 0.0f);
+	Material->SetVec3("_LightData.Directional.Direction", -FApplication::Get()->GetCurrentScene()->LightTransform.GetForwardVector());
+	Material->SetVec3("_LightData.Directional.Color", FApplication::Get()->GetCurrentScene()->LightColor);
+	Material->SetFloat("_LightData.Directional.Intensity", FApplication::Get()->GetCurrentScene()->Intensity);
+	Material->SetVec3("_LightData.AmbientColor", FApplication::Get()->GetCurrentScene()->AmbientColor);
+	Material->SetFloat("_LightData.AmbientIntensity", 1.0f);
+
+	if (Material->Texture != nullptr) {
+		glBindTexture(GL_TEXTURE_2D, Material->Texture->GetTextureID());
+	}
+
 	Material->UploadParameters();
 	glBindVertexArray(MeshData->VAO);
-	glDrawArrays(MeshData->DrawType, 0, MeshData->VertexArray.size() / 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
+	
+	if (MeshData->IndexArray.size() > 0) {
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, MeshData->EBO);
+		glDrawElements(MeshData->DrawType, MeshData->IndexArray.size(), GL_UNSIGNED_INT, 0);
+	}
+	else 
+		glDrawArrays(MeshData->DrawType, 0, MeshData->VertexArray.size() / 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
 
 	// Second Pass
 	// Render the object scaled up, masked with the stencil buffer
 	// Where Stencil != ObjectID
 	if (Owner->Outlined) {
-		glm::mat4 M = glm::scale(Owner->Transform.GetTransformMatrix(), glm::vec3(1.01f, 1.01f, 1.01f));
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glm::mat4 M = glm::scale(Owner->Transform.GetTransformMatrix(), glm::vec3(1.05f, 1.05f, 1.05f));
 		MVP = P * V * M;
 		MatrixID = glGetUniformLocation(Material->GetProgram(), "MVP");
 		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
@@ -77,12 +78,18 @@ void FMeshRendererComponent::Render(glm::mat4 V, glm::mat4 P)
 		glUniformMatrix4fv(P_MatrixID, 1, GL_FALSE, &P[0][0]);
 
 		Material->SetVec3("_Color", Vector3F(0.02f, 0.373f, 0.95f));
+		Material->SetFloat("_Unlit", 1.0f);
 		Material->UploadParameters();
 		glStencilFunc(GL_NOTEQUAL, Owner->ObjectID, 0xFF);
 		glStencilMask(0x00);
 		glDisable(GL_DEPTH_TEST);
 
-		glDrawArrays(MeshData->DrawType, 0, MeshData->VertexArray.size() / 3);
+		if (MeshData->IndexArray.size() > 0) {
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, MeshData->EBO);
+			glDrawElements(MeshData->DrawType, MeshData->IndexArray.size(), GL_UNSIGNED_INT, 0);
+		}
+		else
+			glDrawArrays(MeshData->DrawType, 0, MeshData->VertexArray.size() / 3);
 
 		glStencilMask(0xFF);
 		glStencilFunc(GL_ALWAYS, 0, 0xFF);

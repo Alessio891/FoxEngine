@@ -18,7 +18,7 @@
 #include <GL/gl.h>
 
 #include <memory>
-
+#include <string>
 template <class T>
 using List = std::list<T>;
 template <class Key, class T> using Map = std::map<Key, T>;
@@ -27,6 +27,6 @@ typedef	glm::vec3 Vector3F;
 typedef	glm::vec2 Vector2F;
 
 typedef const char* String;
-
+typedef std::string BString;
 template <class T>
 using SharedPtr = std::shared_ptr<T>;

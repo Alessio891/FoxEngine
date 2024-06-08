@@ -12,6 +12,7 @@
 #include "Logger.h"
 #include <format>
 #include <iostream>
+#include "Graphics/Primitives.h"
 void FApplication::Start(int argc, char** argv, int width, int height, GLFWwindow* MainWindow)
 {
 	FLogger::RegisterLogCallback([this](const FLogMessage& msg) {
@@ -26,6 +27,7 @@ void FApplication::Start(int argc, char** argv, int width, int height, GLFWwindo
 			viewport->HandleKeyboardButton(btn, scan, act, mods);
 		}
 	});
+
 
 	int consoleHeight = 200;
 	int hierarchyWidth = width * 0.15;

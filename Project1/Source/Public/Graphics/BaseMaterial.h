@@ -2,6 +2,7 @@
 
 #include "Core/Core.h"
 #include <string>
+#include "Texture.h"
 class FBaseMaterial {
 
 public:
@@ -23,6 +24,8 @@ public:
 	Map<String, float> FloatParams;
 	Map<String, glm::mat4> MatParams;
 	Map<String, Vector3F> VectorParams;
+
+	SharedPtr<FTexture> Texture;
 protected:
 	GLuint ProgramIndex;
 	GLuint VertexShader;

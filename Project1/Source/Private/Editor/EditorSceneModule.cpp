@@ -26,8 +26,8 @@ void FEditorSceneModule::OnStartup()
 	EditorGrid->HideInHierarchy = true;
 	
 	FMeshRendererComponent* GridRenderer = new FMeshRendererComponent();
-	SharedPtr<MeshData> GridMeshData(new MeshData());
-	GridMeshData->VertexArray = std::list<float>(std::begin(PLANE_MESH_VERTEX_ARRAY), std::end(PLANE_MESH_VERTEX_ARRAY));
+	SharedPtr<MeshData> GridMeshData(new MeshData(std::list<float>(std::begin(PLANE_MESH_VERTEX_ARRAY), std::end(PLANE_MESH_VERTEX_ARRAY))));
+	
 	GridRenderer->MeshData = GridMeshData;
 	GridRenderer->Material = GridMaterial;
 	EditorGrid->AddComponent(GridRenderer);
@@ -38,20 +38,25 @@ void FEditorSceneModule::OnStartup()
 	SharedPtr<FBaseMaterial> Material(new FBaseMaterial(
 		FMaterialLibrary::GetShader("Shaders/DefaultShader.vs", GL_VERTEX_SHADER), FMaterialLibrary::GetShader("Shaders/DefaultShader.fs", GL_FRAGMENT_SHADER), "DefaultMaterial2"
 	));
-
-	SharedPtr<MeshData> mData(new MeshData());
+	SharedPtr<FTexture> texture = SharedPtr<FTexture>(new FTexture());
+	texture->Load("test.png");
+	Material->Texture = texture;
+	SharedPtr<MeshData> mData(new MeshData( CUBE_MESH_VERTICES, CUBE_MESH_INDICES, CUBE_MESH_NORMALS, CUBE_MESH_UVS));
 	std::vector<float> vertices = {
 			 0.0f, 0.0f, 0.0f,
 			 0.0f, 1.0f, 0.0f
 	};
-	mData->VertexArray = std::list<float>(std::begin(CUBE_MESH_VERTEX_ARRAY), std::end(CUBE_MESH_VERTEX_ARRAY));
-	SharedPtr<MeshData> gizmosMesh(new MeshData());
-	gizmosMesh->VertexArray = std::list<float>(std::begin(vertices), std::end(vertices));
+	
+	SharedPtr<MeshData> gizmosMesh(new MeshData({
+			 0.0f, 0.0f, 0.0f,
+			 0.0f, 1.0f, 0.0f
+		}));
+	
 	gizmosMesh->DrawType = GL_LINES;
 
 	SharedPtr<FSceneObject> newObj(new FSceneObject("A Cube"));
 	FMeshRendererComponent* meshRenderer = new FMeshRendererComponent();
-	meshRenderer->MeshData = mData;
+	meshRenderer->MeshData = mData;//CubePrimitive;
 	meshRenderer->Material = Material;
 	meshRenderer->Color = Vector3F(0.5f, 0.2f, 0.4f);
 	newObj->AddComponent(meshRenderer);

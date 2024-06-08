@@ -159,6 +159,9 @@
     <ClCompile Include="Source\Private\Graphics\RenderingPipeline.cpp">
       <Filter>File di origine\Source\Private\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Private\Graphics\Texture.cpp">
+      <Filter>File di origine\Source\Private\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -277,6 +280,12 @@
     </ClInclude>
     <ClInclude Include="Source\Public\Graphics\RenderingPipeline.h">
       <Filter>File di origine\Source\Public\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\Graphics\Texture.h">
+      <Filter>File di origine\Source\Public\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\Core\stb_image.h">
+      <Filter>File di origine\Source\Public\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

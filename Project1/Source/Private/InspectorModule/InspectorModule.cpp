@@ -32,8 +32,7 @@ void FInspectorModule::OnGUIRender()
 
 		SharedPtr<FSceneObject> newObj(new FSceneObject("Another Cube"));
 		FMeshRendererComponent* meshRenderer = new FMeshRendererComponent();
-		SharedPtr<MeshData> mData(new MeshData());
-		mData->VertexArray = std::list<float>(std::begin(CUBE_MESH_VERTEX_ARRAY), std::end(CUBE_MESH_VERTEX_ARRAY));
+		SharedPtr<MeshData> mData(new MeshData(std::list<float>(std::begin(CUBE_MESH_VERTEX_ARRAY), std::end(CUBE_MESH_VERTEX_ARRAY))));
 		meshRenderer->MeshData = mData;
 		meshRenderer->Material = Material;
 		meshRenderer->Color = Vector3F(0.5f, 0.2f, 0.4f);

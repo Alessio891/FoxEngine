@@ -22,6 +22,7 @@ GLuint FMaterialLibrary::GetShader(String ShaderPath, GLenum ShaderType)
 
 		if (infoLen) {
 			char* buf = (char*)malloc(infoLen);
+			glGetShaderInfoLog(shader, infoLen, nullptr, buf);
 			printf("Error compiling shader: %d \n %s \n", ShaderType, buf);
 			free(buf);
 		}
@@ -48,6 +49,13 @@ std::string FMaterialLibrary::LoadShaderSource(String pathToFile)
 	}
 
 	std::string line = "";
+	/*"#pragma 330\n"
+	"struct DirectionalLightSettings {\n"
+	"vec3 Direction;\n"
+	"vec3 Color;\n"
+	"float Intensity;\n"
+	"};\n"
+	;*/
 	while (!fileStream.eof()) {
 		std::getline(fileStream, line);
 		content.append(line + "\n");

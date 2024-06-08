@@ -165,6 +165,7 @@
     <ClCompile Include="Source\Private\Graphics\Fonts.cpp" />
     <ClCompile Include="Source\Private\Graphics\MaterialLibrary.cpp" />
     <ClCompile Include="Source\Private\Graphics\RenderingPipeline.cpp" />
+    <ClCompile Include="Source\Private\Graphics\Texture.cpp" />
     <ClCompile Include="Source\Private\InspectorModule\InspectorModule.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -200,6 +201,7 @@
     <ClInclude Include="Source\Public\Core\ObjectComponent.h" />
     <ClInclude Include="Source\Public\Core\SceneObject.h" />
     <ClInclude Include="Source\Public\Core\Scene.h" />
+    <ClInclude Include="Source\Public\Core\stb_image.h" />
     <ClInclude Include="Source\Public\Core\Viewport.h" />
     <ClInclude Include="Source\Public\Editor\EditorGUIModule.h" />
     <ClInclude Include="Source\Public\Editor\EditorSceneModule.h" />
@@ -210,6 +212,7 @@
     <ClInclude Include="Source\Public\Graphics\MaterialLibrary.h" />
     <ClInclude Include="Source\Public\Graphics\Primitives.h" />
     <ClInclude Include="Source\Public\Graphics\RenderingPipeline.h" />
+    <ClInclude Include="Source\Public\Graphics\Texture.h" />
     <ClInclude Include="Source\Public\InspectorModule\InspectorModule.h" />
   </ItemGroup>
   <ItemGroup>
