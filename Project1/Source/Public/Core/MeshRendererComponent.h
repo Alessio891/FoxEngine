@@ -3,6 +3,9 @@
 #include "ObjectComponent.h"
 #include "Graphics\BaseMaterial.h"
 #include "Logger.h"
+
+#include "Editor/AssetsLibrary.h"
+
 struct MeshData {
 
 public:
@@ -122,5 +125,6 @@ public:
 	virtual void SetTexture(BString path);
 
 	Vector3F Color = Vector3F(1.0f, 1.0f, 1.0f);
-	SharedPtr<FTexture> Texture;
+	//SharedPtr<FTexture> Texture;
+	SharedPtr<FAssetResource<FTexture>> Texture;
 };

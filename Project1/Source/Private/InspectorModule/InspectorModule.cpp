@@ -32,6 +32,7 @@ void FInspectorModule::OnGUIRender()
 		FMeshRendererComponent* meshRenderer = new FMeshRendererComponent();
 		SharedPtr<MeshData> mData(new MeshData( CUBE_MESH_VERTICES, CUBE_MESH_INDICES, CUBE_MESH_NORMALS, CUBE_MESH_UVS ) );
 		meshRenderer->MeshData = mData;
+		meshRenderer->SetTexture("Resources/Images/test.png");
 		meshRenderer->Material = FMaterialLibrary::GetMaterial("DefaultLit");
 		newObj->AddComponent(meshRenderer);
 		newObj->SetupRenderer(meshRenderer);

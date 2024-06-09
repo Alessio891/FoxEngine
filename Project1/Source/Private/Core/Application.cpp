@@ -22,7 +22,7 @@ void FApplication::Start(int argc, char** argv, int width, int height, GLFWwindo
 		strftime(buffer, 80, "%I:%M", localtime(&msg.Time));
 		printf("[%s][%d] %s\n", buffer, msg.Severity, msg.Message.c_str());
 	});
-
+	FAssetsLibrary::Initialize();
 	this->MainWindow = MainWindow;
 	glfwSetKeyCallback(MainWindow, [](GLFWwindow* w, int btn, int scan, int act, int mods) {
 		for (SharedPtr<FViewport> viewport : FApplication::Get()->Viewports) {

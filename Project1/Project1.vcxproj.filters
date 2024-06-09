@@ -162,6 +162,9 @@
     <ClCompile Include="Source\Private\Graphics\Texture.cpp">
       <Filter>File di origine\Source\Private\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Private\Editor\AssetsLibrary.cpp">
+      <Filter>File di origine\Source\Private\Editor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -292,6 +295,9 @@
     </ClInclude>
     <ClInclude Include="Source\Public\Core\stb_image.h">
       <Filter>File di origine\Source\Public\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\Editor\AssetsLibrary.h">
+      <Filter>File di origine\Source\Public\Editor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

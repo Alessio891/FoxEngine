@@ -52,6 +52,7 @@ void FEditorSceneModule::OnStartup()
 	FMeshRendererComponent* meshRenderer = new FMeshRendererComponent();
 	meshRenderer->MeshData = mData;//CubePrimitive;
 	meshRenderer->Material = FMaterialLibrary::GetMaterial("DefaultLit");
+	meshRenderer->Texture = FAssetsLibrary::GetImage("Resources/Images/test.png");
 	newObj->AddComponent(meshRenderer);
 	newObj->SetupRenderer(meshRenderer);
 

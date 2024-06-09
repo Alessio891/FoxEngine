@@ -49,8 +49,8 @@ void FMeshRendererComponent::Render(glm::mat4 V, glm::mat4 P)
 
 
 	Material->UploadParameters();
-	if (Texture != nullptr) {
-		glBindTexture(GL_TEXTURE_2D, Texture->GetTextureID());
+	if (Texture != NULL) {
+		glBindTexture(GL_TEXTURE_2D, Texture->GetResource(FApplication::Get()->SceneViewport->ViewportContext)->GetTextureID());
 	}
 	glBindVertexArray(MeshData->VAO);
 	
@@ -83,7 +83,7 @@ void FMeshRendererComponent::Render(glm::mat4 V, glm::mat4 P)
 		Material->UploadParameters();
 		glStencilFunc(GL_NOTEQUAL, Owner->ObjectID, 0xFF);
 		glStencilMask(0x00);
-		glDisable(GL_DEPTH_TEST);
+		//glDisable(GL_DEPTH_TEST);
 
 		if (MeshData->IndexArray.size() > 0) {
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, MeshData->EBO);
@@ -122,18 +122,14 @@ void FMeshRendererComponent::DrawInspector()
 				ImGui::Text("No texture");
 			}
 			else {
-				
+				ImGui::Image( (void*)(intptr_t)Texture->GetResource(FApplication::Get()->InspectorViewport->ViewportContext)->GetTextureID(), ImVec2(60,60));
 			}
 
 			if (ImGui::Button("Texture 1")) {
-				glfwMakeContextCurrent(FApplication::Get()->SceneViewport->ViewportContext);
-				SetTexture("Resources/Images/test.png");
-				glfwMakeContextCurrent(FApplication::Get()->InspectorViewport->ViewportContext);
+				SetTexture("Resources/Images/metal.jpg");
 			}
 			if (ImGui::Button("Texture 2")) {
-				glfwMakeContextCurrent(FApplication::Get()->SceneViewport->ViewportContext);
 				SetTexture("Resources/Images/crate.png");
-				glfwMakeContextCurrent(FApplication::Get()->InspectorViewport->ViewportContext);
 			}
 		}
 	}
@@ -145,7 +141,6 @@ void FMeshRendererComponent::DrawInspector()
 
 void FMeshRendererComponent::SetTexture(BString path)
 {
-	if (!Texture)
-		Texture = SharedPtr<FTexture>(new FTexture());
-	Texture->Load(path);
+	
+	Texture = FAssetsLibrary::GetImage(path);
 }
