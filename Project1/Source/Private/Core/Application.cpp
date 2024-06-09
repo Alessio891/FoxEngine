@@ -13,6 +13,8 @@
 #include <format>
 #include <iostream>
 #include "Graphics/Primitives.h"
+#include "Graphics/MaterialLibrary.h"
+
 void FApplication::Start(int argc, char** argv, int width, int height, GLFWwindow* MainWindow)
 {
 	FLogger::RegisterLogCallback([this](const FLogMessage& msg) {
@@ -66,7 +68,11 @@ void FApplication::Start(int argc, char** argv, int width, int height, GLFWwindo
 	HierarchyViewport = SharedPtr<FViewport>(new FViewport(inspectorWidth + sceneWidth, 0, hierarchyWidth, height - consoleHeight));
 	HierarchyViewport->InitializeViewport(MainWindow);
 	Viewports.push_back(HierarchyViewport);
+	
+	glfwMakeContextCurrent(SceneViewport->ViewportContext);
+	FMaterialLibrary::Initialize();
 
+	glfwMakeContextCurrent(MainWindow);
 	ImGui::SetCurrentContext(MainImGuiContext.get());
 	//glfwSetInputMode(MainWindow, GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE);
 	

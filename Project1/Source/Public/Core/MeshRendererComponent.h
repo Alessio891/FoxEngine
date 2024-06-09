@@ -119,5 +119,8 @@ public:
 	virtual void Render(glm::mat4 V, glm::mat4 P);
 	virtual void DrawInspector() override;
 
+	virtual void SetTexture(BString path);
+
 	Vector3F Color = Vector3F(1.0f, 1.0f, 1.0f);
+	SharedPtr<FTexture> Texture;
 };

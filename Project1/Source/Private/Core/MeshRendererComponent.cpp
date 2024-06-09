@@ -3,6 +3,7 @@
 #include "Core.h"
 #include <InspectorModule/InspectorModule.h>
 #include <glm/ext/matrix_transform.hpp>
+#include "Graphics\BaseMaterial.h"
 
 void FMeshRendererComponent::Tick(float Delta)
 {
@@ -46,11 +47,11 @@ void FMeshRendererComponent::Render(glm::mat4 V, glm::mat4 P)
 	Material->SetVec3("_LightData.AmbientColor", FApplication::Get()->GetCurrentScene()->AmbientColor);
 	Material->SetFloat("_LightData.AmbientIntensity", 1.0f);
 
-	if (Material->Texture != nullptr) {
-		glBindTexture(GL_TEXTURE_2D, Material->Texture->GetTextureID());
-	}
 
 	Material->UploadParameters();
+	if (Texture != nullptr) {
+		glBindTexture(GL_TEXTURE_2D, Texture->GetTextureID());
+	}
 	glBindVertexArray(MeshData->VAO);
 	
 	if (MeshData->IndexArray.size() > 0) {
@@ -108,7 +109,7 @@ void FMeshRendererComponent::DrawInspector()
 			Color.x = c[0];
 			Color.y = c[1];
 			Color.z = c[2];
-
+			
 			for (auto f : Material->FloatParams) {
 				ImGui::DragFloat(f.first, &f.second);
 			}
@@ -116,10 +117,35 @@ void FMeshRendererComponent::DrawInspector()
 				if (v.first == "_Color") continue;
 				Material->VectorParams[v.first] = FImGui::Vec3(v.first, v.second);
 			}
+
+			if (Texture == nullptr) {
+				ImGui::Text("No texture");
+			}
+			else {
+				
+			}
+
+			if (ImGui::Button("Texture 1")) {
+				glfwMakeContextCurrent(FApplication::Get()->SceneViewport->ViewportContext);
+				SetTexture("Resources/Images/test.png");
+				glfwMakeContextCurrent(FApplication::Get()->InspectorViewport->ViewportContext);
+			}
+			if (ImGui::Button("Texture 2")) {
+				glfwMakeContextCurrent(FApplication::Get()->SceneViewport->ViewportContext);
+				SetTexture("Resources/Images/crate.png");
+				glfwMakeContextCurrent(FApplication::Get()->InspectorViewport->ViewportContext);
+			}
 		}
 	}
 
 	if (ImGui::CollapsingHeader("Mesh Data")) { 
 		
 	}
+}
+
+void FMeshRendererComponent::SetTexture(BString path)
+{
+	if (!Texture)
+		Texture = SharedPtr<FTexture>(new FTexture());
+	Texture->Load(path);
 }

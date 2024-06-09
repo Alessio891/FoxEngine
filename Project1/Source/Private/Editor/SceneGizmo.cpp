@@ -37,9 +37,7 @@ void FSceneGizmo::Begin()
 	XRenderer->Color = Vector3F(1,0,0);
 	ZRenderer->Color = Vector3F(0,0,1);
 
-	Material = SharedPtr<FBaseMaterial>(new FBaseMaterial(
-		FMaterialLibrary::GetShader("Shaders/DefaultShader.vs", GL_VERTEX_SHADER), FMaterialLibrary::GetShader("Shaders/DefaultShader.fs", GL_FRAGMENT_SHADER), "DefaultMaterial2"
-	));
+	Material = FMaterialLibrary::GetMaterial("DefaultUnlit");
 
 	YRenderer->Material = XRenderer->Material = ZRenderer->Material = Material;
 

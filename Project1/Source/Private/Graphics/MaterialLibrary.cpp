@@ -1,6 +1,23 @@
 #include "Graphics\MaterialLibrary.h"
 #include <fstream>
 
+void FMaterialLibrary::Initialize()
+{
+	SharedPtr<FBaseMaterial> Material(new FBaseMaterial(
+		FMaterialLibrary::GetShader("Shaders/DefaultShader.vs", GL_VERTEX_SHADER), FMaterialLibrary::GetShader("Shaders/DefaultShader.fs", GL_FRAGMENT_SHADER), "DefaultLit"
+	));
+
+
+	RegisterMaterial(Material);
+
+	SharedPtr<FBaseMaterial> UnlitMaterial(new FBaseMaterial(
+		FMaterialLibrary::GetShader("Shaders/DefaultUnlit.vs", GL_VERTEX_SHADER), FMaterialLibrary::GetShader("Shaders/DefaultUnlit.fs", GL_FRAGMENT_SHADER), "DefaultUnlit"
+	));
+	UnlitMaterial->SetFloat("_Unlit", 1.0f);
+	RegisterMaterial(UnlitMaterial);
+	
+}
+
 GLuint FMaterialLibrary::GetShader(String ShaderPath, GLenum ShaderType)
 {
 	auto it = CachedShaders.find(ShaderPath);

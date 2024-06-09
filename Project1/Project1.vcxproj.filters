@@ -183,6 +183,12 @@
     <None Include="Shaders\Fonts\FontShader.fs">
       <Filter>File di origine\Source\Shaders\Fonts</Filter>
     </None>
+    <None Include="Shaders\DefaultUnlit.vs">
+      <Filter>File di origine\Source\Shaders</Filter>
+    </None>
+    <None Include="Shaders\DefaultUnlit.fs">
+      <Filter>File di origine\Source\Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Public\Core\Application.h">

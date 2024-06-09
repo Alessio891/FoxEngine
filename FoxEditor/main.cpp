@@ -1,5 +1,4 @@
 #include "Core.h"
-
 #include <stdio.h>
 #include <chrono>
 #include <filesystem>
@@ -9,7 +8,7 @@
 #include <string_view>
 #include "Application.h"
 #include "DebugModule.h"
-#include <InputSystem.h>
+#include "InputSystem.h"
 #include "InspectorModule\InspectorModule.h"
 #include "ConsoleModule\ConsoleModule.h"
 #include "Editor/EditorSceneModule.h"
@@ -18,6 +17,7 @@
 
 #include "GLFW/glfw3.h"
 #include "windows.h"
+#include <Core/Logger.h>
 using namespace std::chrono;
 int64_t fLastFrameTime = 0;
 FApplication* MainApplication;
@@ -27,7 +27,7 @@ int64_t getCurrentTime() {
 }
 
 void mainIdleFunc() {
-	
+
 	int64_t currentTime = getCurrentTime();
 	float delta = (currentTime - fLastFrameTime) / 100.0f;
 	fLastFrameTime = currentTime;
@@ -40,7 +40,7 @@ void mainIdleFunc() {
 	if (MainApplication != nullptr) {
 		MainApplication->MainIdleLoop(delta);
 	}
-	
+
 }
 void GLAPIENTRY
 MessageCallback(GLenum source,
@@ -85,7 +85,7 @@ void OnMouseButtonState(int button, int state, int x, int y) {
 void OnGLFWError(int error, const char* description) {
 	char buffer[100];
 	sprintf(buffer, "Error %s\n", description);
-	FLogger::LogError( buffer );
+	FLogger::LogError(buffer);
 	//MessageBox(NULL, description, "GLFW error", MB_OK);
 }
 static void OnGLFWKeyPress(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -99,22 +99,22 @@ void OnReshape(int width, int height) {
 }
 
 void glfwOnMouseBtn(GLFWwindow* win, int btn, int action, int mods) {
-	
+
 	//printf("Button %d on window btn %d action %d mods %d\n", &win, btn, action, mods);
 	MainApplication->HandleMouseButton(win, btn, action, mods);
-	
+
 }
 void glfwOnMouseMotion(GLFWwindow* win, double x, double y) {
 
 	//printf("Button %d on window btn %d action %d mods %d\n", &win, btn, action, mods);
-	MainApplication->HandleMouseMotion(win, x,y);
+	MainApplication->HandleMouseMotion(win, x, y);
 
 }
 int main(int argc, char* argv[]) {
 	fLastFrameTime = getCurrentTime();
-	
+
 	GLFWwindow* MainWindow;
-	
+
 	// Setup Error Callback
 	glfwSetErrorCallback(OnGLFWError);
 
@@ -143,7 +143,7 @@ int main(int argc, char* argv[]) {
 	glfwSetCursorPosCallback(MainWindow, glfwOnMouseMotion);
 	glfwSetWindowSizeCallback(MainWindow, [](GLFWwindow* window, int width, int height) {
 		MainApplication->OnResize(width, height);
-	});
+		});
 	//
 
 	// Create Main Application

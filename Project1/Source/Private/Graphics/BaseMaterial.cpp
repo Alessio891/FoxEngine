@@ -12,6 +12,7 @@ FBaseMaterial::FBaseMaterial(GLuint VertexShader, GLuint FragmentShader, const S
 	glAttachShader(ProgramIndex, this->VertexShader);
 	glAttachShader(ProgramIndex, this->FragmentShader);
 	glLinkProgram(ProgramIndex);
+	Name = MaterialName;
 }
 
 void FBaseMaterial::SetFloat(String ParamName, float Value)

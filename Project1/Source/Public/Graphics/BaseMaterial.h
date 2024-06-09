@@ -20,16 +20,19 @@ public:
 	void SetVec3(String ParamName, Vector3F Value);
 
 	void UploadParameters();
-	
+	String GetName() const { return Name; }
+
 	Map<String, float> FloatParams;
 	Map<String, glm::mat4> MatParams;
 	Map<String, Vector3F> VectorParams;
 
-	SharedPtr<FTexture> Texture;
+	
 protected:
 	GLuint ProgramIndex;
 	GLuint VertexShader;
 	GLuint FragmentShader;
+
+	String Name;
 
 
 };

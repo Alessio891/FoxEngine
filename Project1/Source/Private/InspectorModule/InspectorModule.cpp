@@ -20,22 +20,19 @@ void FInspectorModule::OnTick(float Delta)
 void FInspectorModule::OnGUIRender()
 {
 	MAKE_WINDOW("Inspector");
+
 	if (CurrentDisplayedObject != nullptr) {
 		CurrentDisplayedObject->DrawInspector();
 	}
 
 	if (ImGui::Button("Spawn")) {
 		glfwMakeContextCurrent(FApplication::Get()->SceneViewport->ViewportContext);
-		SharedPtr<FBaseMaterial> Material(new FBaseMaterial(
-			FMaterialLibrary::GetShader("Shaders/DefaultShader.vs", GL_VERTEX_SHADER), FMaterialLibrary::GetShader("Shaders/DefaultShader.fs", GL_FRAGMENT_SHADER), "DefaultMaterial2"
-		));
-
+		
 		SharedPtr<FSceneObject> newObj(new FSceneObject("Another Cube"));
 		FMeshRendererComponent* meshRenderer = new FMeshRendererComponent();
-		SharedPtr<MeshData> mData(new MeshData(std::list<float>(std::begin(CUBE_MESH_VERTEX_ARRAY), std::end(CUBE_MESH_VERTEX_ARRAY))));
+		SharedPtr<MeshData> mData(new MeshData( CUBE_MESH_VERTICES, CUBE_MESH_INDICES, CUBE_MESH_NORMALS, CUBE_MESH_UVS ) );
 		meshRenderer->MeshData = mData;
-		meshRenderer->Material = Material;
-		meshRenderer->Color = Vector3F(0.5f, 0.2f, 0.4f);
+		meshRenderer->Material = FMaterialLibrary::GetMaterial("DefaultLit");
 		newObj->AddComponent(meshRenderer);
 		newObj->SetupRenderer(meshRenderer);
 		

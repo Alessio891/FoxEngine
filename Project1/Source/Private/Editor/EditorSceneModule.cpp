@@ -35,12 +35,6 @@ void FEditorSceneModule::OnStartup()
 	
 	Scene->CameraTransform.Position = Vector3F(0, 3, -3);
 	
-	SharedPtr<FBaseMaterial> Material(new FBaseMaterial(
-		FMaterialLibrary::GetShader("Shaders/DefaultShader.vs", GL_VERTEX_SHADER), FMaterialLibrary::GetShader("Shaders/DefaultShader.fs", GL_FRAGMENT_SHADER), "DefaultMaterial2"
-	));
-	SharedPtr<FTexture> texture = SharedPtr<FTexture>(new FTexture());
-	texture->Load("test.png");
-	Material->Texture = texture;
 	SharedPtr<MeshData> mData(new MeshData( CUBE_MESH_VERTICES, CUBE_MESH_INDICES, CUBE_MESH_NORMALS, CUBE_MESH_UVS));
 	std::vector<float> vertices = {
 			 0.0f, 0.0f, 0.0f,
@@ -57,8 +51,7 @@ void FEditorSceneModule::OnStartup()
 	SharedPtr<FSceneObject> newObj(new FSceneObject("A Cube"));
 	FMeshRendererComponent* meshRenderer = new FMeshRendererComponent();
 	meshRenderer->MeshData = mData;//CubePrimitive;
-	meshRenderer->Material = Material;
-	meshRenderer->Color = Vector3F(0.5f, 0.2f, 0.4f);
+	meshRenderer->Material = FMaterialLibrary::GetMaterial("DefaultLit");
 	newObj->AddComponent(meshRenderer);
 	newObj->SetupRenderer(meshRenderer);
 
@@ -73,7 +66,7 @@ void FEditorSceneModule::OnStartup()
 	RenderingPipeline = SharedPtr<FRenderingPipeline>(new FRenderingPipeline(SceneViewport));
 
 
-	SceneViewport->RegisterRenderCallback([this, Material]() {
+	SceneViewport->RegisterRenderCallback([this]() {
 		glLineWidth(3.0f);
 		
 		RenderingPipeline->PreRender(Scene->CameraTransform, Scene);

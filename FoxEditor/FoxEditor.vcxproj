@@ -21,14 +21,13 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{7d08f5ab-15ff-4b29-94d6-46075011090c}</ProjectGuid>
-    <RootNamespace>FoxEngine</RootNamespace>
+    <ProjectGuid>{2b1a026a-85c9-4687-bf5c-ef6419c6274d}</ProjectGuid>
+    <RootNamespace>FoxEditor</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>FoxEngine</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -72,27 +71,22 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <PublicIncludeDirectories>C:\Work Space\BattleFox Studio\C++\FoxEngine\Project1;$(PublicIncludeDirectories)</PublicIncludeDirectories>
-    <IncludePath>Source\Public;Source\Public\Core;$(IncludePath)</IncludePath>
+    <PublicIncludeDirectories>
+    </PublicIncludeDirectories>
+    <IncludePath>$(SolutionDir)Project1/Source/Public;$(SolutionDir)imgui;$(SolutionDir)Project1/Source/Public/Core;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)Builds\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_CONSOLE;FT2_BUILD_LIBRARY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../imgui</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
-    <PostBuildEvent>
-      <Command>xcopy "$(ProjectDir)Shaders\*.*" "$(SolutionDir)Builds\$(Configuration)\Shaders\" /Y /I /E
-xcopy "$(ProjectDir)Resources\*.*" "$(SolutionDir)Builds\$(Configuration)\Resources\" /Y /I /E
-</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -139,109 +133,34 @@ xcopy "$(ProjectDir)Resources\*.*" "$(SolutionDir)Builds\$(Configuration)\Resour
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\imgui\imgui.cpp" />
-    <ClCompile Include="..\imgui\imgui_demo.cpp" />
-    <ClCompile Include="..\imgui\imgui_draw.cpp" />
-    <ClCompile Include="..\imgui\imgui_impl_glfw.cpp" />
-    <ClCompile Include="..\imgui\imgui_impl_glut.cpp" />
-    <ClCompile Include="..\imgui\imgui_impl_opengl3.cpp" />
-    <ClCompile Include="..\imgui\imgui_stdlib.cpp" />
-    <ClCompile Include="..\imgui\imgui_tables.cpp" />
-    <ClCompile Include="..\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="Source\Private\ConsoleModule\ConsoleModule.cpp" />
-    <ClCompile Include="Source\Private\Core\Application.cpp" />
-    <ClCompile Include="DebugModule.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Source\Private\Core\InputSystem.cpp" />
-    <ClCompile Include="Source\Private\Core\Logger.cpp" />
-    <ClCompile Include="Source\Private\Core\MeshRendererComponent.cpp" />
-    <ClCompile Include="Source\Private\Core\ObjectComponent.cpp" />
-    <ClCompile Include="Source\Private\Core\Scene.cpp" />
-    <ClCompile Include="Source\Private\Core\SceneObject.cpp" />
-    <ClCompile Include="Source\Private\Core\Viewport.cpp" />
-    <ClCompile Include="Source\Private\Editor\EditorGUIModule.cpp" />
-    <ClCompile Include="Source\Private\Editor\EditorSceneModule.cpp" />
-    <ClCompile Include="Source\Private\Editor\SceneGizmo.cpp" />
-    <ClCompile Include="Source\Private\Editor\SceneHierarchyModule.cpp" />
-    <ClCompile Include="Source\Private\Graphics\BaseMaterial.cpp" />
-    <ClCompile Include="Source\Private\Graphics\Fonts.cpp" />
-    <ClCompile Include="Source\Private\Graphics\MaterialLibrary.cpp" />
-    <ClCompile Include="Source\Private\Graphics\RenderingPipeline.cpp" />
-    <ClCompile Include="Source\Private\Graphics\Texture.cpp" />
-    <ClCompile Include="Source\Private\InspectorModule\InspectorModule.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\DefaultShader.fs">
-      <FileType>Document</FileType>
-    </None>
-    <None Include="Shaders\DefaultShader.vs" />
+    <ProjectReference Include="..\Project1\Project1.vcxproj">
+      <Project>{7d08f5ab-15ff-4b29-94d6-46075011090c}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Shaders\DefaultUnlit.fs" />
-    <None Include="Shaders\DefaultUnlit.vs" />
-    <None Include="Shaders\Fonts\FontShader.fs" />
-    <None Include="Shaders\Fonts\FontShader.vs" />
-    <None Include="Shaders\Grid\GridShader.fs" />
-    <None Include="Shaders\Grid\GridShader.vs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\imgui\imconfig.h" />
-    <ClInclude Include="..\imgui\imgui.h" />
-    <ClInclude Include="..\imgui\imgui_impl_glfw.h" />
-    <ClInclude Include="..\imgui\imgui_impl_glut.h" />
-    <ClInclude Include="..\imgui\imgui_impl_opengl3.h" />
-    <ClInclude Include="..\imgui\imgui_internal.h" />
-    <ClInclude Include="..\imgui\imgui_stdlib.h" />
-    <ClInclude Include="..\imgui\imstb_rectpack.h" />
-    <ClInclude Include="..\imgui\imstb_textedit.h" />
-    <ClInclude Include="..\imgui\imstb_truetype.h" />
-    <ClInclude Include="Source\Public\ConsoleModule\ConsoleModule.h" />
-    <ClInclude Include="Source\Public\Core\Application.h" />
-    <ClInclude Include="Source\Public\Core\ApplicationModule.h" />
-    <ClInclude Include="Source\Public\Core\Core.h" />
-    <ClInclude Include="DebugModule.h" />
-    <ClInclude Include="Source\Public\Core\InputSystem.h" />
-    <ClInclude Include="Source\Public\Core\Logger.h" />
-    <ClInclude Include="Source\Public\Core\MeshRendererComponent.h" />
-    <ClInclude Include="Source\Public\Core\ObjectComponent.h" />
-    <ClInclude Include="Source\Public\Core\SceneObject.h" />
-    <ClInclude Include="Source\Public\Core\Scene.h" />
-    <ClInclude Include="Source\Public\Core\stb_image.h" />
-    <ClInclude Include="Source\Public\Core\Viewport.h" />
-    <ClInclude Include="Source\Public\Editor\EditorGUIModule.h" />
-    <ClInclude Include="Source\Public\Editor\EditorSceneModule.h" />
-    <ClInclude Include="Source\Public\Editor\SceneGizmo.h" />
-    <ClInclude Include="Source\Public\Editor\SceneHierarchyModule.h" />
-    <ClInclude Include="Source\Public\Graphics\BaseMaterial.h" />
-    <ClInclude Include="Source\Public\Graphics\Fonts.h" />
-    <ClInclude Include="Source\Public\Graphics\MaterialLibrary.h" />
-    <ClInclude Include="Source\Public\Graphics\Primitives.h" />
-    <ClInclude Include="Source\Public\Graphics\RenderingPipeline.h" />
-    <ClInclude Include="Source\Public\Graphics\Texture.h" />
-    <ClInclude Include="Source\Public\InspectorModule\InspectorModule.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="TestInSource.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="..\packages\glew.v140.1.12.0\build\native\glew.v140.targets" Condition="Exists('..\packages\glew.v140.1.12.0\build\native\glew.v140.targets')" />
+    <Import Project="..\packages\glfw.3.4.0\build\native\glfw.targets" Condition="Exists('..\packages\glfw.3.4.0\build\native\glfw.targets')" />
     <Import Project="..\packages\glm.1.0.1\build\native\glm.targets" Condition="Exists('..\packages\glm.1.0.1\build\native\glm.targets')" />
+    <Import Project="..\packages\glew.v140.1.12.0\build\native\glew.v140.targets" Condition="Exists('..\packages\glew.v140.1.12.0\build\native\glew.v140.targets')" />
     <Import Project="..\packages\freetype.redist.2.8.0.1\build\native\freetype.redist.targets" Condition="Exists('..\packages\freetype.redist.2.8.0.1\build\native\freetype.redist.targets')" />
     <Import Project="..\packages\freetype.2.8.0.1\build\native\freetype.targets" Condition="Exists('..\packages\freetype.2.8.0.1\build\native\freetype.targets')" />
-    <Import Project="..\packages\freetype_static.2.10.1.12\build\native\freetype_static.targets" Condition="Exists('..\packages\freetype_static.2.10.1.12\build\native\freetype_static.targets')" />
     <Import Project="..\packages\freetype2.2.6.0.1\build\native\freetype2.targets" Condition="Exists('..\packages\freetype2.2.6.0.1\build\native\freetype2.targets')" />
-    <Import Project="..\packages\glfw.3.4.0\build\native\glfw.targets" Condition="Exists('..\packages\glfw.3.4.0\build\native\glfw.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>Questo progetto fa riferimento a uno o più pacchetti NuGet che non sono presenti in questo computer. Usare lo strumento di ripristino dei pacchetti NuGet per scaricarli. Per altre informazioni, vedere http://go.microsoft.com/fwlink/?LinkID=322105. Il file mancante è {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\glew.v140.1.12.0\build\native\glew.v140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\glew.v140.1.12.0\build\native\glew.v140.targets'))" />
+    <Error Condition="!Exists('..\packages\glfw.3.4.0\build\native\glfw.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\glfw.3.4.0\build\native\glfw.targets'))" />
     <Error Condition="!Exists('..\packages\glm.1.0.1\build\native\glm.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\glm.1.0.1\build\native\glm.targets'))" />
+    <Error Condition="!Exists('..\packages\glew.v140.1.12.0\build\native\glew.v140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\glew.v140.1.12.0\build\native\glew.v140.targets'))" />
     <Error Condition="!Exists('..\packages\freetype.redist.2.8.0.1\build\native\freetype.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\freetype.redist.2.8.0.1\build\native\freetype.redist.targets'))" />
     <Error Condition="!Exists('..\packages\freetype.2.8.0.1\build\native\freetype.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\freetype.2.8.0.1\build\native\freetype.targets'))" />
-    <Error Condition="!Exists('..\packages\freetype_static.2.10.1.12\build\native\freetype_static.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\freetype_static.2.10.1.12\build\native\freetype_static.targets'))" />
     <Error Condition="!Exists('..\packages\freetype2.2.6.0.1\build\native\freetype2.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\freetype2.2.6.0.1\build\native\freetype2.targets'))" />
-    <Error Condition="!Exists('..\packages\glfw.3.4.0\build\native\glfw.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\glfw.3.4.0\build\native\glfw.targets'))" />
   </Target>
 </Project>

@@ -13,11 +13,11 @@ void FTexture::Load(BString Path)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	int nrChannels;
-	unsigned char* data = stbi_load(Path.c_str(), &Width, &Height, &nrChannels, 0);
+	unsigned char* data = stbi_load(Path.c_str(), &Width, &Height, NULL, 4);
 	if (data) {
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Width, Height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Width, Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 	stbi_image_free(data);
-
+	TexturePath = Path;
 }

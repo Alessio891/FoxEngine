@@ -17,7 +17,13 @@ void FConsoleModule::OnStartup()
 
 void FConsoleModule::OnGUIRender()
 {
-	MAKE_WINDOW("Console");
+	MAKE_WINDOW_F("Console", BASE_GUI_WINDOW_FLAGS | ImGuiWindowFlags_NoTitleBar);
+	
+	ImGui::BeginTabBar("TestTAbBar");
+	ImGui::TabItemButton("Hello");
+	ImGui::TabItemButton("Hello2");
+	ImGui::EndTabBar();
+
 	for (FLogMessage m : LogMessages) {
 		auto color = IM_COL32(255,255,255,255);
 		if (m.Severity == ELogSeverity::Warning) color = IM_COL32(150, 150, 0, 255);

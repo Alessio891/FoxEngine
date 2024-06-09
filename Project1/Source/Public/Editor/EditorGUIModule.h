@@ -12,6 +12,13 @@ ImGui::SetNextWindowSize(ImVec2(Viewport->GetWidth(), Viewport->GetHeight())); \
 ImGui::SetNextWindowPos(ImVec2(0, 0)); \
 ImGui::Begin(WindowName, NULL, window_flags);
 
+#define MAKE_WINDOW_F(WindowName, Flags) \
+ImGuiWindowFlags window_flags = Flags##; \
+ImGui::SetNextWindowSize(ImVec2(Viewport->GetWidth(), Viewport->GetHeight())); \
+ImGui::SetNextWindowPos(ImVec2(0, 0)); \
+ImGui::Begin(WindowName, NULL, window_flags);
+
+
 #define END_WINDOW ImGui::End();
 class FEditorGUIModule : public FApplicationModule {
 public:
