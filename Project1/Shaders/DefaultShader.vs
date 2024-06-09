@@ -32,7 +32,7 @@ out LightData Lights;
 out float Unlit;
 
 void main() {
-	gl_Position = MVP * vec4(aPos.x, aPos.y, aPos.z, 1.0);
+	gl_Position = MVP * vec4(aPos, 1.0);
 	Color = _Color;
 	Normal =  mat3(transpose(inverse(_M))) * aNormal;;
 	FragPos = vec3(_M * vec4(aPos, 1.0));

@@ -31,7 +31,7 @@ void FApplication::Start(int argc, char** argv, int width, int height, GLFWwindo
 	});
 
 
-	int consoleHeight = 200;
+	int consoleHeight = height * 0.27f;
 	int hierarchyWidth = width * 0.15;
 	int inspectorWidth = width * 0.15;
 	int sceneWidth = width - inspectorWidth - hierarchyWidth;
@@ -57,9 +57,7 @@ void FApplication::Start(int argc, char** argv, int width, int height, GLFWwindo
 
 	Viewports.push_back(SceneViewport);
 	
-	ConsoleViewport = SharedPtr<FViewport>(new FViewport(0, height - consoleHeight, width, consoleHeight));
-	ConsoleViewport->InitializeViewport(MainWindow);
-	Viewports.push_back(ConsoleViewport);
+	
 
 	InspectorViewport = SharedPtr<FViewport>(new FViewport(0,0, inspectorWidth, height- consoleHeight));
 	InspectorViewport->InitializeViewport(MainWindow);
@@ -68,7 +66,9 @@ void FApplication::Start(int argc, char** argv, int width, int height, GLFWwindo
 	HierarchyViewport = SharedPtr<FViewport>(new FViewport(inspectorWidth + sceneWidth, 0, hierarchyWidth, height - consoleHeight));
 	HierarchyViewport->InitializeViewport(MainWindow);
 	Viewports.push_back(HierarchyViewport);
-	
+	ConsoleViewport = SharedPtr<FViewport>(new FViewport(0, height - consoleHeight, width, consoleHeight));
+	ConsoleViewport->InitializeViewport(MainWindow);
+	Viewports.push_back(ConsoleViewport);
 	glfwMakeContextCurrent(SceneViewport->ViewportContext);
 	FMaterialLibrary::Initialize();
 
@@ -114,7 +114,7 @@ void FApplication::MainDisplayLoop()
 
 void FApplication::OnResize(int width, int height)
 {
-	int consoleHeight = 200;
+	int consoleHeight = height * 0.27f;
 	int hierarchyWidth = width * 0.15;
 	int inspectorWidth = width * 0.15;
 	int sceneWidth = width - inspectorWidth - hierarchyWidth;

@@ -1,16 +1,7 @@
 #include "Editor/AssetsLibrary.h"
 #include "Core.h"
-#include <string>
-#include <iostream>
-#include <filesystem>
 
 namespace fs = std::filesystem;
-
-static List<String> IMAGE_FILE_EXTENSIONS = {
-	".png",
-	".jpg",
-	".bmb"
-};
 
 void FAssetsLibrary::Initialize()
 {

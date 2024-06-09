@@ -19,4 +19,11 @@ public:
 protected:
 	List<FLogMessage> LogMessages;
 	static SharedPtr<FConsoleModule> Instance;
+
+	void DrawLogs();
+	void DrawAssets();
+	void DrawPath(BString folder);
+
+	int TabIndex = 0;
+	BString CurrentSelectedPath = "Resources";
 };
