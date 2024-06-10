@@ -18,10 +18,6 @@ void FEditorSceneModule::OnStartup()
 
 	Scene = SharedPtr<FScene>(new FScene());
 
-	SharedPtr<FBaseMaterial> GridMaterial(new FBaseMaterial(
-		"Shaders/Grid/GridShader.vs", "Shaders/Grid/GridShader.fs", "DefaultMaterial"
-	));
-	FMaterialLibrary::RegisterMaterial(GridMaterial);
 	EditorGrid = SharedPtr<FSceneObject>(new FSceneObject());
 	EditorGrid->HideInHierarchy = true;
 

@@ -35,7 +35,8 @@ void FGUI::Texture(String label, FTextureResource& Texture)
 		ImGui::Text("No texture");
 	}
 	else {
-		ImGui::Image((void*)(intptr_t)Texture.get()->GetResource(FApplication::Get()->EditorGUIViewport->ViewportContext)->GetTextureID(), ImVec2(60, 60));
+		GLFWwindow* editorCtx = FApplication::Get()->EditorGUIViewport->ViewportContext;
+		ImGui::Image((void*)(intptr_t)Texture.get()->GetTextureID(editorCtx), ImVec2(60, 60));
 		if (ImGui::BeginDragDropTarget()) {
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_DRAG")) {
 				auto assetPath = static_cast<const char*>(payload->Data);
@@ -47,7 +48,7 @@ void FGUI::Texture(String label, FTextureResource& Texture)
 		ImGui::NextColumn();
 		std::string last_element(Texture.get()->FilePath.substr(Texture.get()->FilePath.rfind("/") + 1));
 		ImGui::Text(last_element.c_str());
-		auto resource = Texture.get()->GetResource(FApplication::Get()->EditorGUIViewport->ViewportContext);
+		auto resource = Texture.get();
 		ImGui::Text("%dx%d", resource->GetWidth(), resource->GetHeight());
 		ImGui::NextColumn();
 

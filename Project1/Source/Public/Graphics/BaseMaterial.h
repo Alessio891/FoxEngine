@@ -9,19 +9,13 @@
 
 using json = nlohmann::json;
 
-class FBaseMaterial : public ISerializedAsset {
+class FBaseMaterial : public ISerializedAsset, public FAssetResource {
 
 public:
 
-	FBaseMaterial(json serialized) : ISerializedAsset() {
+	FBaseMaterial(BString filePath, json serialized) : ISerializedAsset(), FAssetResource(EAssetResourceType::Material, filePath) {
 		Deserialize(serialized);
 	}
-
-	FBaseMaterial(
-		BString VertexShader,
-		BString FragmentShader,
-		const String MaterialName
-	);
 
 	const GLuint GetProgram() { return ProgramIndex; }
 
@@ -38,6 +32,8 @@ public:
 
 	virtual void Deserialize(json Json) override;
 	virtual void Serialize(json& outJson) override;
+
+	virtual void DrawInspector() override;
 protected:
 	GLuint ProgramIndex;
 	GLuint VertexShader;
@@ -48,5 +44,6 @@ protected:
 
 	BString Name;
 
+	virtual ImTextureID GetThumbnailIcon() override;
 
 };

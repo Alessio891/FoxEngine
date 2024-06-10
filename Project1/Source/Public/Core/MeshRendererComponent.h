@@ -126,5 +126,5 @@ public:
 
 	Vector3F Color = Vector3F(1.0f, 1.0f, 1.0f);
 	//SharedPtr<FTexture> Texture;
-	SharedPtr<FAssetResource<FTexture>> Texture;
+	SharedPtr<FTexture> Texture;
 };

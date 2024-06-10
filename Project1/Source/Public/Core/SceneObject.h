@@ -2,7 +2,7 @@
 #include "Core.h"
 #include <string>
 #include <glm/gtx/euler_angles.hpp>
-
+#include "IInspectable.h"
 class FObjectComponent;
 class FMeshRendererComponent;
 
@@ -61,11 +61,11 @@ struct FTransform {
 	}
 };
 
-class FSceneObject {
+class FSceneObject : public IInspectable {
 
 public:
-	FSceneObject() : Name("[Object]") {}
-	FSceneObject(String name) : Name(name) {}
+	FSceneObject() : Name("[Object]"), IInspectable() {}
+	FSceneObject(String name) : Name(name), IInspectable() {}
 
 	virtual void Begin() {};
 	virtual void End() {};
@@ -78,7 +78,7 @@ public:
 
 	void SetupRenderer(FMeshRendererComponent* Renderer);
 
-	virtual void DrawInspector();
+	virtual void DrawInspector() override;
 	FTransform Transform;
 
 	std::string Name = "[Object]";

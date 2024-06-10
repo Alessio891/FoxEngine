@@ -171,6 +171,7 @@ xcopy "$(ProjectDir)Resources\*.*" "$(SolutionDir)Builds\$(Configuration)\Resour
     <ClCompile Include="Source\Private\Graphics\Texture.cpp" />
     <ClCompile Include="Source\Private\GUI\GUI.cpp" />
     <ClCompile Include="Source\Private\InspectorModule\InspectorModule.cpp" />
+    <ClCompile Include="Source\Public\AssetsLibrary\AssetResource.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\DefaultShader.fs">
@@ -196,12 +197,14 @@ xcopy "$(ProjectDir)Resources\*.*" "$(SolutionDir)Builds\$(Configuration)\Resour
     <ClInclude Include="..\imgui\imstb_rectpack.h" />
     <ClInclude Include="..\imgui\imstb_textedit.h" />
     <ClInclude Include="..\imgui\imstb_truetype.h" />
+    <ClInclude Include="Source\Public\AssetsLibrary\AssetResource.h" />
     <ClInclude Include="Source\Public\AssetsLibrary\ISerializedAsset.h" />
     <ClInclude Include="Source\Public\ConsoleModule\ConsoleModule.h" />
     <ClInclude Include="Source\Public\Core\Application.h" />
     <ClInclude Include="Source\Public\Core\ApplicationModule.h" />
     <ClInclude Include="Source\Public\Core\Core.h" />
     <ClInclude Include="DebugModule.h" />
+    <ClInclude Include="Source\Public\Core\IInspectable.h" />
     <ClInclude Include="Source\Public\Core\InputSystem.h" />
     <ClInclude Include="Source\Public\Core\Logger.h" />
     <ClInclude Include="Source\Public\Core\MeshRendererComponent.h" />

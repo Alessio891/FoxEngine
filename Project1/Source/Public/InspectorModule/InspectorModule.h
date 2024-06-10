@@ -19,11 +19,12 @@ public:
 		return Instance;
 	}
 
-	void SetDisplayedObject(SharedPtr<FSceneObject> Object) {
+	void SetDisplayedObject(SharedPtr<IInspectable> Object) {
 		CurrentDisplayedObject = Object;
 	}
+	SharedPtr<IInspectable> GetDisplayedObject() { return CurrentDisplayedObject; }
 
 protected:
 	static SharedPtr<FInspectorModule> Instance;
-	SharedPtr<FSceneObject> CurrentDisplayedObject;
+	SharedPtr<IInspectable> CurrentDisplayedObject;
 };

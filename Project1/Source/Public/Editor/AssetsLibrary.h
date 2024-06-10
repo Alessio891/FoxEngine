@@ -8,69 +8,28 @@
 #include <filesystem>
 #include "nlohmann/json.hpp"
 #include "Graphics/BaseMaterial.h"
+#include "AssetsLibrary/AssetResource.h"
 
 using json = nlohmann::json;
-enum EAssetResourceType {
-	Image,
-	Model,
-	Sound,
-	Text,
-	Material,
-	Misc
-};
-
-
-template <class T>
-class FAssetResource {
-public:
-	FAssetResource(EAssetResourceType type, BString p) : ResourceType(type), FilePath(p) {}
-
-	BString FilePath;
-	EAssetResourceType ResourceType;
-
-	SharedPtr<T> GetResource(GLFWwindow* context) { 
-		if (!IsLoaded(context)) Load(context, ResourceType, FilePath);
-		return Resources[context];
-	}
-
-	virtual bool IsLoaded(GLFWwindow* context) { 
-		return Resources.count(context) > 0;
-	}
-	virtual void ReloadResource(BString FilePath) {
-		this->FilePath = FilePath;
-		Resources.clear();
-	}
-	virtual void Load(GLFWwindow* context, EAssetResourceType Type, BString FilePath) {
-		
-		glfwMakeContextCurrent(context);
-
-		ResourceType = Type;
-		this->FilePath = FilePath;
-		switch(Type) {
-			case EAssetResourceType::Image:
-				FTexture* t = new FTexture();
-				t->Load(FilePath);
-				Resources[context] = SharedPtr<FTexture>(t);
-			break;
-		}
-	}
-	virtual void Unload() {
-
-	}
-
-protected:
-	Map<GLFWwindow*, SharedPtr<T>> Resources;
-};
 
 class FAssetsLibrary {
 
 public:
 	static void Initialize();
 
-	static SharedPtr<FAssetResource<FTexture>> GetImage(BString resourcePath) {
+	static SharedPtr<FTexture> GetImage(BString resourcePath) {
 		BString sanitized = resourcePath;
 		std::replace(sanitized.begin(), sanitized.end(), '\\', '/');
+		
 		if (ImageResources.count(sanitized)) return ImageResources[sanitized];
+		return nullptr;
+	}
+
+	static SharedPtr<FAssetResource> GetResource(BString resourcePath) {
+		BString sanitized = resourcePath;
+		std::replace(sanitized.begin(), sanitized.end(), '\\', '/');
+
+		if (Resources.count(sanitized)) return Resources[sanitized];
 		return nullptr;
 	}
 
@@ -82,7 +41,8 @@ public:
 		return keys;
 	}
 private:
-	static Map<BString, SharedPtr<FAssetResource<FTexture>>>  ImageResources;
+	static Map<BString, SharedPtr<FAssetResource>> Resources;
+	static Map<BString, SharedPtr<FTexture>>  ImageResources;
 	//static Map<BString, SharedPtr<FAssetResource<FBaseMaterial>>>  MaterialResources;
 };
 
@@ -95,4 +55,4 @@ static List<String> MAT_FILE_EXTENSIONS = {
 	".mat",
 	".mtl"
 };
-using FTextureResource = SharedPtr<FAssetResource<FTexture>>;
+using FTextureResource = SharedPtr<FTexture>;

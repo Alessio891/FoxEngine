@@ -4,6 +4,8 @@
 #include "Graphics/MaterialLibrary.h"
 #include <fstream>
 #include "nlohmann/json.hpp"
+#include "Graphics/Texture.h"
+
 using json = nlohmann::json;
 namespace fs = std::filesystem;
 
@@ -18,23 +20,28 @@ void FAssetsLibrary::Initialize()
 			FLogger::LogInfo("Loading Resource " + filePath);
 			
 			bool isImage = (std::find(IMAGE_FILE_EXTENSIONS.begin(), IMAGE_FILE_EXTENSIONS.end(), extension) != IMAGE_FILE_EXTENSIONS.end());
+			bool isMat = (std::find(MAT_FILE_EXTENSIONS.begin(), MAT_FILE_EXTENSIONS.end(), extension) != MAT_FILE_EXTENSIONS.end());
 			if (isImage) {
 				
-				ImageResources[filePath] = SharedPtr<FAssetResource<FTexture>>(new FAssetResource<FTexture>(EAssetResourceType::Image, filePath));
-			}
-			bool isMat = (std::find(MAT_FILE_EXTENSIONS.begin(), MAT_FILE_EXTENSIONS.end(), extension) != MAT_FILE_EXTENSIONS.end());
-			if (isMat) {
+				ImageResources[filePath] = SharedPtr<FTexture>(new FTexture(filePath));
+				Resources[filePath] = ImageResources[filePath];
+			} else if (isMat) {
 				std::ifstream file(filePath.c_str());
 				auto matJson = json::parse( file );
-				SharedPtr<FBaseMaterial> Material(new FBaseMaterial(matJson));
+				SharedPtr<FBaseMaterial> Material(new FBaseMaterial(filePath, matJson));
 
 				FMaterialLibrary::RegisterMaterial(Material);
+				Resources[filePath] = Material;
 				//MaterialResources[filePath] = SharedPtr<FAssetResource<FBaseMaterial>>(new FAssetResource<FBaseMaterial>(EAssetResourceType::Material, filePath));
-
 			}
+			else {
+				Resources[filePath] = SharedPtr<FAssetResource>(new FAssetResource(EAssetResourceType::Misc, filePath));
+			}
+
 		}
 	}
 }
 
-Map<BString, SharedPtr<FAssetResource<FTexture>>>  FAssetsLibrary::ImageResources;
+Map<BString, SharedPtr<FTexture>>  FAssetsLibrary::ImageResources;
+Map<BString, SharedPtr<FAssetResource>>  FAssetsLibrary::Resources;
 //Map<BString, SharedPtr<FAssetResource<FBaseMaterial>>>  FAssetsLibrary::MaterialResources;

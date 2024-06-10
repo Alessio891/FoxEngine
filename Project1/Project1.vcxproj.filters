@@ -79,6 +79,9 @@
     <Filter Include="File di origine\Source\Public\AssetsLibrary">
       <UniqueIdentifier>{9cd75cff-91d1-4080-8667-b67f15702128}</UniqueIdentifier>
     </Filter>
+    <Filter Include="File di origine\Source\Private\AssetsLibrary">
+      <UniqueIdentifier>{14a2805f-69dd-4313-a648-76da9948a194}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Private\Core\Application.cpp">
@@ -173,6 +176,9 @@
     </ClCompile>
     <ClCompile Include="Source\Private\GUI\GUI.cpp">
       <Filter>File di origine\Source\Private\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Public\AssetsLibrary\AssetResource.cpp">
+      <Filter>File di origine\Source\Private\AssetsLibrary</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -313,6 +319,12 @@
     </ClInclude>
     <ClInclude Include="Source\Public\AssetsLibrary\ISerializedAsset.h">
       <Filter>File di origine\Source\Public\AssetsLibrary</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\AssetsLibrary\AssetResource.h">
+      <Filter>File di origine\Source\Public\AssetsLibrary</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\Core\IInspectable.h">
+      <Filter>File di origine\Source\Public\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -9,9 +9,9 @@ public:
 
 	static void Initialize();
 
-	static GLuint GetShader(String ShaderPath, GLenum ShaderType);
+	static GLuint GetShader(BString ShaderPath, GLenum ShaderType);
 	
-	static std::string LoadShaderSource(String pathToFile);
+	static std::string LoadShaderSource(BString pathToFile);
 
 	static SharedPtr<FBaseMaterial> GetMaterial(String Name) {
 		if (CachedMaterials.count(Name)) 
@@ -23,6 +23,6 @@ public:
 	}
 private:
 	static Map<BString, SharedPtr<FBaseMaterial>> CachedMaterials;
-	static Map<String, GLuint> CachedShaders;
+	static Map<BString, GLuint> CachedShaders;
 
 };

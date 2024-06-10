@@ -5,18 +5,8 @@
 #include "Core.h"
 #include "GLFW/glfw3.h"
 #include <Application.h>
-FBaseMaterial::FBaseMaterial(BString VertexShader, BString FragmentShader, const String MaterialName) : ISerializedAsset()
-{
-	this->VertexShaderPath = VertexShader;
-	this->FragmentShaderPath = FragmentShader;
-	this->VertexShader = FMaterialLibrary::GetShader(VertexShader.c_str(), GL_VERTEX_SHADER);
-	this->FragmentShader = FMaterialLibrary::GetShader(FragmentShader.c_str(), GL_FRAGMENT_SHADER);
-	ProgramIndex = glCreateProgram();
-	glAttachShader(ProgramIndex, this->VertexShader);
-	glAttachShader(ProgramIndex, this->FragmentShader);
-	glLinkProgram(ProgramIndex);
-	Name = MaterialName;
-}
+#include "imgui_stdlib.h"
+#include <Editor/AssetsLibrary.h>
 
 void FBaseMaterial::SetFloat(String ParamName, float Value)
 {
@@ -77,4 +67,37 @@ void FBaseMaterial::Serialize(json& outJson)
 	/*for (auto f : FloatParams) {
 		retVal[f.first] = f.second;
 	}*/
+}
+
+void FBaseMaterial::DrawInspector()
+{
+	ImGui::InputText("VertexShader", &VertexShaderPath);
+	ImGui::InputText("FragmentShader", &FragmentShaderPath);
+
+	ImGui::Text("Mat ID: %d", ProgramIndex);
+	ImGui::Text("VertexShader ID: %d", VertexShader);
+	ImGui::Text("FragmentShader ID: %d", FragmentShader);
+
+	if (ImGui::Button("Recompile")) {
+		auto oldCtx = glfwGetCurrentContext();
+		glfwMakeContextCurrent( FApplication::Get()->SceneViewport->ViewportContext );
+		
+		glDeleteProgram(ProgramIndex);
+
+		this->VertexShader = FMaterialLibrary::GetShader(VertexShaderPath, GL_VERTEX_SHADER);
+		this->FragmentShader = FMaterialLibrary::GetShader(FragmentShaderPath, GL_FRAGMENT_SHADER);
+		
+		this->VertexShader = FMaterialLibrary::GetShader(VertexShaderPath.c_str(), GL_VERTEX_SHADER);
+		this->FragmentShader = FMaterialLibrary::GetShader(FragmentShaderPath.c_str(), GL_FRAGMENT_SHADER);
+		ProgramIndex = glCreateProgram();
+		glAttachShader(ProgramIndex, this->VertexShader);
+		glAttachShader(ProgramIndex, this->FragmentShader);
+		glLinkProgram(ProgramIndex);
+		glfwMakeContextCurrent(oldCtx);
+	}
+}
+
+ImTextureID FBaseMaterial::GetThumbnailIcon()
+{
+	return (void*)(intptr_t)FAssetsLibrary::GetImage("Resources/Images/GUI/mat_icon.png")->GetTextureID(FApplication::Get()->EditorGUIViewport->ViewportContext);
 }

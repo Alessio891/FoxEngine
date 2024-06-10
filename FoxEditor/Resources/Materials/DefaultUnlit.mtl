@@ -1,0 +1,5 @@
+{
+	"Name": "DefaultUnlit",
+	"VertexShaderPath": "Shaders/DefaultUnlit.vs",
+	"FragmentShaderPath": "Shaders/DefaultUnlit.fs"
+}

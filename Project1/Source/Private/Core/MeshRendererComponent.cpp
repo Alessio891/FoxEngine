@@ -5,6 +5,7 @@
 #include <glm/ext/matrix_transform.hpp>
 #include "Graphics\BaseMaterial.h"
 #include "GUI/GUI.h"
+#include "Graphics\Texture.h"
 void FMeshRendererComponent::Tick(float Delta)
 {
 }
@@ -22,7 +23,8 @@ void FMeshRendererComponent::Initialize(FSceneObject* Owner)
 
 void FMeshRendererComponent::Render(glm::mat4 V, glm::mat4 P)
 {
-	
+	if (Material == nullptr) return;
+
 	glUseProgram(Material->GetProgram());
 	
 	// Normal Pass
@@ -50,7 +52,8 @@ void FMeshRendererComponent::Render(glm::mat4 V, glm::mat4 P)
 
 	Material->UploadParameters();
 	if (Texture != NULL) {
-		glBindTexture(GL_TEXTURE_2D, Texture->GetResource(FApplication::Get()->SceneViewport->ViewportContext)->GetTextureID());
+		auto textureId = Texture.get()->GetTextureID(FApplication::Get()->SceneViewport->ViewportContext);
+		glBindTexture(GL_TEXTURE_2D, textureId);
 	}
 	glBindVertexArray(MeshData->VAO);
 	

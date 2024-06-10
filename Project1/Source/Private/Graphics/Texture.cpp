@@ -2,10 +2,16 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-void FTexture::Load(BString Path)
+#include "GLFW/glfw3.h"
+#include <Editor/AssetsLibrary.h>
+
+void FTexture::Load(GLFWwindow* ctx, BString Path)
 {
-	glGenTextures(1, &TextureID);
-	glBindTexture(GL_TEXTURE_2D, TextureID);
+	GLFWwindow* oldW = glfwGetCurrentContext();
+	glfwMakeContextCurrent(ctx);
+	GLuint textureId;
+	glGenTextures(1, &textureId);
+	glBindTexture(GL_TEXTURE_2D, textureId);
 	
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -20,4 +26,13 @@ void FTexture::Load(BString Path)
 	}
 	stbi_image_free(data);
 	TexturePath = Path;
+	TextureByContext[ctx] = textureId;
+
+	glfwMakeContextCurrent(oldW);
+
+}
+
+ImTextureID FTexture::GetThumbnailIcon()
+{
+	return (void*)(intptr_t)FAssetsLibrary::GetImage(TexturePath)->GetTextureID(FApplication::Get()->EditorGUIViewport->ViewportContext);
 }

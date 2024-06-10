@@ -3,25 +3,12 @@
 
 void FMaterialLibrary::Initialize()
 {
-	SharedPtr<FBaseMaterial> Material(new FBaseMaterial(
-		"Shaders/DefaultShader.vs", "Shaders/DefaultShader.fs", "DefaultLit"
-	));
-
-
-	RegisterMaterial(Material);
-
-	SharedPtr<FBaseMaterial> UnlitMaterial(new FBaseMaterial(
-		"Shaders/DefaultUnlit.vs", "Shaders/DefaultUnlit.fs", "DefaultUnlit"
-	));
-	UnlitMaterial->SetFloat("_Unlit", 1.0f);
-	RegisterMaterial(UnlitMaterial);
 	
 }
 
-GLuint FMaterialLibrary::GetShader(String ShaderPath, GLenum ShaderType)
+GLuint FMaterialLibrary::GetShader(BString ShaderPath, GLenum ShaderType)
 {
-	auto it = CachedShaders.find(ShaderPath);
-	if (it != CachedShaders.end()) {
+	if (CachedShaders.count(ShaderPath)) {
 		return CachedShaders[ShaderPath];
 	}
 	std::string shaderSource = LoadShaderSource(ShaderPath);
@@ -48,14 +35,14 @@ GLuint FMaterialLibrary::GetShader(String ShaderPath, GLenum ShaderType)
 		shader = 0;
 	}
 	else {
-		printf("Shader %s compiled\n", ShaderPath);
+		printf("Shader %s compiled with id %d\n", ShaderPath, shader);
 	}
 	CachedShaders[ShaderPath] = shader;
 	
 	return shader;
 }
 
-std::string FMaterialLibrary::LoadShaderSource(String pathToFile)
+std::string FMaterialLibrary::LoadShaderSource(BString pathToFile)
 {
 	std::string content;
 	std::ifstream fileStream(pathToFile, std::ios::in);
@@ -83,4 +70,4 @@ std::string FMaterialLibrary::LoadShaderSource(String pathToFile)
 }
 
 Map<BString, SharedPtr<FBaseMaterial>> FMaterialLibrary::CachedMaterials;
-Map<String, GLuint> FMaterialLibrary::CachedShaders;
+Map<BString, GLuint> FMaterialLibrary::CachedShaders;
