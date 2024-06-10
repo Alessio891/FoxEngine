@@ -3,13 +3,23 @@
 #include "Core/Core.h"
 #include <string>
 #include "Texture.h"
-class FBaseMaterial {
+#include <fstream>
+#include "nlohmann/json.hpp"
+#include "AssetsLibrary/ISerializedAsset.h"
+
+using json = nlohmann::json;
+
+class FBaseMaterial : public ISerializedAsset {
 
 public:
 
+	FBaseMaterial(json serialized) : ISerializedAsset() {
+		Deserialize(serialized);
+	}
+
 	FBaseMaterial(
-		GLuint VertexShader,
-		GLuint FragmentShader,
+		BString VertexShader,
+		BString FragmentShader,
 		const String MaterialName
 	);
 
@@ -20,19 +30,23 @@ public:
 	void SetVec3(String ParamName, Vector3F Value);
 
 	void UploadParameters();
-	String GetName() const { return Name; }
+	BString GetName() const { return Name; }
 
 	Map<String, float> FloatParams;
 	Map<String, glm::mat4> MatParams;
 	Map<String, Vector3F> VectorParams;
 
-	
+	virtual void Deserialize(json Json) override;
+	virtual void Serialize(json& outJson) override;
 protected:
 	GLuint ProgramIndex;
 	GLuint VertexShader;
 	GLuint FragmentShader;
 
-	String Name;
+	BString VertexShaderPath;
+	BString FragmentShaderPath;
+
+	BString Name;
 
 
 };

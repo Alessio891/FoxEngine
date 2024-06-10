@@ -47,11 +47,16 @@ public:
 
 	//const FViewport& GetViewport() { return *Viewport.get(); }
 
-	SharedPtr<FViewport> SceneViewport, ConsoleViewport, InspectorViewport, HierarchyViewport;
+	SharedPtr<FViewport> SceneViewport, EditorGUIViewport;//ConsoleViewport, InspectorViewport, HierarchyViewport;
 	SharedPtr<ImGuiContext> MainImGuiContext;
 
 
 	GLFWwindow* MainWindow;
+
+	bool ShouldProcessSceneInputs() const {
+		
+		return true;
+	}
 protected:
 	static FApplication* Instance;
 

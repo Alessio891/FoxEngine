@@ -38,6 +38,7 @@ bool FInputSystem::IsKeyDown(unsigned char Key)
 
 bool FInputSystem::IsKeyUp(unsigned char Key)
 {
+
 	return glfwGetKey(FApplication::Get()->MainWindow, Key) == GLFW_RELEASE;
 }
 
@@ -50,12 +51,14 @@ bool FInputSystem::IsMouseButtonDown(int button)
 
 void FInputSystem::OnMouseMove(int x, int y)
 {
-	FViewport viewport = *FApplication::Get()->SceneViewport;
-	MouseDeltaX = float(x - LastMouseX) / float(viewport.GetWidth());
-	MouseDeltaY = float(y - LastMouseY) / float(viewport.GetHeight());
+	SharedPtr<FViewport> viewport = FApplication::Get()->SceneViewport;
+	if (viewport != nullptr) {
+		MouseDeltaX = float(x - LastMouseX) / float(viewport->GetWidth());
+		MouseDeltaY = float(y - LastMouseY) / float(viewport->GetHeight());
 	
-	LastMouseX = x;
-	LastMouseY = y;
+		LastMouseX = x;
+		LastMouseY = y;
+	}
 }
 
 void FInputSystem::SetMouseButtonState(int button, int state)

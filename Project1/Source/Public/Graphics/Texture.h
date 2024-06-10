@@ -1,10 +1,11 @@
 #pragma once
 #include "Core.h"
+#include "AssetsLibrary/ISerializedAsset.h"
 
-class FTexture {
+class FTexture : public ISerializedAsset {
 
 public:
-	
+	FTexture() : ISerializedAsset() {}
 	virtual void Load(BString Path);
 
 	virtual bool IsLoaded() const { return TextureID > 0; }

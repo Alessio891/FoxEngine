@@ -46,6 +46,9 @@ public:
 	virtual void HandleMouseMotion(double x, double y);
 	virtual void HandleKeyboardButton(int Key, int scanCode, int action, int mods);
 
+	SharedPtr<ImGuiContext> GetGUIContext();
+	bool ValidGUIContext() { return GuiContext != nullptr; }
+
 	glm::mat4 GetProjectionMatrix() {
 		float aspect = float(Width) / float(Height);
 
@@ -72,4 +75,5 @@ protected:
 
 	int TargetWidth;
 	int TargetHeight;
+	SharedPtr<ImGuiContext> GuiContext;
 };

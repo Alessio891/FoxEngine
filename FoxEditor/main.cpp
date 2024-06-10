@@ -126,34 +126,45 @@ int main(int argc, char* argv[]) {
 		exit(EXIT_FAILURE);
 	}
 
+	int WIDTH = 1920;
+	int HEIGHT = 1080;
+
 	// Create Main Window
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
-	MainWindow = glfwCreateWindow(1920, 1080, "FoxEngine Editor", NULL, NULL);
+	MainWindow = glfwCreateWindow(WIDTH, HEIGHT, "FoxEngine Editor", NULL, NULL);
 	if (!MainWindow) {
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}
-
+	/*
 	// Setup Callback on Main Window
 	glfwMakeContextCurrent(MainWindow);
 	//glfwSetKeyCallback(MainWindow, OnGLFWKeyPress);
 	glfwSetMouseButtonCallback(MainWindow, glfwOnMouseBtn);
 	glfwSetCursorPosCallback(MainWindow, glfwOnMouseMotion);
+	
+	*/
+	// Create Main Application
+	MainApplication = new FApplication();
+	MainApplication->Start(argc, argv, 1920, 1080, MainWindow);
 	glfwSetWindowSizeCallback(MainWindow, [](GLFWwindow* window, int width, int height) {
 		MainApplication->OnResize(width, height);
 		});
 	//
-
-	// Create Main Application
-	MainApplication = new FApplication();
-	MainApplication->Start(argc, argv, 1920, 1080, MainWindow);
 	// Register Application Modules
-	REGISTER_GUI_MODULE(FConsoleModule, MainApplication->ConsoleViewport);
+	int consoleHeight = HEIGHT * 0.27f;
+	int hierarchyWidth = WIDTH * 0.15;
+	int inspectorWidth = WIDTH * 0.15;
+	int sceneWidth = WIDTH - inspectorWidth - hierarchyWidth;
+	REGISTER_GUI_MODULE(FConsoleModule, MainApplication->EditorGUIViewport);
+	FConsoleModule_Instance->SetPositionAndSize(ImVec2(0, HEIGHT-consoleHeight), ImVec2(WIDTH, consoleHeight));
 	FLogger::LogInfo("Starting Engine...");
-	REGISTER_GUI_MODULE(FInspectorModule, MainApplication->InspectorViewport);
-	REGISTER_GUI_MODULE(FSceneHierarchyModule, MainApplication->HierarchyViewport);
+	REGISTER_GUI_MODULE(FInspectorModule, MainApplication->EditorGUIViewport);
+	FInspectorModule_Instance->SetPositionAndSize(ImVec2(0,0), ImVec2(inspectorWidth, HEIGHT - consoleHeight));
+	REGISTER_GUI_MODULE(FSceneHierarchyModule, MainApplication->EditorGUIViewport);
+	FSceneHierarchyModule_Instance->SetPositionAndSize(ImVec2(inspectorWidth+sceneWidth, 0), ImVec2(hierarchyWidth, HEIGHT - consoleHeight));
 	REGISTER_GUI_MODULE(FEditorSceneModule, MainApplication->SceneViewport);
 	FLogger::LogInfo("Core Modules Loaded");
 	FLogger::LogWarning("This is a warning");
@@ -162,7 +173,6 @@ int main(int argc, char* argv[]) {
 
 	// Main Loop
 	while (!glfwWindowShouldClose(MainWindow)) {
-
 		// Game Update
 		mainIdleFunc();
 

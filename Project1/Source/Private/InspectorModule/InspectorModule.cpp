@@ -26,6 +26,11 @@ void FInspectorModule::OnGUIRender()
 	}
 
 	if (ImGui::Button("Spawn")) {
+		auto mat = FMaterialLibrary::GetMaterial("DefaultLit");
+		json j;
+		mat->Serialize(j);
+		printf("%s\n", j.dump().c_str());
+	/*
 		glfwMakeContextCurrent(FApplication::Get()->SceneViewport->ViewportContext);
 		
 		SharedPtr<FSceneObject> newObj(new FSceneObject("Another Cube"));
@@ -39,7 +44,7 @@ void FInspectorModule::OnGUIRender()
 		
 		FApplication::Get()->GetCurrentScene()->RegisterSceneObject(newObj);
 
-		glfwMakeContextCurrent(FApplication::Get()->InspectorViewport->ViewportContext);
+		glfwMakeContextCurrent(FApplication::Get()->EditorGUIViewport->ViewportContext);*/
 	}
 	END_WINDOW;
 

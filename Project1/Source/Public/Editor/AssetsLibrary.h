@@ -6,13 +6,19 @@
 #include <string>
 #include <iostream>
 #include <filesystem>
+#include "nlohmann/json.hpp"
+#include "Graphics/BaseMaterial.h"
+
+using json = nlohmann::json;
 enum EAssetResourceType {
 	Image,
 	Model,
 	Sound,
 	Text,
+	Material,
 	Misc
 };
+
 
 template <class T>
 class FAssetResource {
@@ -42,9 +48,9 @@ public:
 		this->FilePath = FilePath;
 		switch(Type) {
 			case EAssetResourceType::Image:
-				SharedPtr<FTexture> t(new FTexture());
+				FTexture* t = new FTexture();
 				t->Load(FilePath);
-				Resources[context] = t;
+				Resources[context] = SharedPtr<FTexture>(t);
 			break;
 		}
 	}
@@ -77,6 +83,7 @@ public:
 	}
 private:
 	static Map<BString, SharedPtr<FAssetResource<FTexture>>>  ImageResources;
+	//static Map<BString, SharedPtr<FAssetResource<FBaseMaterial>>>  MaterialResources;
 };
 
 static List<String> IMAGE_FILE_EXTENSIONS = {
@@ -84,3 +91,8 @@ static List<String> IMAGE_FILE_EXTENSIONS = {
 	".jpg",
 	".bmb"
 };
+static List<String> MAT_FILE_EXTENSIONS = {
+	".mat",
+	".mtl"
+};
+using FTextureResource = SharedPtr<FAssetResource<FTexture>>;

@@ -8,14 +8,14 @@
 #define BASE_GUI_WINDOW_FLAGS ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse
 #define MAKE_WINDOW(WindowName) \
 ImGuiWindowFlags window_flags = BASE_GUI_WINDOW_FLAGS; \
-ImGui::SetNextWindowSize(ImVec2(Viewport->GetWidth(), Viewport->GetHeight())); \
-ImGui::SetNextWindowPos(ImVec2(0, 0)); \
+ImGui::SetNextWindowSize(ImVec2(Size.x, Size.y)); \
+ImGui::SetNextWindowPos(ImVec2(Position.x, Position.y)); \
 ImGui::Begin(WindowName, NULL, window_flags);
 
 #define MAKE_WINDOW_F(WindowName, Flags) \
 ImGuiWindowFlags window_flags = Flags##; \
-ImGui::SetNextWindowSize(ImVec2(Viewport->GetWidth(), Viewport->GetHeight())); \
-ImGui::SetNextWindowPos(ImVec2(0, 0)); \
+ImGui::SetNextWindowSize(ImVec2(Size.x, Size.y)); \
+ImGui::SetNextWindowPos(ImVec2(Position.x, Position.y)); \
 ImGui::Begin(WindowName, NULL, window_flags);
 
 
@@ -29,16 +29,22 @@ public:
 	virtual void OnStartup() override;
 	virtual void OnTick(float Delta) override { FApplicationModule::OnTick(Delta); };
 	virtual void OnGUIRender();
+	virtual void SetPositionAndSize(ImVec2 Pos, ImVec2 Size) {
+		this->Position = Pos;
+		this->Size = Size;
+	};
+	//SharedPtr<ImGuiContext> GetGuiContext() { return GuiContext; }
 
-	SharedPtr<ImGuiContext> GetGuiContext() { return GuiContext; }
-
+	static GLFWwindow* CurrentOveredGui;
 protected:
-	SharedPtr<ImGuiContext> GuiContext;
+	//SharedPtr<ImGuiContext> GuiContext;
 	SharedPtr<FViewport> Viewport;
 
 	virtual void BeginGUIRender();
 	virtual void EndGUIRender();
 	ImGuiKey KeyToImGuiKey(int key);
 
-	static GLFWwindow* CurrentOveredGui;
+
+	ImVec2 Position;
+	ImVec2 Size;
 };

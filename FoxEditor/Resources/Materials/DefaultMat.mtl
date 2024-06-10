@@ -1,0 +1,5 @@
+{
+	"Name": "TestMaterial",
+	"VertexShaderPath": "Shaders/DefaultShader.vs",
+	"FragmentShaderPath": "Shaders/DefaultShader.fs"
+}

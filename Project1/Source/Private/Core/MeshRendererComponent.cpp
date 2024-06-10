@@ -4,7 +4,7 @@
 #include <InspectorModule/InspectorModule.h>
 #include <glm/ext/matrix_transform.hpp>
 #include "Graphics\BaseMaterial.h"
-
+#include "GUI/GUI.h"
 void FMeshRendererComponent::Tick(float Delta)
 {
 }
@@ -104,37 +104,24 @@ void FMeshRendererComponent::DrawInspector()
 	static bool matShown = true;
 	if (ImGui::CollapsingHeader("Material", matShown)) {
 		if (Material != nullptr) {
-			float c[3] = { Color.x, Color.y, Color.z };
-			ImGui::ColorEdit3("Color", c, ImGuiColorEditFlags_NoSidePreview | ImGuiColorEditFlags_PickerHueWheel);
-			Color.x = c[0];
-			Color.y = c[1];
-			Color.z = c[2];
+			
+			Color = FGUI::Color("Material Color", Color);
 			
 			for (auto f : Material->FloatParams) {
+				if (f.first[0] == '_') continue;
 				ImGui::DragFloat(f.first, &f.second);
 			}
 			for (auto v : Material->VectorParams) {
-				if (v.first == "_Color") continue;
+				if (v.first[0] == '_') continue;
 				Material->VectorParams[v.first] = FImGui::Vec3(v.first, v.second);
 			}
-
-			if (Texture == nullptr) {
-				ImGui::Text("No texture");
-			}
-			else {
-				ImGui::Image( (void*)(intptr_t)Texture->GetResource(FApplication::Get()->InspectorViewport->ViewportContext)->GetTextureID(), ImVec2(60,60));
-			}
-
-			if (ImGui::Button("Texture 1")) {
-				SetTexture("Resources/Images/metal.jpg");
-			}
-			if (ImGui::Button("Texture 2")) {
-				SetTexture("Resources/Images/crate.png");
-			}
+			FGUI::Texture("Main Texture", Texture);
 		}
 	}
 
 	if (ImGui::CollapsingHeader("Mesh Data")) { 
+		std::vector<BString> options = { "Points", "Lines", "Line Loop", "Line Strip", "Triangles", "Triangle Strips", "Triangle Fan", "Quads", "Quad Strip", "Polygon"};
+		FGUI::EnumPopup("DrawType", (int&)MeshData->DrawType, options);
 		
 	}
 }

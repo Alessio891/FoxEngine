@@ -70,11 +70,17 @@
     <Filter Include="File di origine\Source\Private\Editor">
       <UniqueIdentifier>{51e21f44-1982-4858-9ea9-ac5ede13e7d9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="File di origine\Source\Public\GUI">
+      <UniqueIdentifier>{d7076dd3-8a57-4d89-91ca-e9dec4116918}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="File di origine\Source\Private\GUI">
+      <UniqueIdentifier>{65357a91-009e-42d6-bb2b-38ce2b896934}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="File di origine\Source\Public\AssetsLibrary">
+      <UniqueIdentifier>{9cd75cff-91d1-4080-8667-b67f15702128}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>File di origine\Source\Private\Core</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Private\Core\Application.cpp">
       <Filter>File di origine\Source\Private\Core</Filter>
     </ClCompile>
@@ -164,6 +170,9 @@
     </ClCompile>
     <ClCompile Include="Source\Private\Editor\AssetsLibrary.cpp">
       <Filter>File di origine\Source\Private\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Private\GUI\GUI.cpp">
+      <Filter>File di origine\Source\Private\GUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -298,6 +307,12 @@
     </ClInclude>
     <ClInclude Include="Source\Public\Editor\AssetsLibrary.h">
       <Filter>File di origine\Source\Public\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\GUI\GUI.h">
+      <Filter>File di origine\Source\Public\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\AssetsLibrary\ISerializedAsset.h">
+      <Filter>File di origine\Source\Public\AssetsLibrary</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

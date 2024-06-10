@@ -22,7 +22,7 @@ public:
 		CachedMaterials[Material->GetName()] = Material;
 	}
 private:
-	static Map<String, SharedPtr<FBaseMaterial>> CachedMaterials;
+	static Map<BString, SharedPtr<FBaseMaterial>> CachedMaterials;
 	static Map<String, GLuint> CachedShaders;
 
 };

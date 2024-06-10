@@ -70,7 +70,7 @@ void FConsoleModule::DrawLogs()
 void FConsoleModule::DrawAssets()
 {
 	ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.2f,0.2f,0.2f,1.0f));
-	ImGui::BeginChild("Asset Folders", ImVec2(250, Viewport->GetHeight()-40));
+	ImGui::BeginChild("Asset Folders", ImVec2(250, Size.y-40));
 	ImGui::PopStyleColor();
 	
 	BString path = "Resources";
@@ -80,7 +80,7 @@ void FConsoleModule::DrawAssets()
 	ImGui::EndChild();
 	ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.2f, 0.2f, 0.2f, 1.0f));
 	ImGui::SetNextWindowPos(ImVec2(260, foldersPos.y));
-	ImGui::BeginChild("Current Folder", ImVec2(Viewport->GetWidth() - 265, Viewport->GetHeight()-40));
+	ImGui::BeginChild("Current Folder", ImVec2(Size.x - 265, Size.y-40));
 	ImGui::PopStyleColor();
 	int file_index = 0;
 	for (const auto& entry : fs::directory_iterator(CurrentSelectedPath)) {
@@ -88,17 +88,19 @@ void FConsoleModule::DrawAssets()
 			bool isImage = (std::find(IMAGE_FILE_EXTENSIONS.begin(), IMAGE_FILE_EXTENSIONS.end(), entry.path().filename().extension()) != IMAGE_FILE_EXTENSIONS.end());
 			if (isImage) {
 				ImGui::BeginGroup();
-				ImGui::Image( (void*)(intptr_t) FAssetsLibrary::GetImage(entry.path().string())->GetResource(Viewport->ViewportContext)->GetTextureID(), ImVec2(64, 64) );
+				auto resource = FAssetsLibrary::GetImage(entry.path().string())->GetResource(Viewport->ViewportContext);
+				ImGui::Image( (void*)(intptr_t) resource->GetTextureID(), ImVec2(64, 64) );
 				ImGui::Text(entry.path().filename().string().c_str());
 				ImGui::EndGroup();
+
+				
 				if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
-					ImGui::BeginGroup();
 					ImGui::Image((void*)(intptr_t)FAssetsLibrary::GetImage(entry.path().string())->GetResource(Viewport->ViewportContext)->GetTextureID(), ImVec2(32, 32));
 					ImGui::Text(entry.path().filename().string().c_str());
-					ImGui::EndGroup();
+					std::string path = resource->GetTexturePath();
+					ImGui::SetDragDropPayload("ASSET_DRAG", path.c_str(), path.size() + 1);
 					ImGui::EndDragDropSource();
 				}
-				
 			}
 			else {
 				ImGui::Text(entry.path().filename().string().c_str());

@@ -4,14 +4,14 @@
 void FMaterialLibrary::Initialize()
 {
 	SharedPtr<FBaseMaterial> Material(new FBaseMaterial(
-		FMaterialLibrary::GetShader("Shaders/DefaultShader.vs", GL_VERTEX_SHADER), FMaterialLibrary::GetShader("Shaders/DefaultShader.fs", GL_FRAGMENT_SHADER), "DefaultLit"
+		"Shaders/DefaultShader.vs", "Shaders/DefaultShader.fs", "DefaultLit"
 	));
 
 
 	RegisterMaterial(Material);
 
 	SharedPtr<FBaseMaterial> UnlitMaterial(new FBaseMaterial(
-		FMaterialLibrary::GetShader("Shaders/DefaultUnlit.vs", GL_VERTEX_SHADER), FMaterialLibrary::GetShader("Shaders/DefaultUnlit.fs", GL_FRAGMENT_SHADER), "DefaultUnlit"
+		"Shaders/DefaultUnlit.vs", "Shaders/DefaultUnlit.fs", "DefaultUnlit"
 	));
 	UnlitMaterial->SetFloat("_Unlit", 1.0f);
 	RegisterMaterial(UnlitMaterial);
@@ -82,5 +82,5 @@ std::string FMaterialLibrary::LoadShaderSource(String pathToFile)
 	return content;
 }
 
-Map<String, SharedPtr<FBaseMaterial>> FMaterialLibrary::CachedMaterials;
+Map<BString, SharedPtr<FBaseMaterial>> FMaterialLibrary::CachedMaterials;
 Map<String, GLuint> FMaterialLibrary::CachedShaders;

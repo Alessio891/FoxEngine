@@ -1,0 +1,5 @@
+{
+	"Name": "GridShader",
+	"VertexShaderPath": "Shaders/Grid/GridShader.vs",
+	"FragmentShaderPath": "Shaders/Grid/GridShader.fs"
+}

@@ -1,13 +1,16 @@
 #include "Graphics\BaseMaterial.h"
 #include "Graphics\MaterialLibrary.h"
 #include <fstream>>
-
 #include <glm/gtc/type_ptr.hpp>
-
-FBaseMaterial::FBaseMaterial(GLuint VertexShader, GLuint FragmentShader, const String MaterialName)
+#include "Core.h"
+#include "GLFW/glfw3.h"
+#include <Application.h>
+FBaseMaterial::FBaseMaterial(BString VertexShader, BString FragmentShader, const String MaterialName) : ISerializedAsset()
 {
-	this->VertexShader = VertexShader;
-	this->FragmentShader = FragmentShader;
+	this->VertexShaderPath = VertexShader;
+	this->FragmentShaderPath = FragmentShader;
+	this->VertexShader = FMaterialLibrary::GetShader(VertexShader.c_str(), GL_VERTEX_SHADER);
+	this->FragmentShader = FMaterialLibrary::GetShader(FragmentShader.c_str(), GL_FRAGMENT_SHADER);
 	ProgramIndex = glCreateProgram();
 	glAttachShader(ProgramIndex, this->VertexShader);
 	glAttachShader(ProgramIndex, this->FragmentShader);
@@ -44,4 +47,34 @@ void FBaseMaterial::UploadParameters()
 		GLuint paramID = glGetUniformLocation(ProgramIndex, matParam->first);
 		glUniformMatrix4fv(paramID, 1, GL_FALSE, &matParam->second[0][0]);
 	}
+}
+
+void FBaseMaterial::Deserialize(json Json)
+{
+	glfwMakeContextCurrent(FApplication::Get()->SceneViewport->ViewportContext);
+	Json["Name"].get_to(Name);	
+	Json["VertexShaderPath"].get_to(VertexShaderPath);
+	Json["FragmentShaderPath"].get_to(FragmentShaderPath);
+	this->VertexShader = FMaterialLibrary::GetShader(VertexShaderPath.c_str(), GL_VERTEX_SHADER);
+	this->FragmentShader = FMaterialLibrary::GetShader(FragmentShaderPath.c_str(), GL_FRAGMENT_SHADER);
+	ProgramIndex = glCreateProgram();
+	glAttachShader(ProgramIndex, this->VertexShader);
+	glAttachShader(ProgramIndex, this->FragmentShader);
+	glLinkProgram(ProgramIndex);
+}
+
+void FBaseMaterial::Serialize(json& outJson)
+{
+	outJson["Name"] = Name;
+	//retVal["Vertex"] = VertexShader
+	for (auto f : FloatParams) {
+		outJson[f.first] = f.second;
+	}
+	for (auto f : VectorParams) {
+		std::string s = std::to_string(f.second.x) + "," + std::to_string(f.second.y) + "," + std::to_string(f.second.z);
+		outJson[f.first] = s;
+	}
+	/*for (auto f : FloatParams) {
+		retVal[f.first] = f.second;
+	}*/
 }
