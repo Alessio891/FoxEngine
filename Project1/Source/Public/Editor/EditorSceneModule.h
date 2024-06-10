@@ -17,8 +17,10 @@ public:
 
 	virtual void OnGUIRender() override;
 
+	static SharedPtr<FEditorSceneModule> Get() { return Instance; }
+
 protected:
-	
+	static SharedPtr<FEditorSceneModule> Instance;
 	SharedPtr<FScene> Scene;
 	SharedPtr<FRenderingPipeline> RenderingPipeline;
 

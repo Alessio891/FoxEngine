@@ -17,6 +17,7 @@
 
 #include "GLFW/glfw3.h"
 #include "windows.h"
+#include "commctrl.h"
 #include <Core/Logger.h>
 using namespace std::chrono;
 int64_t fLastFrameTime = 0;
@@ -110,6 +111,17 @@ void glfwOnMouseMotion(GLFWwindow* win, double x, double y) {
 	MainApplication->HandleMouseMotion(win, x, y);
 
 }
+static LRESULT CALLBACK msgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM
+	lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
+{
+	switch (message) {
+	case WM_DROPFILES: {
+		FLogger::LogInfo("Dropped files");
+		return 0;
+	} break;
+	}
+	return DefSubclassProc(hWnd, message, wParam, lParam);
+}
 int main(int argc, char* argv[]) {
 	fLastFrameTime = getCurrentTime();
 
@@ -133,11 +145,11 @@ int main(int argc, char* argv[]) {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
-	MainWindow = glfwCreateWindow(WIDTH, HEIGHT, "FoxEngine Editor", NULL, NULL);
+	/*MainWindow = glfwCreateWindow(WIDTH, HEIGHT, "FoxEngine Editor", NULL, NULL);
 	if (!MainWindow) {
 		glfwTerminate();
 		exit(EXIT_FAILURE);
-	}
+	}*/
 	/*
 	// Setup Callback on Main Window
 	glfwMakeContextCurrent(MainWindow);
@@ -147,11 +159,12 @@ int main(int argc, char* argv[]) {
 	
 	*/
 	// Create Main Application
+	MainWindow = NULL;
 	MainApplication = new FApplication();
 	MainApplication->Start(argc, argv, 1920, 1080, MainWindow);
-	glfwSetWindowSizeCallback(MainWindow, [](GLFWwindow* window, int width, int height) {
+/*	glfwSetWindowSizeCallback(MainWindow, [](GLFWwindow* window, int width, int height) {
 		MainApplication->OnResize(width, height);
-		});
+		});*/
 	//
 	// Register Application Modules
 	int consoleHeight = HEIGHT * 0.27f;
@@ -161,18 +174,24 @@ int main(int argc, char* argv[]) {
 	REGISTER_GUI_MODULE(FConsoleModule, MainApplication->EditorGUIViewport);
 	FConsoleModule_Instance->SetPositionAndSize(ImVec2(0, HEIGHT-consoleHeight), ImVec2(WIDTH, consoleHeight));
 	FLogger::LogInfo("Starting Engine...");
+	
+	REGISTER_GUI_MODULE(FEditorSceneModule, MainApplication->EditorGUIViewport);
+	FEditorSceneModule_Instance->SetPositionAndSize(ImVec2(inspectorWidth, 0), ImVec2(sceneWidth, HEIGHT - consoleHeight));
+
 	REGISTER_GUI_MODULE(FInspectorModule, MainApplication->EditorGUIViewport);
 	FInspectorModule_Instance->SetPositionAndSize(ImVec2(0,0), ImVec2(inspectorWidth, HEIGHT - consoleHeight));
 	REGISTER_GUI_MODULE(FSceneHierarchyModule, MainApplication->EditorGUIViewport);
 	FSceneHierarchyModule_Instance->SetPositionAndSize(ImVec2(inspectorWidth+sceneWidth, 0), ImVec2(hierarchyWidth, HEIGHT - consoleHeight));
-	REGISTER_GUI_MODULE(FEditorSceneModule, MainApplication->SceneViewport);
 	FLogger::LogInfo("Core Modules Loaded");
 	FLogger::LogWarning("This is a warning");
 	FLogger::LogError("And this is an error");
+	HWND hwNative = glfwGetWin32Window(MainApplication->EditorGUIViewport->ViewportContext);
+	SetWindowSubclass(hwNative, &msgProc, 0, 0);
+
 	//
 
 	// Main Loop
-	while (!glfwWindowShouldClose(MainWindow)) {
+	while (!glfwWindowShouldClose(MainApplication->EditorGUIViewport->ViewportContext)) {
 		// Game Update
 		mainIdleFunc();
 
@@ -182,11 +201,10 @@ int main(int argc, char* argv[]) {
 		// Update Input System State
 		FInputSystem::LateUpdate(0.0f);
 
-		glfwSwapBuffers(MainWindow);
 
 	}
 
-	glfwDestroyWindow(MainWindow);
+	glfwDestroyWindow(MainApplication->EditorGUIViewport->ViewportContext);
 
 	glfwTerminate();
 	exit(EXIT_SUCCESS);

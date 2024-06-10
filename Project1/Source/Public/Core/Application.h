@@ -47,11 +47,11 @@ public:
 
 	//const FViewport& GetViewport() { return *Viewport.get(); }
 
-	SharedPtr<FViewport> SceneViewport, EditorGUIViewport;//ConsoleViewport, InspectorViewport, HierarchyViewport;
+	SharedPtr<FViewport> EditorGUIViewport;//ConsoleViewport, InspectorViewport, HierarchyViewport;
 	SharedPtr<ImGuiContext> MainImGuiContext;
 
 
-	GLFWwindow* MainWindow;
+	//GLFWwindow* MainWindow;
 
 	bool ShouldProcessSceneInputs() const {
 		

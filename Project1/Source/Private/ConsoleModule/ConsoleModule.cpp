@@ -89,7 +89,8 @@ void FConsoleModule::DrawAssets()
 		if (entry.is_regular_file()) {
 			SharedPtr<FAssetResource> asset = FAssetsLibrary::GetResource(entry.path().string());
 			asset->DrawResourceThumbnail();
-			if (ImGui::IsItemClicked()) {
+			
+			if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(0)) {
 				FInspectorModule::Get()->SetDisplayedObject(asset);
 			}
 			ImGui::SameLine();

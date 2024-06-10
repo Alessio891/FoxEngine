@@ -17,11 +17,11 @@ void FViewport::InitializeViewport(GLFWwindow* ParentWindow)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
 
-	glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
+	/*glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
 	glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-	glfwWindowHint(GLFW_FLOATING, GLFW_TRUE);
+	glfwWindowHint(GLFW_FLOATING, GLFW_TRUE);*/
 	ViewportContext = glfwCreateWindow(Width, Height, "FoxEngine Scene", NULL, NULL);
-
+/*
 	HWND hwNative = glfwGetWin32Window(ViewportContext);
 	HWND hwParent = glfwGetWin32Window(ParentWindow);
 	SetParent(hwNative, hwParent);
@@ -29,7 +29,9 @@ void FViewport::InitializeViewport(GLFWwindow* ParentWindow)
 	style &= ~WS_POPUP; // remove popup style
 	style |= WS_CHILDWINDOW; // add childwindow style
 	SetWindowLong(hwNative, GWL_STYLE, style);
-
+	*/
+	X = 200;
+	Y = 200;
 	glfwSetWindowPos(ViewportContext, X, Y);
 	glfwSetInputMode(ViewportContext, GLFW_STICKY_KEYS, GLFW_TRUE);
 	glfwMakeContextCurrent(ViewportContext);
@@ -47,8 +49,8 @@ void FViewport::InitializeViewport(GLFWwindow* ParentWindow)
 		if (vp != nullptr)
 			vp->HandleMouseMotion(x, y);
 		});
-
-	ShowWindow(hwNative, SW_SHOW);
+		
+	//ShowWindow(hwNative, SW_SHOW);
 }
 
 void FViewport::UpdateViewport()
@@ -116,11 +118,11 @@ void FViewport::HandleMouseButton(int Button, int Action, int Mods)
 	for (auto cb : OnMouseButtonCallbacks) {
 		cb(Button, Action, Mods);
 	}
-	if (GuiContext != nullptr) {
+	/*if (GuiContext != nullptr) {
 		auto ctx = GuiContext.get();
 		ImGui::SetCurrentContext(ctx);
 		ImGui_ImplGlfw_MouseButtonCallback(ViewportContext, Button, Action, Mods);
-	}
+	}*/
 }
 
 void FViewport::HandleMouseMotion(double x, double y)
@@ -128,21 +130,21 @@ void FViewport::HandleMouseMotion(double x, double y)
 	for (auto cb : OnMouseMotionCallbacks) {
 		cb(x, y);
 	}
-	if (GuiContext) {
+	/*if (GuiContext) {
 		auto ctx = GuiContext.get();
 		ImGui::SetCurrentContext(ctx);
 		ImGui_ImplGlfw_CursorPosCallback(ViewportContext, x, y);
-	}
+	}*/
 }
 
 void FViewport::HandleKeyboardButton(int Key, int scanCode, int action, int mods)
 {
 	
-	if (GuiContext) {
+	/*if (GuiContext) {
 		auto ctx = GuiContext.get();
-		//ImGui::SetCurrentContext(ctx);
+		ImGui::SetCurrentContext(ctx);
 		ImGui_ImplGlfw_KeyCallback(ViewportContext, Key, scanCode, action, mods);
-	}
+	}*/
 	for (auto cb : OnKeyboardCallbacks) {
 		cb(Key, scanCode, action, mods);
 	}
@@ -155,7 +157,7 @@ SharedPtr<ImGuiContext> FViewport::GetGUIContext()
 		GuiContext = SharedPtr<ImGuiContext>(ImGui::CreateContext());
 		ImGui::SetCurrentContext(GuiContext.get());
 
-		ImGui_ImplGlfw_InitForOpenGL(ViewportContext, false);
+		ImGui_ImplGlfw_InitForOpenGL(ViewportContext, true);
 		ImGui_ImplOpenGL3_Init("#version 330");
 	}
 	return GuiContext;

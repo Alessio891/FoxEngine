@@ -13,7 +13,8 @@
 
 void FEditorSceneModule::OnStartup()
 {
-	SharedPtr<FViewport> SceneViewport = FApplication::Get()->SceneViewport;
+	Instance = SharedPtr<FEditorSceneModule>(this);
+	SharedPtr<FViewport> SceneViewport = FApplication::Get()->EditorGUIViewport;
 	glfwMakeContextCurrent(SceneViewport->ViewportContext);
 
 	Scene = SharedPtr<FScene>(new FScene());
@@ -78,7 +79,7 @@ void FEditorSceneModule::OnStartup()
 			float zNear = 0.1f;
 			float zFar = 100.0f;
 			//= ys - 1.0 - y;
-			int y = FApplication::Get()->SceneViewport->GetHeight() - 1 - FInputSystem::LastMouseY;
+			int y = FApplication::Get()->EditorGUIViewport->GetHeight() - 1 - FInputSystem::LastMouseY;
 			glReadPixels(FInputSystem::LastMouseX, y, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, &stencil);
 			float depth = _z;                                               // logarithmic
 			depth = (2.0 * depth) - 1.0;                                  // logarithmic NDC
@@ -125,12 +126,14 @@ void FEditorSceneModule::OnTick(float Delta)
 void FEditorSceneModule::OnGUIRender()
 {
 	ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.6f);
+	ImGui::BeginGroup();
 	ImGui::Begin("TestWin", NULL, BASE_GUI_WINDOW_FLAGS | ImGuiWindowFlags_NoTitleBar);
 	ImGui::PopStyleVar();
 	ImGui::SetWindowPos(ImVec2(10, 10));
 	ImGui::SetWindowSize(ImVec2(50, 200));
 	ImGui::Text("%.1f", ImGui::GetIO().Framerate);
 	ImGui::End();
+	ImGui::EndGroup();
 }
 
 void FEditorSceneModule::HandleCameraInput(float Delta)
@@ -150,9 +153,11 @@ void FEditorSceneModule::HandleCameraInput(float Delta)
 	if (FInputSystem::IsKeyDown(GLFW_KEY_G)) {
 		Scene->CameraTransform.Rotation = Vector3F(0.0f, 0.0f, 0.0f);
 	}
-	if (FInputSystem::LeftButtonDown == true) {
+	if (FInputSystem::IsMouseButtonHeld(GLFW_MOUSE_BUTTON_LEFT)) {
 		std::string mouseY = std::to_string(FInputSystem::MouseDeltaY);
 		Scene->CameraTransform.Rotation.x -= FInputSystem::MouseDeltaY * Delta * 50.0f;
 		Scene->CameraTransform.Rotation.y -= FInputSystem::MouseDeltaX * Delta * 50.0f;
 	}
 }
+
+SharedPtr<FEditorSceneModule> FEditorSceneModule::Instance;

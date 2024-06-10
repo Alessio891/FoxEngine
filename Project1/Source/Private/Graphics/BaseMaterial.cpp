@@ -41,7 +41,7 @@ void FBaseMaterial::UploadParameters()
 
 void FBaseMaterial::Deserialize(json Json)
 {
-	glfwMakeContextCurrent(FApplication::Get()->SceneViewport->ViewportContext);
+	glfwMakeContextCurrent(FApplication::Get()->EditorGUIViewport->ViewportContext);
 	Json["Name"].get_to(Name);	
 	Json["VertexShaderPath"].get_to(VertexShaderPath);
 	Json["FragmentShaderPath"].get_to(FragmentShaderPath);
@@ -80,7 +80,7 @@ void FBaseMaterial::DrawInspector()
 
 	if (ImGui::Button("Recompile")) {
 		auto oldCtx = glfwGetCurrentContext();
-		glfwMakeContextCurrent( FApplication::Get()->SceneViewport->ViewportContext );
+		glfwMakeContextCurrent( FApplication::Get()->EditorGUIViewport->ViewportContext );
 		
 		glDeleteProgram(ProgramIndex);
 

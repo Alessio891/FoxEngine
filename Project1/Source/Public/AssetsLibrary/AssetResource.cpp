@@ -48,10 +48,10 @@ void FAssetResource::DrawResourceThumbnail()
 
 
 	if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
-		/*ImGui::Image((void*)(intptr_t)FAssetsLibrary::GetImage(entry.path().string())->GetResource(Viewport->ViewportContext)->GetTextureID(), ImVec2(32, 32));
-		ImGui::Text(entry.path().filename().string().c_str());
-		std::string path = resource->GetTexturePath();
-		ImGui::SetDragDropPayload("ASSET_DRAG", path.c_str(), path.size() + 1);*/
+		ImGui::Image(GetThumbnailIcon(), ImVec2(32, 32));
+		ImGui::Text(GetOnlyFileName().c_str());
+		std::string path = FilePath;
+		ImGui::SetDragDropPayload("ASSET_DRAG", path.c_str(), path.size() + 1);
 		ImGui::EndDragDropSource();
 	}
 }

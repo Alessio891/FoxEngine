@@ -10,6 +10,7 @@ void FEditorGUIModule::OnStartup()
 	if (Viewport == nullptr) return;
 
 	glfwMakeContextCurrent(Viewport->ViewportContext);
+	ImGui::SetCurrentContext(Viewport->GetGUIContext().get());
 	IMGUI_CHECKVERSION();
 	ImGui::StyleColorsDark();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;

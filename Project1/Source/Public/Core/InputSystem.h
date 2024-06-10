@@ -13,6 +13,7 @@ public:
 	static bool IsKeyDown(unsigned char Key);
 	static bool IsKeyUp(unsigned char Key);
 	static bool IsMouseButtonDown(int button);
+	static bool IsMouseButtonHeld(int button);
 
 	static void OnMouseMove(int x, int y);
 	static void SetMouseButtonState(int button, int state);
@@ -22,10 +23,10 @@ public:
 	static int LastMouseX;
 	static int LastMouseY;
 
-	static bool LeftButtonDown;
-	static bool RightButtonDown;
 
 protected:
+	static bool LeftButtonDown;
+	static bool RightButtonDown;
 	static List<unsigned char> PressedKeys;
 	static List<unsigned char> PressedThisFrame;
 

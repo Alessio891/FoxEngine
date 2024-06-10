@@ -33,6 +33,8 @@ public:
 		this->Position = Pos;
 		this->Size = Size;
 	};
+	ImVec2 GetPosition() const { return Position; }
+	ImVec2 GetSize() const { return Size; }
 	//SharedPtr<ImGuiContext> GetGuiContext() { return GuiContext; }
 
 	static GLFWwindow* CurrentOveredGui;

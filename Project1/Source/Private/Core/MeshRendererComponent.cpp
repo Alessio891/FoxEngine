@@ -52,7 +52,7 @@ void FMeshRendererComponent::Render(glm::mat4 V, glm::mat4 P)
 
 	Material->UploadParameters();
 	if (Texture != NULL) {
-		auto textureId = Texture.get()->GetTextureID(FApplication::Get()->SceneViewport->ViewportContext);
+		auto textureId = Texture.get()->GetTextureID(FApplication::Get()->EditorGUIViewport->ViewportContext);
 		glBindTexture(GL_TEXTURE_2D, textureId);
 	}
 	glBindVertexArray(MeshData->VAO);

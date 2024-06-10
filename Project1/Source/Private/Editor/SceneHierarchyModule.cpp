@@ -6,7 +6,7 @@ void FSceneHierarchyModule::OnGUIRender()
 {
 	MAKE_WINDOW("Scene Hierarchy");
 	SharedPtr<FScene> CurrentScene = FApplication::Get()->GetCurrentScene();
-
+	if (CurrentScene == nullptr) return;
 	if (CurrentScene != nullptr) {
 		for (auto sceneObj : CurrentScene->GetSceneObjects()) {
 			if (sceneObj->HideInHierarchy) continue;
