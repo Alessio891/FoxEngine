@@ -7,9 +7,7 @@ void FViewport::SetViewportLocation(int x, int y, int width, int height)
 	Height = height;
 	X = x;
 	Y = y;
-
-	glfwSetWindowSize(ViewportContext, Width, Height);
-	glfwSetWindowPos(ViewportContext, X, Y);
+	HandeViewportResize(x,y,width,height);
 }
 void FViewport::InitializeViewport(GLFWwindow* ParentWindow)
 {
@@ -59,11 +57,16 @@ void FViewport::UpdateViewport()
 
 void FViewport::RenderViewport()
 {
+	int consoleHeight = Height * 0.27f;
+	int hierarchyWidth = Width * 0.15;
+	int inspectorWidth = Width * 0.15;
+	int sceneWidth = Width - inspectorWidth - hierarchyWidth;
+
 	glfwMakeContextCurrent(ViewportContext);
-	glfwGetFramebufferSize(ViewportContext, &Width, &Height);
+	//glfwGetFramebufferSize(ViewportContext, &Width, &Height);
 	glClearColor(0.01f, 0.1f, 0.1f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-	glViewport(0, 0, Width, Height);
+	glViewport(inspectorWidth, consoleHeight, sceneWidth, Height-consoleHeight);
 	glDepthMask(GL_TRUE);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_STENCIL_TEST);
@@ -113,16 +116,16 @@ void FViewport::RegisterKeyboardButtonCallback(OnKeyboardButtonDelegate callback
 	OnKeyboardCallbacks.push_back(callback);
 }
 
+void FViewport::RegisterViewportResizeCallback(OnViewportResizeDelegate callback)
+{
+	OnViewportResizeCallbacks.push_back(callback);
+}
+
 void FViewport::HandleMouseButton(int Button, int Action, int Mods)
 {
 	for (auto cb : OnMouseButtonCallbacks) {
 		cb(Button, Action, Mods);
 	}
-	/*if (GuiContext != nullptr) {
-		auto ctx = GuiContext.get();
-		ImGui::SetCurrentContext(ctx);
-		ImGui_ImplGlfw_MouseButtonCallback(ViewportContext, Button, Action, Mods);
-	}*/
 }
 
 void FViewport::HandleMouseMotion(double x, double y)
@@ -130,23 +133,25 @@ void FViewport::HandleMouseMotion(double x, double y)
 	for (auto cb : OnMouseMotionCallbacks) {
 		cb(x, y);
 	}
-	/*if (GuiContext) {
-		auto ctx = GuiContext.get();
-		ImGui::SetCurrentContext(ctx);
-		ImGui_ImplGlfw_CursorPosCallback(ViewportContext, x, y);
-	}*/
 }
 
 void FViewport::HandleKeyboardButton(int Key, int scanCode, int action, int mods)
 {
-	
-	/*if (GuiContext) {
+	// We need this or text inputs won't register backspace, return, delete and so on
+	if (GuiContext) {
 		auto ctx = GuiContext.get();
 		ImGui::SetCurrentContext(ctx);
 		ImGui_ImplGlfw_KeyCallback(ViewportContext, Key, scanCode, action, mods);
-	}*/
+	}
 	for (auto cb : OnKeyboardCallbacks) {
 		cb(Key, scanCode, action, mods);
+	}
+}
+
+void FViewport::HandeViewportResize(int x, int y, int w, int h)
+{
+	for (auto cb : OnViewportResizeCallbacks) {
+		cb(x,y,w,h);
 	}
 }
 
@@ -159,6 +164,9 @@ SharedPtr<ImGuiContext> FViewport::GetGUIContext()
 
 		ImGui_ImplGlfw_InitForOpenGL(ViewportContext, true);
 		ImGui_ImplOpenGL3_Init("#version 330");
+
+		ImGuiIO& io = ImGui::GetIO(); (void)io;
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 	}
 	return GuiContext;
 }

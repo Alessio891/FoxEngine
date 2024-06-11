@@ -24,9 +24,13 @@ protected:
 	SharedPtr<FScene> Scene;
 	SharedPtr<FRenderingPipeline> RenderingPipeline;
 
+	SharedPtr<FSceneObject> NewObject(SharedPtr<MeshData> meshData);
+
 private:
 	SharedPtr<FSceneGizmo> PositionGizmo;
 	void HandleCameraInput(float Delta);
 
 	SharedPtr<FSceneObject> EditorGrid;
+
+	float LastDelta = 0.0f;
 };

@@ -4,6 +4,7 @@
 
 class FSceneHierarchyModule : public FEditorGUIModule {
 public:
+	virtual void OnStartup() override;
 	FSceneHierarchyModule(SharedPtr<FViewport> vp) : FEditorGUIModule(vp) {
 		Instance = SharedPtr<FSceneHierarchyModule>(this);
 	}
@@ -16,4 +17,9 @@ public:
 protected:
 	static SharedPtr<FSceneHierarchyModule> Instance;
 	SharedPtr<FSceneObject> CurrentSelectedObject;
+
+	void DrawSceneHierarchy();
+	void DrawLightSettings();
+
+	int CurrentTab = 0;
 };

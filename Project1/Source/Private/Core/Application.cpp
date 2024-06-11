@@ -62,8 +62,13 @@ void FApplication::Start(int argc, char** argv, int width, int height, GLFWwindo
 		FApplication::Get()->EditorGUIViewport->HandleKeyboardButton(btn, scan, act, mods);
 	});
 	glfwFocusWindow(EditorGUIViewport->ViewportContext);
+	glfwSetWindowSizeCallback(EditorGUIViewport->ViewportContext, [](GLFWwindow* window, int width, int height) {
+		FApplication::Get()->OnResize(width, height);
+	});
 	FAssetsLibrary::Initialize();
 	FMaterialLibrary::Initialize();
+	
+	
 	HWND hwNative = glfwGetWin32Window(EditorGUIViewport->ViewportContext);
 
 	//glfwFocusWindow(MainWindow);
@@ -107,14 +112,11 @@ void FApplication::MainDisplayLoop()
 
 void FApplication::OnResize(int width, int height)
 {
-	int consoleHeight = height * 0.27f;
-	int hierarchyWidth = width * 0.15;
-	int inspectorWidth = width * 0.15;
+	int consoleHeight = height * ConsoleHeight;
+	int hierarchyWidth = width * InspectorWidth;
+	int inspectorWidth = width * InspectorWidth;
 	int sceneWidth = width - inspectorWidth - hierarchyWidth;
 
-	EditorGUIViewport->SetViewportLocation(
-		inspectorWidth, 0, sceneWidth, height - consoleHeight
-	);
 	EditorGUIViewport->SetViewportLocation(0, 0, width, height);
 	
 	/*InspectorViewport->SetViewportLocation(

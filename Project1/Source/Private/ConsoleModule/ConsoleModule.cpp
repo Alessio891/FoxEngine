@@ -19,7 +19,14 @@ void FConsoleModule::OnStartup()
 	Instance = SharedPtr<FConsoleModule>(this);
 	FLogger::RegisterLogCallback([this](const FLogMessage& msg) {
 		LogMessages.push_back(msg);
-		});
+	});
+
+	Viewport->RegisterViewportResizeCallback([this](int x, int y, int w, int h) {
+		int consoleHeight = h * FApplication::Get()->ConsoleHeight;
+		Size.y = consoleHeight;
+		Size.x = w;
+		Position.y = h-consoleHeight;
+	});
 }
 
 void FConsoleModule::OnGUIRender()

@@ -33,6 +33,15 @@ public:
 		return nullptr;
 	}
 
+	template<class T>
+	static SharedPtr<T> GetResourceAs(BString resourcePath) {
+		auto resource = GetResource(resourcePath);
+		if (resource) {
+			return std::dynamic_pointer_cast<T>(resource);
+		}
+		return nullptr;
+	}
+
 	static List<BString> const GetAllImageResourcesKeys() {
 		List<BString> keys;
 		for(auto & imap : ImageResources)

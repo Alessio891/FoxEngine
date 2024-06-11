@@ -14,6 +14,7 @@ typedef std::function<void()> OnViewportRenderDelegate;
 typedef std::function<void(int, int, int)> OnMouseButtonDelegate;
 typedef std::function<void(double, double)> OnMouseMotionDelegate;
 typedef std::function<void(int, int, int, int)> OnKeyboardButtonDelegate;
+typedef std::function<void(int, int, int, int)> OnViewportResizeDelegate;
 
 class FViewport {
 public:
@@ -41,10 +42,12 @@ public:
 	void RegisterMouseButtonCallback(OnMouseButtonDelegate callback);
 	void RegisterMouseMotionCallback(OnMouseMotionDelegate callback);
 	void RegisterKeyboardButtonCallback(OnKeyboardButtonDelegate callback);
+	void RegisterViewportResizeCallback(OnViewportResizeDelegate callback);
 
 	virtual void HandleMouseButton(int Button, int Action, int Mods);
 	virtual void HandleMouseMotion(double x, double y);
 	virtual void HandleKeyboardButton(int Key, int scanCode, int action, int mods);
+	virtual void HandeViewportResize(int x, int y, int w, int h);
 
 	SharedPtr<ImGuiContext> GetGUIContext();
 	bool ValidGUIContext() { return GuiContext != nullptr; }
@@ -67,6 +70,7 @@ protected:
 	List<OnMouseButtonDelegate> OnMouseButtonCallbacks;
 	List<OnMouseMotionDelegate> OnMouseMotionCallbacks;
 	List<OnKeyboardButtonDelegate> OnKeyboardCallbacks;
+	List<OnViewportResizeDelegate> OnViewportResizeCallbacks;
 
 	int X;
 	int Y;

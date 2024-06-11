@@ -162,9 +162,7 @@ int main(int argc, char* argv[]) {
 	MainWindow = NULL;
 	MainApplication = new FApplication();
 	MainApplication->Start(argc, argv, 1920, 1080, MainWindow);
-/*	glfwSetWindowSizeCallback(MainWindow, [](GLFWwindow* window, int width, int height) {
-		MainApplication->OnResize(width, height);
-		});*/
+	
 	//
 	// Register Application Modules
 	int consoleHeight = HEIGHT * 0.27f;

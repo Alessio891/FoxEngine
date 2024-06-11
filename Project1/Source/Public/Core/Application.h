@@ -50,6 +50,8 @@ public:
 	SharedPtr<FViewport> EditorGUIViewport;//ConsoleViewport, InspectorViewport, HierarchyViewport;
 	SharedPtr<ImGuiContext> MainImGuiContext;
 
+	float InspectorWidth = 0.15f;
+	float ConsoleHeight = 0.27f;
 
 	//GLFWwindow* MainWindow;
 

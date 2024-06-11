@@ -9,6 +9,14 @@ void FInspectorModule::OnStartup()
 	FEditorGUIModule::OnStartup();
 	
 	Instance = SharedPtr<FInspectorModule>(this);
+
+	Viewport->RegisterViewportResizeCallback([this](int x, int y, int w, int h) {
+		int consoleHeight = h * FApplication::Get()->ConsoleHeight;
+		int inspectorWidth = w * FApplication::Get()->InspectorWidth;
+
+		Size.x = inspectorWidth;
+		Size.y = h-consoleHeight;
+	});
 }
 
 void FInspectorModule::OnTick(float Delta)

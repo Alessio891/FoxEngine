@@ -106,9 +106,12 @@ void FMeshRendererComponent::DrawInspector()
 	ImGui::SeparatorText("Mesh Renderer");
 	static bool matShown = true;
 	if (ImGui::CollapsingHeader("Material", matShown)) {
+
+		FGUI::Material("Material", Material);
+
 		if (Material != nullptr) {
 			
-			Color = FGUI::Color("Material Color", Color);
+			FGUI::Color("Material Color", Color);
 			
 			for (auto f : Material->FloatParams) {
 				if (f.first[0] == '_') continue;

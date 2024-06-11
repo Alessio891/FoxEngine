@@ -32,7 +32,7 @@ void FEditorSceneModule::OnStartup()
 
 	Scene->CameraTransform.Position = Vector3F(0, 3, -3);
 
-	SharedPtr<MeshData> mData(new MeshData(CUBE_MESH_VERTICES, CUBE_MESH_INDICES, CUBE_MESH_NORMALS, CUBE_MESH_UVS));
+	SharedPtr<MeshData> mData = SharedPtr<MeshData>(new MeshData(CUBE_MESH_VERTICES, CUBE_MESH_INDICES, CUBE_MESH_NORMALS, CUBE_MESH_UVS));
 	std::vector<float> vertices = {
 			 0.0f, 0.0f, 0.0f,
 			 0.0f, 1.0f, 0.0f
@@ -121,19 +121,68 @@ void FEditorSceneModule::OnTick(float Delta)
 		}
 
 	}
+	LastDelta = Delta;
 }
 
 void FEditorSceneModule::OnGUIRender()
 {
 	ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.6f);
-	ImGui::BeginGroup();
+	
+	ImGui::SetNextWindowPos(ImVec2(Position.x + 10, Position.y + 10));
+	ImGui::SetNextWindowSize(ImVec2(50, 200));
 	ImGui::Begin("TestWin", NULL, BASE_GUI_WINDOW_FLAGS | ImGuiWindowFlags_NoTitleBar);
 	ImGui::PopStyleVar();
-	ImGui::SetWindowPos(ImVec2(10, 10));
-	ImGui::SetWindowSize(ImVec2(50, 200));
-	ImGui::Text("%.1f", ImGui::GetIO().Framerate);
+	static float targetAlpha = 0.0f;
+	static bool showMenu = false;
+	static float alpha = 0.0f;
+	if (ImGui::ImageButton((void*)(intptr_t)FAssetsLibrary::GetImage("Resources/Images/GUI/primitive.png")->GetTextureID(Viewport->ViewportContext), ImVec2(25, 25))) {
+		FLogger::LogInfo("Clicked " + std::to_string(targetAlpha));
+		showMenu = !showMenu;
+		targetAlpha = showMenu ? 1.0f : 0.0f;
+	}
+	if (showMenu) {
+		if (abs(targetAlpha-alpha) > 0.001f) {
+			float delta = targetAlpha - alpha;
+			float step = delta >= 0 ? 0.8f : -0.8f;
+			alpha += step * LastDelta;
+		}
+		ImGui::PushStyleVar(ImGuiStyleVar_Alpha, alpha);
+		ImGui::SetNextWindowSize(ImVec2(120, 42));
+		ImGui::SetNextWindowPos(ImVec2(Position.x + 60, Position.y + 10));
+		ImGui::Begin("#primitives", NULL, BASE_GUI_WINDOW_FLAGS | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
+		ImGui::PopStyleVar();
+		if (ImGui::ImageButton((void*)(intptr_t)FAssetsLibrary::GetImage("Resources/Images/GUI/cube.png")->GetTextureID(Viewport->ViewportContext), ImVec2(20, 20))) {
+			NewObject(SharedPtr<MeshData>(new MeshData(CUBE_MESH_VERTICES, CUBE_MESH_INDICES, CUBE_MESH_NORMALS, CUBE_MESH_UVS)));
+		}
+		ImGui::SameLine();
+		if (ImGui::ImageButton((void*)(intptr_t)FAssetsLibrary::GetImage("Resources/Images/GUI/pyramid.png")->GetTextureID(Viewport->ViewportContext), ImVec2(20, 20))) {
+			NewObject(SharedPtr<MeshData>(new MeshData(PYRAMID_MESH_VERTICES, PYRAMID_MESH_INDICES, PYRAMID_MESH_NORMALS, PYRAMID_MESH_UVS)));
+		}
+		ImGui::SameLine();
+		if (ImGui::ImageButton((void*)(intptr_t)FAssetsLibrary::GetImage("Resources/Images/GUI/sphere.png")->GetTextureID(Viewport->ViewportContext), ImVec2(20, 20))) {
+			NewObject(generateSphereMesh(0.5f, 30));
+		}
+
+		ImGui::End();
+	}
+	ImGui::SameLine();
+	ImGui::Spacing();
+
 	ImGui::End();
-	ImGui::EndGroup();
+}
+
+SharedPtr<FSceneObject> FEditorSceneModule::NewObject(SharedPtr<MeshData> meshData)
+{
+	SharedPtr<FSceneObject> newObj(new FSceneObject("A Cube"));
+	FMeshRendererComponent* meshRenderer = new FMeshRendererComponent();
+	meshRenderer->MeshData = meshData;
+	meshRenderer->Material = FMaterialLibrary::GetMaterial("DefaultLit");
+	meshRenderer->Texture = FAssetsLibrary::GetImage("Resources/Images/test.png");
+	newObj->AddComponent(meshRenderer);
+	newObj->SetupRenderer(meshRenderer);
+	newObj->Transform.Position = Scene->CameraTransform.Position + Scene->CameraTransform.GetForwardVector() * 8.0f;
+	Scene->RegisterSceneObject(newObj);
+	return newObj;
 }
 
 void FEditorSceneModule::HandleCameraInput(float Delta)

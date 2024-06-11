@@ -34,29 +34,32 @@ public:
 		std::copy(normals.begin(), normals.end(), n);
 		std::copy(uvs.begin(), uvs.end(), u);
 
-		for (int i = 0, uv = 0; i < vertices.size(); i += 3, uv += 2) {
-
+		for (size_t i = 0; i < vertices.size(); i += 3) {
+			// Vertices
 			actualVertices.push_back(v[i]);
 			actualVertices.push_back(v[i + 1]);
 			actualVertices.push_back(v[i + 2]);
 
-			if (normals.size() > 0)
-			{
+			// Normals (if available)
+			if (i / 3 < normals.size() / 3) {
 				actualVertices.push_back(n[i]);
 				actualVertices.push_back(n[i + 1]);
 				actualVertices.push_back(n[i + 2]);
 			}
 			else {
+				// Default normal
 				actualVertices.push_back(0.0f);
 				actualVertices.push_back(1.0f);
 				actualVertices.push_back(0.0f);
 			}
-			if (uvs.size() > 0)
-			{
-				actualVertices.push_back(u[uv]);
-				actualVertices.push_back(u[uv + 1]);
+
+			// UVs (if available)
+			if (i / 3 < uvs.size() / 2) {
+				actualVertices.push_back(u[i / 3 * 2]);
+				actualVertices.push_back(u[i / 3 * 2 + 1]);
 			}
 			else {
+				// Default UV
 				actualVertices.push_back(0.0f);
 				actualVertices.push_back(0.0f);
 			}
