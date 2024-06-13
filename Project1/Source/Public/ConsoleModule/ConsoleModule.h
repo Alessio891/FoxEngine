@@ -24,6 +24,8 @@ protected:
 	void DrawAssets();
 	void DrawPath(BString folder);
 
+	void HandleFilesDropped(List<BString> files);
+
 	int TabIndex = 0;
 	BString CurrentSelectedPath = "Resources";
 };

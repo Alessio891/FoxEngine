@@ -4,6 +4,7 @@
 #include "Graphics\BaseMaterial.h"
 #include "Logger.h"
 
+#include "AssetsLibrary/AssetReference.h"
 #include "Editor/AssetsLibrary.h"
 
 struct MeshData {
@@ -114,8 +115,8 @@ public:
 class FMeshRendererComponent : public FObjectComponent {
 
 public:
-	SharedPtr<MeshData> MeshData;
-	SharedPtr<FBaseMaterial> Material;
+	SharedPtr<MeshData> MeshDataRef;
+	FAssetReference<FBaseMaterial> Material;
 	List<float> VertexColorsArray;
 
 
@@ -127,7 +128,9 @@ public:
 
 	virtual void SetTexture(BString path);
 
+	virtual void Deserialize(json json) override;
+
 	Vector3F Color = Vector3F(1.0f, 1.0f, 1.0f);
 	//SharedPtr<FTexture> Texture;
-	SharedPtr<FTexture> Texture;
+	FAssetReference<FTexture> Texture;
 };

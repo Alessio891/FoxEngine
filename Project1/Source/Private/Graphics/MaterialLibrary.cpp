@@ -53,13 +53,6 @@ std::string FMaterialLibrary::LoadShaderSource(BString pathToFile)
 	}
 
 	std::string line = "";
-	/*"#pragma 330\n"
-	"struct DirectionalLightSettings {\n"
-	"vec3 Direction;\n"
-	"vec3 Color;\n"
-	"float Intensity;\n"
-	"};\n"
-	;*/
 	while (!fileStream.eof()) {
 		std::getline(fileStream, line);
 		content.append(line + "\n");

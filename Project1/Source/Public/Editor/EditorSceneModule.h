@@ -6,6 +6,7 @@
 #include <Scene.h>
 #include "Editor\SceneGizmo.h"
 #include <Graphics/RenderingPipeline.h>
+#include <AssetsLibrary/TemplateAsset.h>
 class FEditorSceneModule : public FEditorGUIModule {
 
 public:
@@ -24,7 +25,8 @@ protected:
 	SharedPtr<FScene> Scene;
 	SharedPtr<FRenderingPipeline> RenderingPipeline;
 
-	SharedPtr<FSceneObject> NewObject(SharedPtr<MeshData> meshData);
+	SharedPtr<FSceneObject> NewObject(SharedPtr<MeshData> meshData, BString ObjName = "[NewObject]");
+	SharedPtr<FSceneObject> NewObject(SharedPtr<FTemplateAsset> templ);
 
 private:
 	SharedPtr<FSceneGizmo> PositionGizmo;

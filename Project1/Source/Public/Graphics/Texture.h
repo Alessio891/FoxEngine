@@ -22,6 +22,8 @@ public:
 	int GetWidth() const { return Width; }
 	int GetHeight() const { return Height; }
 
+	virtual void OnDeleted() override;
+
 protected:
 	Map<GLFWwindow*, GLuint> TextureByContext;
 	GLuint TextureID = -1;

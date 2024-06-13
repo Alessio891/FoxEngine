@@ -1,4 +1,6 @@
 #pragma once
+#include "nlohmann/json.hpp"
+using json = nlohmann::json;
 
 class FSceneObject;
 
@@ -8,9 +10,13 @@ public:
 	virtual void Initialize(FSceneObject* Owner) {
 		this->Owner = Owner;
 	};
+	virtual void Begin() {};
+	virtual void End() {};
 	virtual void Tick(float DeltaTime) {};
 
 	virtual void DrawInspector();
+
+	virtual void Deserialize(json json) {};
 
 protected:
 	FSceneObject* Owner;

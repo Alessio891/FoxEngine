@@ -27,11 +27,11 @@ void FSceneGizmo::Begin()
 	ZAxis->DrawType = GL_LINES;
 
 	YRenderer = new FMeshRendererComponent();
-	YRenderer->MeshData = YAxis;
+	YRenderer->MeshDataRef = YAxis;
 	XRenderer = new FMeshRendererComponent();
-	XRenderer->MeshData = XAxis;
+	XRenderer->MeshDataRef = XAxis;
 	ZRenderer = new FMeshRendererComponent();
-	ZRenderer->MeshData = ZAxis;
+	ZRenderer->MeshDataRef = ZAxis;
 
 	YRenderer->Color = Vector3F(0,1,0);
 	XRenderer->Color = Vector3F(1,0,0);
@@ -39,7 +39,9 @@ void FSceneGizmo::Begin()
 
 	Material = FMaterialLibrary::GetMaterial("DefaultUnlit");
 
-	YRenderer->Material = XRenderer->Material = ZRenderer->Material = Material;
+	YRenderer->Material.Set(Material);
+	XRenderer->Material.Set(Material);
+	ZRenderer->Material.Set(Material);
 
 	YRenderer->Initialize(this);
 	XRenderer->Initialize(this);

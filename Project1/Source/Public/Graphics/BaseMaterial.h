@@ -4,9 +4,8 @@
 #include <string>
 #include "Texture.h"
 #include <fstream>
-#include "nlohmann/json.hpp"
 #include "AssetsLibrary/ISerializedAsset.h"
-
+#include "nlohmann/json.hpp"
 using json = nlohmann::json;
 
 class FBaseMaterial : public ISerializedAsset, public FAssetResource {

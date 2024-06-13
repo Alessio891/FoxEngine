@@ -16,64 +16,28 @@
 #include "Graphics/Primitives.h"
 #include "Graphics/MaterialLibrary.h"
 
+#define SOL_ALL_SAFETIES_ON 1
+#include <sol/sol.hpp>
+#include <LuaIntegration/LuaContext.h>
 
-void FApplication::Start(int argc, char** argv, int width, int height, GLFWwindow* MainWindow)
+void FApplication::Init(int argc, char** argv, int width, int height, GLFWwindow* MainWindow)
 {
 	FLogger::RegisterLogCallback([this](const FLogMessage& msg) {
 		char buffer[80];
 		strftime(buffer, 80, "%I:%M", localtime(&msg.Time));
 		printf("[%s][%d] %s\n", buffer, msg.Severity, msg.Message.c_str());
-	});
-	//this->MainWindow = MainWindow;
+		});
+	SetupMainViewport(MainWindow, width, height);
+
 	glfwMakeContextCurrent(MainWindow);
-	
+	LuaCtx = SharedPtr<FLuaContext>(new FLuaContext());
 
-
-	int consoleHeight = height * 0.27f;
-	int hierarchyWidth = width * 0.15;
-	int inspectorWidth = width * 0.15;
-	int sceneWidth = width - inspectorWidth - hierarchyWidth;
-
-/*	MainImGuiContext = SharedPtr<ImGuiContext>(ImGui::CreateContext());
-	ImGui_ImplGlfw_InitForOpenGL(MainWindow, true);
-	ImGui_ImplOpenGL3_Init();
-	ImGui::SetCurrentContext(MainImGuiContext.get());
-	*/
-	EditorGUIViewport = SharedPtr<FViewport>(new FViewport(0, 0, width, height));
-	EditorGUIViewport->InitializeViewport(MainWindow);
-	Viewports.push_back(EditorGUIViewport);
-
-	EditorGUIViewport->RegisterMouseButtonCallback([this](int btn, int act, int mods) {
-		FInputSystem::SetMouseButtonState(btn, act);
-		
-	});
-	EditorGUIViewport->RegisterMouseMotionCallback([this](double x, double y) {
-		FInputSystem::OnMouseMove(x, y);
-	});
-	EditorGUIViewport->RegisterKeyboardButtonCallback([this](int Key, int ScanCode, int action, int mods) {
-		//if (action == 0) FInputSystem::HandleKeyUp(Key);
-		//else if (action == 1) FInputSystem::HandleKeyDown(Key);
-	});
-
-	glfwMakeContextCurrent(EditorGUIViewport->ViewportContext);
-	ImGui::SetCurrentContext(EditorGUIViewport->GetGUIContext().get());
-	glfwSetKeyCallback(EditorGUIViewport->ViewportContext, [](GLFWwindow* w, int btn, int scan, int act, int mods) {
-		ImGui::SetCurrentContext(FApplication::Get()->EditorGUIViewport->GetGUIContext().get());
-		FApplication::Get()->EditorGUIViewport->HandleKeyboardButton(btn, scan, act, mods);
-	});
-	glfwFocusWindow(EditorGUIViewport->ViewportContext);
-	glfwSetWindowSizeCallback(EditorGUIViewport->ViewportContext, [](GLFWwindow* window, int width, int height) {
-		FApplication::Get()->OnResize(width, height);
-	});
 	FAssetsLibrary::Initialize();
 	FMaterialLibrary::Initialize();
-	
-	
-	HWND hwNative = glfwGetWin32Window(EditorGUIViewport->ViewportContext);
+}
 
-	//glfwFocusWindow(MainWindow);
-	//glfwSetInputMode(MainWindow, GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE);
-	
+void FApplication::Start(int argc, char** argv, int width, int height, GLFWwindow* MainWindow)
+{
 }
 
 void FApplication::MainIdleLoop(float DeltaTime)
@@ -158,6 +122,14 @@ void FApplication::HandleMouseMotion(GLFWwindow* Window, double x, double y)
 	}
 }
 
+void FApplication::HandleFilesDropped(List<BString> droppedFiles)
+{
+	for (auto droppedFilesCb : OnFilesDroppedCallbacks) {
+		droppedFilesCb(droppedFiles);
+	}
+	//FAssetsLibrary::HandleDroppedFiles(droppedFiles);
+}
+
 SharedPtr<FScene> FApplication::GetCurrentScene()
 {
 	for (auto module : ApplicationModules) {
@@ -185,6 +157,46 @@ void FApplication::UnregisterModule(FApplicationModule* Module)
 	ApplicationModules.remove(Module);
 	Module->OnShutdown();
 	delete Module;
+}
+
+WeakPtr<class FLuaContext> FApplication::GetLuaContext()
+{
+	return LuaCtx;
+}
+
+void FApplication::SetupMainViewport(GLFWwindow* MainWindow, int width, int height)
+{
+	int consoleHeight = height * 0.27f;
+	int hierarchyWidth = width * 0.15;
+	int inspectorWidth = width * 0.15;
+	int sceneWidth = width - inspectorWidth - hierarchyWidth;
+
+	EditorGUIViewport = SharedPtr<FViewport>(new FViewport(0, 0, width, height));
+	EditorGUIViewport->InitializeViewport(MainWindow);
+	Viewports.push_back(EditorGUIViewport);
+
+	EditorGUIViewport->RegisterMouseButtonCallback([this](int btn, int act, int mods) {
+		FInputSystem::SetMouseButtonState(btn, act);
+
+		});
+	EditorGUIViewport->RegisterMouseMotionCallback([this](double x, double y) {
+		FInputSystem::OnMouseMove(x, y);
+		});
+	EditorGUIViewport->RegisterKeyboardButtonCallback([this](int Key, int ScanCode, int action, int mods) {
+		//if (action == 0) FInputSystem::HandleKeyUp(Key);
+		//else if (action == 1) FInputSystem::HandleKeyDown(Key);
+		});
+
+	glfwMakeContextCurrent(EditorGUIViewport->ViewportContext);
+	ImGui::SetCurrentContext(EditorGUIViewport->GetGUIContext().get());
+	glfwSetKeyCallback(EditorGUIViewport->ViewportContext, [](GLFWwindow* w, int btn, int scan, int act, int mods) {
+		ImGui::SetCurrentContext(FApplication::Get()->EditorGUIViewport->GetGUIContext().get());
+		FApplication::Get()->EditorGUIViewport->HandleKeyboardButton(btn, scan, act, mods);
+		});
+	glfwFocusWindow(EditorGUIViewport->ViewportContext);
+	glfwSetWindowSizeCallback(EditorGUIViewport->ViewportContext, [](GLFWwindow* window, int width, int height) {
+		FApplication::Get()->OnResize(width, height);
+		});
 }
 
 FApplication* FApplication::Instance = nullptr;

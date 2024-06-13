@@ -4,8 +4,12 @@
 
 void FAssetResource::DrawResourceThumbnail()
 {
-	ImVec2 size = ImGui::CalcTextSize(GetOnlyFileName().c_str());
-	//size.x = 50;
+	BString name = GetOnlyFileName();
+	if (name.size() > 14) {
+		std::string extension(name.substr(name.rfind(".") + 1));
+		name = name.substr(0, 10) + "...." + extension;
+	}
+	ImVec2 size = ImGui::CalcTextSize(name.c_str());
 	ImDrawList* drawList = ImGui::GetWindowDrawList();
 	drawList->ChannelsSplit(2);
 	drawList->ChannelsSetCurrent(1);
@@ -22,7 +26,7 @@ void FAssetResource::DrawResourceThumbnail()
 
 	ImGui::Spacing();
 	ImGui::SameLine();
-	ImGui::Text(GetOnlyFileName().c_str());
+	ImGui::TextWrapped(name.c_str());
 	ImGui::Dummy(ImVec2(0,3));
 	ImGui::EndGroup();
 

@@ -16,12 +16,20 @@ class FAssetsLibrary {
 
 public:
 	static void Initialize();
+	static void HandleDroppedFiles(List<BString> droppedFiles, BString CurrentFolder);
+
+	static void ImportFile(BString FilePath, BString TargetFolder);
+	static void DeleteAsset(BString Path);
+
+	static bool AssetExists(BString path) {
+		return Resources.count(path) > 0;
+	}
 
 	static SharedPtr<FTexture> GetImage(BString resourcePath) {
 		BString sanitized = resourcePath;
 		std::replace(sanitized.begin(), sanitized.end(), '\\', '/');
 		
-		if (ImageResources.count(sanitized)) return ImageResources[sanitized];
+		if (Resources.count(sanitized)) return GetResourceAs<FTexture>(sanitized);
 		return nullptr;
 	}
 
@@ -44,24 +52,45 @@ public:
 
 	static List<BString> const GetAllImageResourcesKeys() {
 		List<BString> keys;
-		for(auto & imap : ImageResources)
-			keys.push_back(imap.first);
+		for(auto & imap : Resources)
+		{
+			if (imap.second->ResourceType == EAssetResourceType::Image) {
+				keys.push_back(imap.first);
+			}
+		}
+
+		return keys;
+	}
+
+	static List<BString> const GetAllResourcesOfType(EAssetResourceType type) {
+		List<BString> keys;
+		for (auto& imap : Resources)
+		{
+			if (imap.second->ResourceType == type) {
+				keys.push_back(imap.first);
+			}
+		}
 
 		return keys;
 	}
 private:
 	static Map<BString, SharedPtr<FAssetResource>> Resources;
-	static Map<BString, SharedPtr<FTexture>>  ImageResources;
 	//static Map<BString, SharedPtr<FAssetResource<FBaseMaterial>>>  MaterialResources;
 };
 
 static List<String> IMAGE_FILE_EXTENSIONS = {
-	".png",
-	".jpg",
-	".bmb"
+	".png", "png",
+	".jpg", "jpg",
+	".bmp", "bmp"
 };
 static List<String> MAT_FILE_EXTENSIONS = {
 	".mat",
 	".mtl"
+};
+static List<String> TEMPLATES_FILE_EXTENSIONS = {
+	".tmpl"
+};
+static List<String> SCRIPTS_FILE_EXTENSIONS = {
+	".lua"
 };
 using FTextureResource = SharedPtr<FTexture>;

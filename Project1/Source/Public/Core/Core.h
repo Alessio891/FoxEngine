@@ -27,6 +27,16 @@ typedef	glm::vec3 Vector3F;
 typedef	glm::vec2 Vector2F;
 
 typedef const char* String;
+
+// Why B String?
+// Because it's a [B]etter String :D
 typedef std::string BString;
+
 template <class T>
 using SharedPtr = std::shared_ptr<T>;
+
+template <class T>
+using UniquePtr = std::unique_ptr<T>;
+
+template <class T>
+using WeakPtr = std::weak_ptr<T>;

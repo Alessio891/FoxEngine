@@ -27,6 +27,8 @@ void FConsoleModule::OnStartup()
 		Size.x = w;
 		Position.y = h-consoleHeight;
 	});
+
+	FApplication::Get()->RegisterFilesDroppedCallback( [this] (List<BString> files) { HandleFilesDropped(files); } );
 }
 
 void FConsoleModule::OnGUIRender()
@@ -96,7 +98,16 @@ void FConsoleModule::DrawAssets()
 		if (entry.is_regular_file()) {
 			SharedPtr<FAssetResource> asset = FAssetsLibrary::GetResource(entry.path().string());
 			asset->DrawResourceThumbnail();
-			
+			ImGui::PushID(asset->FilePath.c_str());
+			if (ImGui::BeginPopupContextItem("Resource Actions")) {
+				FInspectorModule::Get()->SetDisplayedObject(asset);
+				ImGui::Selectable("Rename");
+				if (ImGui::Selectable("Delete")) {
+					FAssetsLibrary::DeleteAsset(asset->FilePath);
+				}
+				ImGui::EndPopup();
+			}
+			ImGui::PopID();
 			if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(0)) {
 				FInspectorModule::Get()->SetDisplayedObject(asset);
 			}
@@ -113,11 +124,14 @@ void FConsoleModule::DrawPath(BString path)
 	List<BString> files;
 	
 	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.64f, 0.0f, 1.0f));
-	ImGuiTreeNodeFlags flags = 0;
+	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
 	if (path == CurrentSelectedPath) {
 		flags |= ImGuiTreeNodeFlags_Selected;
 	}
-	bool nodeResult = ImGui::TreeNodeEx(path.substr(path.rfind("\\") + 1).c_str(), flags);
+	if (path == "Resources") {
+		flags |= ImGuiTreeNodeFlags_DefaultOpen;
+	}
+	bool nodeResult = ImGui::TreeNodeEx(path.substr(path.rfind("\\") + 1).c_str(), flags );
 
 	if (ImGui::IsItemClicked()) {
 		//flags |= ImGuiTreeNodeFlags_Selected;
@@ -144,6 +158,11 @@ void FConsoleModule::DrawPath(BString path)
 		ImGui::TreePop();
 	}
 	ImGui::PopStyleColor();
+}
+
+void FConsoleModule::HandleFilesDropped(List<BString> files)
+{
+	FAssetsLibrary::HandleDroppedFiles(files, CurrentSelectedPath);
 }
 
 SharedPtr<FConsoleModule> FConsoleModule::Instance;

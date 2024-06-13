@@ -38,12 +38,14 @@ void FSceneObject::AddComponent(FObjectComponent* Component)
 	if (it == Components.end()) {
 		Component->Initialize(this);
 		Components.push_back(Component);
+		Component->Begin();
 	}
 }
 
 void FSceneObject::RemoveComponent(FObjectComponent* Component)
 {
 	if (Component == nullptr) return;
+	Component->End();
 	Components.remove(Component);
 }
 

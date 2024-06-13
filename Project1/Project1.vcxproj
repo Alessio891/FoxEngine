@@ -82,7 +82,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_CONSOLE;FT2_BUILD_LIBRARY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../imgui</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../imgui;../lua/src;..</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -149,6 +149,40 @@ xcopy "$(ProjectDir)Resources\*.*" "$(SolutionDir)Builds\$(Configuration)\Resour
     <ClCompile Include="..\imgui\imgui_stdlib.cpp" />
     <ClCompile Include="..\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="..\lua\src\lapi.c" />
+    <ClCompile Include="..\lua\src\lauxlib.c" />
+    <ClCompile Include="..\lua\src\lbaselib.c" />
+    <ClCompile Include="..\lua\src\lcode.c" />
+    <ClCompile Include="..\lua\src\lcorolib.c" />
+    <ClCompile Include="..\lua\src\lctype.c" />
+    <ClCompile Include="..\lua\src\ldblib.c" />
+    <ClCompile Include="..\lua\src\ldebug.c" />
+    <ClCompile Include="..\lua\src\ldo.c" />
+    <ClCompile Include="..\lua\src\ldump.c" />
+    <ClCompile Include="..\lua\src\lfunc.c" />
+    <ClCompile Include="..\lua\src\lgc.c" />
+    <ClCompile Include="..\lua\src\linit.c" />
+    <ClCompile Include="..\lua\src\liolib.c" />
+    <ClCompile Include="..\lua\src\llex.c" />
+    <ClCompile Include="..\lua\src\lmathlib.c" />
+    <ClCompile Include="..\lua\src\lmem.c" />
+    <ClCompile Include="..\lua\src\loadlib.c" />
+    <ClCompile Include="..\lua\src\lobject.c" />
+    <ClCompile Include="..\lua\src\lopcodes.c" />
+    <ClCompile Include="..\lua\src\loslib.c" />
+    <ClCompile Include="..\lua\src\lparser.c" />
+    <ClCompile Include="..\lua\src\lstate.c" />
+    <ClCompile Include="..\lua\src\lstring.c" />
+    <ClCompile Include="..\lua\src\lstrlib.c" />
+    <ClCompile Include="..\lua\src\ltable.c" />
+    <ClCompile Include="..\lua\src\ltablib.c" />
+    <ClCompile Include="..\lua\src\ltm.c" />
+    <ClCompile Include="..\lua\src\lua.c" />
+    <ClCompile Include="..\lua\src\luac.c" />
+    <ClCompile Include="..\lua\src\lundump.c" />
+    <ClCompile Include="..\lua\src\lutf8lib.c" />
+    <ClCompile Include="..\lua\src\lvm.c" />
+    <ClCompile Include="..\lua\src\lzio.c" />
     <ClCompile Include="Source\Private\ConsoleModule\ConsoleModule.cpp" />
     <ClCompile Include="Source\Private\Core\Application.cpp" />
     <ClCompile Include="DebugModule.cpp" />
@@ -171,9 +205,12 @@ xcopy "$(ProjectDir)Resources\*.*" "$(SolutionDir)Builds\$(Configuration)\Resour
     <ClCompile Include="Source\Private\Graphics\Texture.cpp" />
     <ClCompile Include="Source\Private\GUI\GUI.cpp" />
     <ClCompile Include="Source\Private\InspectorModule\InspectorModule.cpp" />
+    <ClCompile Include="Source\Private\LuaIntegration\LuaContext.cpp" />
+    <ClCompile Include="Source\Private\LuaIntegration\LuaObjectComponent.cpp" />
     <ClCompile Include="Source\Public\AssetsLibrary\AssetResource.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\lua\src\Makefile" />
     <None Include="Shaders\DefaultShader.fs">
       <FileType>Document</FileType>
     </None>
@@ -197,8 +234,40 @@ xcopy "$(ProjectDir)Resources\*.*" "$(SolutionDir)Builds\$(Configuration)\Resour
     <ClInclude Include="..\imgui\imstb_rectpack.h" />
     <ClInclude Include="..\imgui\imstb_textedit.h" />
     <ClInclude Include="..\imgui\imstb_truetype.h" />
+    <ClInclude Include="..\lua\src\lapi.h" />
+    <ClInclude Include="..\lua\src\lauxlib.h" />
+    <ClInclude Include="..\lua\src\lcode.h" />
+    <ClInclude Include="..\lua\src\lctype.h" />
+    <ClInclude Include="..\lua\src\ldebug.h" />
+    <ClInclude Include="..\lua\src\ldo.h" />
+    <ClInclude Include="..\lua\src\lfunc.h" />
+    <ClInclude Include="..\lua\src\lgc.h" />
+    <ClInclude Include="..\lua\src\ljumptab.h" />
+    <ClInclude Include="..\lua\src\llex.h" />
+    <ClInclude Include="..\lua\src\llimits.h" />
+    <ClInclude Include="..\lua\src\lmem.h" />
+    <ClInclude Include="..\lua\src\lobject.h" />
+    <ClInclude Include="..\lua\src\lopcodes.h" />
+    <ClInclude Include="..\lua\src\lopnames.h" />
+    <ClInclude Include="..\lua\src\lparser.h" />
+    <ClInclude Include="..\lua\src\lprefix.h" />
+    <ClInclude Include="..\lua\src\lstate.h" />
+    <ClInclude Include="..\lua\src\lstring.h" />
+    <ClInclude Include="..\lua\src\ltable.h" />
+    <ClInclude Include="..\lua\src\ltm.h" />
+    <ClInclude Include="..\lua\src\lua.h" />
+    <ClInclude Include="..\lua\src\lua.hpp" />
+    <ClInclude Include="..\lua\src\luaconf.h" />
+    <ClInclude Include="..\lua\src\lualib.h" />
+    <ClInclude Include="..\lua\src\lundump.h" />
+    <ClInclude Include="..\lua\src\lvm.h" />
+    <ClInclude Include="..\lua\src\lzio.h" />
+    <ClInclude Include="..\sol\sol.hpp" />
+    <ClInclude Include="Source\Public\AssetsLibrary\AssetReference.h" />
     <ClInclude Include="Source\Public\AssetsLibrary\AssetResource.h" />
     <ClInclude Include="Source\Public\AssetsLibrary\ISerializedAsset.h" />
+    <ClInclude Include="Source\Public\AssetsLibrary\ScriptAsset.h" />
+    <ClInclude Include="Source\Public\AssetsLibrary\TemplateAsset.h" />
     <ClInclude Include="Source\Public\ConsoleModule\ConsoleModule.h" />
     <ClInclude Include="Source\Public\Core\Application.h" />
     <ClInclude Include="Source\Public\Core\ApplicationModule.h" />
@@ -226,6 +295,9 @@ xcopy "$(ProjectDir)Resources\*.*" "$(SolutionDir)Builds\$(Configuration)\Resour
     <ClInclude Include="Source\Public\Graphics\Texture.h" />
     <ClInclude Include="Source\Public\GUI\GUI.h" />
     <ClInclude Include="Source\Public\InspectorModule\InspectorModule.h" />
+    <ClInclude Include="Source\Public\LuaIntegration\LuaContext.h" />
+    <ClInclude Include="Source\Public\LuaIntegration\LuaObjectComponent.h" />
+    <ClInclude Include="Source\Public\LuaIntegration\LuaObjects.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="TestInSource.txt" />

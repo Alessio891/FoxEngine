@@ -10,8 +10,10 @@ enum EAssetResourceType {
 	Image,
 	Model,
 	Sound,
+	Script,
 	Text,
 	Material,
+	Template,
 	Misc
 };
 
@@ -22,6 +24,9 @@ public:
 
 	BString FilePath;
 	EAssetResourceType ResourceType;
+
+	virtual void OnImported() {};
+	virtual void OnDeleted() {};
 
 	virtual bool IsLoaded(GLFWwindow* context) {
 		return true;
@@ -39,15 +44,18 @@ public:
 	virtual void DrawResourceThumbnail();
 	virtual void DrawInspector();
 
-	std::string GetOnlyFileName() {
+	std::string GetOnlyFileName(bool includeExtension = true) {
 		BString sanitized = FilePath;
 		std::replace(sanitized.begin(), sanitized.end(), '\\', '/');
 		std::string last_element(sanitized.substr(sanitized.rfind("/") + 1));
+		if (includeExtension)
+			return last_element;
 
+		last_element = last_element.substr(0, last_element.rfind("."));
 		return last_element;
 	}
 
 
-protected:
 	virtual ImTextureID GetThumbnailIcon();
+protected:
 };

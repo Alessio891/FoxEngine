@@ -32,7 +32,22 @@ void FTexture::Load(GLFWwindow* ctx, BString Path)
 
 }
 
+void FTexture::OnDeleted()
+{
+	FAssetResource::OnDeleted();
+	GLFWwindow* oldW = glfwGetCurrentContext();
+	for (auto it : TextureByContext) {
+		glfwMakeContextCurrent(it.first);
+		glDeleteBuffers(1, &it.second);
+
+	}
+	glfwMakeContextCurrent(oldW);
+}
+
 ImTextureID FTexture::GetThumbnailIcon()
 {
-	return (void*)(intptr_t)FAssetsLibrary::GetImage(TexturePath)->GetTextureID(FApplication::Get()->EditorGUIViewport->ViewportContext);
+	auto texture = FAssetsLibrary::GetImage(TexturePath);
+	ImTextureID id = (void*)(intptr_t)texture->GetTextureID(FApplication::Get()->EditorGUIViewport->ViewportContext);
+	texture.reset();
+	return id;
 }

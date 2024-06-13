@@ -12,6 +12,8 @@ FApplication::Get()->RegisterModule( ModuleClass##_Instance );
 ModuleClass##* ModuleClass##_Instance = new ModuleClass##(Viewport); \
 FApplication::Get()->RegisterModule( ModuleClass##_Instance );
 
+typedef std::function<void(List<BString>)> OnFilesDroppedDelegate;
+
 class FApplication {
 
 public:
@@ -20,6 +22,7 @@ public:
 	};
 	~FApplication() {};
 
+	void Init(int argc, char** argv, int width, int height, GLFWwindow* MainWindow);
 	void Start(int argc, char** argv, int width, int height, GLFWwindow* MainWindow);
 	virtual void MainIdleLoop(float DeltaTime);
 	virtual void MainDisplayLoop();
@@ -29,6 +32,11 @@ public:
 	virtual void HandleKeyboardInput(unsigned char Key, int x, int y);
 	virtual void HandleMouseButton(GLFWwindow* Window, int Button, int Action, int Mods);
 	virtual void HandleMouseMotion(GLFWwindow* Window, double x, double y);
+
+	virtual void HandleFilesDropped(List<BString> droppedFiles);
+	void RegisterFilesDroppedCallback(OnFilesDroppedDelegate callback) {
+		OnFilesDroppedCallbacks.push_back(callback);
+	}
 
 	SharedPtr<FViewport> GetViewportWithContext(GLFWwindow* context) {
 		for (auto vp : Viewports) {
@@ -59,12 +67,19 @@ public:
 		
 		return true;
 	}
+	WeakPtr<class FLuaContext> GetLuaContext();
 protected:
+	
+	virtual void SetupMainViewport(GLFWwindow* MainWindow, int width, int height);
+
 	static FApplication* Instance;
 
 	List<SharedPtr<FViewport>> Viewports;
-	//SharedPtr<FViewport> Viewport;
+	
+	List<FApplicationModule*> ApplicationModules;
 
-	std::list<FApplicationModule*> ApplicationModules;
+	List<OnFilesDroppedDelegate> OnFilesDroppedCallbacks;
+
+	SharedPtr<class FLuaContext> LuaCtx;
 private:
 };
