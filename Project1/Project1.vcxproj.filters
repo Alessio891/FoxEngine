@@ -300,6 +300,9 @@
     <ClCompile Include="Source\Private\LuaIntegration\LuaObjectComponent.cpp">
       <Filter>File di origine\Source\Private\LuaIntegration</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Private\AssetsLibrary\ScriptAsset.cpp">
+      <Filter>File di origine\Source\Private\AssetsLibrary</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -553,6 +556,9 @@
     </ClInclude>
     <ClInclude Include="Source\Public\LuaIntegration\LuaObjectComponent.h">
       <Filter>File di origine\Source\Public\LuaIntegration</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\Core\watcher.hpp">
+      <Filter>File di origine\Source\Public\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

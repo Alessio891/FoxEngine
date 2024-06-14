@@ -34,6 +34,7 @@ public:
 
 	virtual void ReloadResource(BString FilePath) {
 		this->FilePath = FilePath;
+		IsDirty = false;
 	}
 	virtual void Load(GLFWwindow* context, EAssetResourceType Type, BString FilePath) {
 	}
@@ -57,5 +58,7 @@ public:
 
 
 	virtual ImTextureID GetThumbnailIcon();
+
+	bool IsDirty = false;
 protected:
 };

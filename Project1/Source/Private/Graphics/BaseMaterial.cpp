@@ -3,7 +3,6 @@
 #include <fstream>>
 #include <glm/gtc/type_ptr.hpp>
 #include "Core.h"
-#include "GLFW/glfw3.h"
 #include <Application.h>
 #include "imgui_stdlib.h"
 #include <Editor/AssetsLibrary.h>

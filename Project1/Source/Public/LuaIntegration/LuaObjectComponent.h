@@ -2,13 +2,14 @@
 #include "Core.h"
 #include "ObjectComponent.h"
 #include "AssetsLibrary/AssetReference.h"
-#include <AssetsLibrary/ScriptAsset.h>
 
 class FLuaObjectComponent : public FObjectComponent {
-
+protected:
+	SharedPtr<class LLuaSceneObjectComponent> LuaComponent;
+	void SetupLuaScript();
 public:
-
-	FAssetReference<FLuaScriptAsset> ScriptAsset;
+	FLuaObjectComponent() : FObjectComponent() {}
+	FAssetReference<class FLuaScriptAsset> ScriptAsset;
 
 	virtual void Begin() override;
 	virtual void End() override;
@@ -16,4 +17,6 @@ public:
 	virtual void Tick(float Delta) override;
 
 	virtual void DrawInspector() override;
+
+	virtual void OnRecompiled();
 };

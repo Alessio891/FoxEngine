@@ -3,7 +3,6 @@
 #include "Core.h"
 #include <functional>
 #define GLFW_EXPOSE_NATIVE_WIN32
-#include "GLFW/glfw3.h"
 #include "GLFW/glfw3native.h"
 #include <glm/ext/matrix_float4x4.hpp>
 #include <glm/ext/matrix_clip_space.hpp>

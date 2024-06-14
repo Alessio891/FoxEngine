@@ -131,7 +131,7 @@ void FEditorSceneModule::OnGUIRender()
 	ImGui::SetNextWindowPos(ImVec2(Position.x, Position.y));
 	ImGui::SetNextWindowSize(ImVec2(Size.x, Size.y));
 	ImGui::SetNextWindowBgAlpha(0.0f);
-	ImGui::Begin("_", NULL, BASE_GUI_WINDOW_FLAGS | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
+	ImGui::Begin("_", NULL, BASE_GUI_WINDOW_FLAGS | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoBringToFrontOnFocus);
 	ImGui::Dummy(ImVec2(Size.x, Size.y));
 	if (ImGui::BeginDragDropTarget()) {
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_DRAG")) {

@@ -97,21 +97,23 @@ void FConsoleModule::DrawAssets()
 	for (const auto& entry : fs::directory_iterator(CurrentSelectedPath)) {
 		if (entry.is_regular_file()) {
 			SharedPtr<FAssetResource> asset = FAssetsLibrary::GetResource(entry.path().string());
-			asset->DrawResourceThumbnail();
-			ImGui::PushID(asset->FilePath.c_str());
-			if (ImGui::BeginPopupContextItem("Resource Actions")) {
-				FInspectorModule::Get()->SetDisplayedObject(asset);
-				ImGui::Selectable("Rename");
-				if (ImGui::Selectable("Delete")) {
-					FAssetsLibrary::DeleteAsset(asset->FilePath);
+			if (asset) {
+				asset->DrawResourceThumbnail();
+				ImGui::PushID(asset->FilePath.c_str());
+				if (ImGui::BeginPopupContextItem("Resource Actions")) {
+					FInspectorModule::Get()->SetDisplayedObject(asset);
+					ImGui::Selectable("Rename");
+					if (ImGui::Selectable("Delete")) {
+						FAssetsLibrary::DeleteAsset(asset->FilePath);
+					}
+					ImGui::EndPopup();
 				}
-				ImGui::EndPopup();
+				ImGui::PopID();
+				if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(0)) {
+					FInspectorModule::Get()->SetDisplayedObject(asset);
+				}
+				ImGui::SameLine();
 			}
-			ImGui::PopID();
-			if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(0)) {
-				FInspectorModule::Get()->SetDisplayedObject(asset);
-			}
-			ImGui::SameLine();
 		}
 	}
 	ImGui::EndChild();

@@ -3,6 +3,7 @@
 #include <string>
 #include <glm/gtx/euler_angles.hpp>
 #include "IInspectable.h"
+
 class FObjectComponent;
 class FMeshRendererComponent;
 
@@ -66,7 +67,7 @@ class FSceneObject : public IInspectable {
 public:
 	FSceneObject() : Name("[Object]"), IInspectable() {}
 	FSceneObject(String name) : Name(name), IInspectable() {}
-
+	~FSceneObject() {}
 	virtual void Begin() {};
 	virtual void End() {};
 	virtual void Tick(float DeltaTime);
@@ -95,10 +96,10 @@ public:
 
 	bool Outlined = false;
 
+	SharedPtr<FMeshRendererComponent> Renderer;
 protected:
 	std::list<FObjectComponent*> Components;
 
 	virtual void TickComponents(float Delta);
 
-	class FMeshRendererComponent* Renderer;
 };

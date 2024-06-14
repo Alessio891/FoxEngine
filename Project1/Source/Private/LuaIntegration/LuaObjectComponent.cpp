@@ -2,45 +2,60 @@
 #include "sol/sol.hpp"
 #include "Application.h"
 #include "LuaIntegration/LuaContext.h"
+#include "SceneObject.h"
+#include <AssetsLibrary/ScriptAsset.h>
+#include "LuaIntegration/LuaObjects.h"
+
+void FLuaObjectComponent::SetupLuaScript()
+{
+	LuaComponent = ScriptAsset.Get()->GetNewInstance();
+	if (LuaComponent == nullptr) return;
+	
+	BString scriptName = ScriptAsset.Get()->GetOnlyFileName(false);
+	sol::environment& ctx = LuaComponent->env;
+	ctx[scriptName]["Object"] = SharedPtr<FSceneObject>(Owner);
+	ctx[scriptName]["Begin"]();
+}
+
 void FLuaObjectComponent::Begin()
 {
 	
 	if (ScriptAsset.IsValid()) {
-		BString scriptName = ScriptAsset.Get()->GetOnlyFileName(false);
-		sol::state& ctx = FApplication::Get()->GetLuaContext().lock()->GetState();
-		ctx[scriptName]["Object"] = SharedPtr<FSceneObject>(Owner);
-		ScriptAsset.Get()->GetLuaObject().Begin();
+		ScriptAsset.Get()->RegisterOnRecompileCallback([this]() {
+			OnRecompiled();
+			});
+		LuaComponent = ScriptAsset.Get()->GetNewInstance();
+		if (LuaComponent == nullptr) return;
+		
+		SetupLuaScript();
 	}
 }
 
 void FLuaObjectComponent::End()
 {
+	if (LuaComponent == nullptr) return;
 	if (ScriptAsset.IsValid()) {
-		ScriptAsset.Get()->GetLuaObject().End();
+		BString scriptName = ScriptAsset.Get()->GetOnlyFileName(false);
+		LuaComponent->env[scriptName]["End"]();
 	}
 }
 
 void FLuaObjectComponent::Tick(float Delta)
 {
+	if (LuaComponent == nullptr) return;
 	if (ScriptAsset.IsValid()) {
-		/*BString scriptName = ScriptAsset.Get()->GetOnlyFileName(false);
-		sol::state& ctx = FApplication::Get()->GetLuaContext().lock()->GetState();
-		if (!ctx[scriptName]["Object"].valid())
-		{
-			ctx[scriptName]["Object"] = SharedPtr<FSceneObject>(Owner);
-		}
-		*/
-		auto o = ScriptAsset.Get()->GetLuaObject();
-		o.Tick(12, double(Delta));
+		BString scriptName = ScriptAsset.Get()->GetOnlyFileName(false);
+		LuaComponent->env[scriptName]["Tick"](12, double(Delta));
 	}
 }
 
 void FLuaObjectComponent::DrawInspector()
 {
+	if (LuaComponent == nullptr) return;
 	ImGui::Text("LuaScript");
 	if (ScriptAsset.IsValid()) {
-		auto ctx = FApplication::Get()->GetLuaContext().lock();
-		auto script = ctx->GetState()[ScriptAsset.Get()->GetOnlyFileName(false)];
+		//auto ctx = FApplication::Get()->GetLuaContext().lock();
+		auto script = LuaComponent->env[ScriptAsset.Get()->GetOnlyFileName(false)];
 		sol::table state = script["Data"];
 		int s = state.size();
 		if (state.valid()) {
@@ -72,11 +87,21 @@ void FLuaObjectComponent::DrawInspector()
 					else {
 						float val = value.get<float>();
 						auto speed = v.get_or<float, BString, float>("FloatSpeed", 0.5f);
-						ImGui::DragFloat(_name.c_str(), &val, speed);
+						auto min = v.get_or<float, BString, float>("Min", 0.0f);
+						auto max = v.get_or<float, BString, float>("Max", 0.0f);
+						ImGui::DragFloat(_name.c_str(), &val, speed, min, max);
 						v["Value"] = val;
 					}
 				}
 			}
 		}
 	}
+}
+
+void FLuaObjectComponent::OnRecompiled()
+{
+	BString scriptName = ScriptAsset.Get()->GetOnlyFileName(false);
+	sol::environment& ctx = LuaComponent->env;
+	//ctx[scriptName]["Object"] = SharedPtr<FSceneObject>(Owner);
+	if (LuaComponent == nullptr) SetupLuaScript();
 }

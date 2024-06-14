@@ -24,6 +24,7 @@ public:
 
 	void Init(int argc, char** argv, int width, int height, GLFWwindow* MainWindow);
 	void Start(int argc, char** argv, int width, int height, GLFWwindow* MainWindow);
+	void Shutdown();
 	virtual void MainIdleLoop(float DeltaTime);
 	virtual void MainDisplayLoop();
 

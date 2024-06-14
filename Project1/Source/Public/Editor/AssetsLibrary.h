@@ -2,20 +2,33 @@
 
 #include "Core.h"
 #include "Graphics\Texture.h"
-#include "GLFW/glfw3.h"
 #include <string>
 #include <iostream>
 #include <filesystem>
 #include "nlohmann/json.hpp"
 #include "Graphics/BaseMaterial.h"
 #include "AssetsLibrary/AssetResource.h"
+#include "watcher.hpp"
+#include <mutex>
+
+using namespace wtr;
 
 using json = nlohmann::json;
 
 class FAssetsLibrary {
 
+protected:
+	static void HandleFileChanged(event e);
+	static SharedPtr<watcher::watch> AssetWatcher;
+	static std::thread WatcherThread;
+	static BString LastModifiedFile;
+	static long long LastModifiedTime;
+	static std::mutex AssetsMutex;
+
 public:
 	static void Initialize();
+	static void Shutdown();
+	static void Update();
 	static void HandleDroppedFiles(List<BString> droppedFiles, BString CurrentFolder);
 
 	static void ImportFile(BString FilePath, BString TargetFolder);

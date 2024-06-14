@@ -6,7 +6,6 @@
 #include "Editor\EditorSceneModule.h"
 #include "Editor\SceneHierarchyModule.h"
 
-#include "GLFW/glfw3.h"
 #include "windows.h"
 #include "commctrl.h"
 
@@ -145,7 +144,7 @@ int main(int argc, char* argv[]) {
 		// Update Input System State
 		FInputSystem::LateUpdate(0.0f);
 	}
-
+	MainApplication->Shutdown();
 	// Exit, cleanup
 	glfwDestroyWindow(MainApplication->EditorGUIViewport->ViewportContext);
 

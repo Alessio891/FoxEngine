@@ -51,11 +51,7 @@ void FSceneObject::RemoveComponent(FObjectComponent* Component)
 
 void FSceneObject::SetupRenderer(FMeshRendererComponent* Renderer)
 {
-	if (Renderer == nullptr && this->Renderer != nullptr)
-	{
-		delete this->Renderer;
-	}
-	this->Renderer = Renderer;
+	this->Renderer = SharedPtr<FMeshRendererComponent>(Renderer);
 }
 
 void FSceneObject::DrawInspector()

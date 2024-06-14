@@ -40,6 +40,11 @@ void FApplication::Start(int argc, char** argv, int width, int height, GLFWwindo
 {
 }
 
+void FApplication::Shutdown()
+{
+	FAssetsLibrary::Shutdown();
+}
+
 void FApplication::MainIdleLoop(float DeltaTime)
 {
 	/*glfwMakeContextCurrent(MainWindow);
@@ -58,7 +63,7 @@ void FApplication::MainIdleLoop(float DeltaTime)
 	}
 
 	FInputSystem::Update(DeltaTime);
-
+	FAssetsLibrary::Update();
 }
 
 void FApplication::MainDisplayLoop()
