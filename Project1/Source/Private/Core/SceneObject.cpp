@@ -7,6 +7,8 @@
 #include <glm/gtx/euler_angles.hpp>
 #include "InspectorModule/InspectorModule.h"
 #include "imgui_stdlib.h"
+#include <LuaIntegration/LuaObjectComponent.h>
+#include <AssetsLibrary/ScriptAsset.h>
 
 void FSceneObject::Tick(float DeltaTime)
 {
@@ -55,11 +57,11 @@ void FSceneObject::SetupRenderer(FMeshRendererComponent* Renderer)
 }
 
 void FSceneObject::DrawInspector()
-{	
+{
 	ImGui::Text("Name:");
 	ImGui::SameLine();
-	ImGui::InputText("_", &Name );
-	
+	ImGui::InputText("_", &Name);
+
 	if (ImGui::CollapsingHeader("Transform")) {
 		Transform.Position = FImGui::Vec3("Position", Transform.Position);
 		Transform.Rotation = FImGui::Vec3("Rotation", Transform.Rotation);
@@ -69,6 +71,18 @@ void FSceneObject::DrawInspector()
 	for (FObjectComponent* Component : Components) {
 		Component->DrawInspector();
 	}
+
+	if (ImGui::BeginPopup("#components")) {
+		if (ImGui::Selectable("Test Script")) {
+			FLuaObjectComponent* comp = new FLuaObjectComponent();
+			comp->ScriptAsset.Set(FAssetsLibrary::GetResourceAs<FLuaScriptAsset>("Resources/Scripts/MyFirstScript.lua"));
+			AddComponent(comp);
+		}
+		ImGui::EndPopup();
+	}
+	if (ImGui::Button("Add Component", ImVec2(ImGui::GetWindowSize().x - 10, 30))) {
+	}
+	ImGui::OpenPopupOnItemClick("#components", ImGuiPopupFlags_MouseButtonLeft);
 }
 
 void FSceneObject::TickComponents(float Delta)

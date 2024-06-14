@@ -1,7 +1,7 @@
 #pragma once
 #include "Core.h"
 #include "AssetsLibrary/AssetResource.h"
-#include <Editor/AssetsLibrary.h>
+#include <AssetsLibrary/AssetsLibrary.h>
 
 struct FTemplateComponent {
 public:

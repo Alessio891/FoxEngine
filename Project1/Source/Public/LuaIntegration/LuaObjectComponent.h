@@ -7,6 +7,8 @@ class FLuaObjectComponent : public FObjectComponent {
 protected:
 	SharedPtr<class LLuaSceneObjectComponent> LuaComponent;
 	void SetupLuaScript();
+
+	int unique_id = 0;
 public:
 	FLuaObjectComponent() : FObjectComponent() {}
 	FAssetReference<class FLuaScriptAsset> ScriptAsset;

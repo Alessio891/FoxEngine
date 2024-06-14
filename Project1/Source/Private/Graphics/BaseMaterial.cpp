@@ -5,7 +5,7 @@
 #include "Core.h"
 #include <Application.h>
 #include "imgui_stdlib.h"
-#include <Editor/AssetsLibrary.h>
+#include <AssetsLibrary/AssetsLibrary.h>
 
 void FBaseMaterial::SetFloat(String ParamName, float Value)
 {

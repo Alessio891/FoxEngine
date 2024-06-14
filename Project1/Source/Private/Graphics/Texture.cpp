@@ -3,7 +3,7 @@
 #include "stb_image.h"
 
 #include "GLFW/glfw3.h"
-#include <Editor/AssetsLibrary.h>
+#include <AssetsLibrary/AssetsLibrary.h>
 
 void FTexture::Load(GLFWwindow* ctx, BString Path)
 {

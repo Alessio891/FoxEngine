@@ -1,6 +1,6 @@
 #pragma once
 #include "Core.h"
-#include "Editor/AssetsLibrary.h"
+#include "AssetsLibrary/AssetsLibrary.h"
 #include "AssetsLibrary/AssetReference.h"
 
 class FGUI {

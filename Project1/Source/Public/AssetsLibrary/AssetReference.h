@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Core.h"
-#include "Editor/AssetsLibrary.h"
+#include "AssetsLibrary/AssetsLibrary.h"
 
 template<class T>
 struct FAssetReference {

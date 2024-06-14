@@ -194,7 +194,7 @@ xcopy "$(ProjectDir)Resources\*.*" "$(SolutionDir)Builds\$(Configuration)\Resour
     <ClCompile Include="Source\Private\Core\Scene.cpp" />
     <ClCompile Include="Source\Private\Core\SceneObject.cpp" />
     <ClCompile Include="Source\Private\Core\Viewport.cpp" />
-    <ClCompile Include="Source\Private\Editor\AssetsLibrary.cpp" />
+    <ClCompile Include="Source\Private\AssetsLibrary\AssetsLibrary.cpp" />
     <ClCompile Include="Source\Private\Editor\EditorGUIModule.cpp" />
     <ClCompile Include="Source\Private\Editor\EditorSceneModule.cpp" />
     <ClCompile Include="Source\Private\Editor\SceneGizmo.cpp" />
@@ -284,7 +284,7 @@ xcopy "$(ProjectDir)Resources\*.*" "$(SolutionDir)Builds\$(Configuration)\Resour
     <ClInclude Include="Source\Public\Core\stb_image.h" />
     <ClInclude Include="Source\Public\Core\Viewport.h" />
     <ClInclude Include="Source\Public\Core\watcher.hpp" />
-    <ClInclude Include="Source\Public\Editor\AssetsLibrary.h" />
+    <ClInclude Include="Source\Public\AssetsLibrary\AssetsLibrary.h" />
     <ClInclude Include="Source\Public\Editor\EditorGUIModule.h" />
     <ClInclude Include="Source\Public\Editor\EditorSceneModule.h" />
     <ClInclude Include="Source\Public\Editor\SceneGizmo.h" />

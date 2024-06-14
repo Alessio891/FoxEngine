@@ -76,6 +76,7 @@ public:
 
 	virtual void AddComponent(FObjectComponent* Component);
 	virtual void RemoveComponent(FObjectComponent* Component);
+	virtual List<FObjectComponent*> const GetComponents() { return Components; }
 
 	void SetupRenderer(FMeshRendererComponent* Renderer);
 

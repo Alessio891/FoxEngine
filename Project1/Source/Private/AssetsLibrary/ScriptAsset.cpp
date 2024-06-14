@@ -2,7 +2,7 @@
 #include "LuaIntegration/LuaObjects.h"
 #include "LuaIntegration/LuaContext.h"
 #include "LuaIntegration/LuaObjectComponent.h"
-#include <Editor/AssetsLibrary.h>
+#include <AssetsLibrary/AssetsLibrary.h>
 
 
 FLuaScriptAsset::FLuaScriptAsset(BString path) : FAssetResource(EAssetResourceType::Script, path)
@@ -48,6 +48,14 @@ void FLuaScriptAsset::DrawInspector()
 {
 	if (ImGui::Button("Recompile")) {
 		Recompile();
+	}
+	ImGui::Text("Current instances: %d", envs.size());
+	for (auto e : envs) {
+		if (e->Object)
+		{
+			ImGui::Text(e->Object->Name.c_str());
+			ImGui::Text("# components: %d", e->Object->GetComponents().size());
+		}
 	}
 }
 

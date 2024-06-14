@@ -1,4 +1,4 @@
-#include "Editor/AssetsLibrary.h"
+#include "AssetsLibrary/AssetsLibrary.h"
 #include "Core.h"
 #include <Logger.h>
 #include "Graphics/MaterialLibrary.h"
@@ -53,6 +53,13 @@ void FAssetsLibrary::HandleFileChanged(event e)
 				script->IsDirty = true;
 				AssetsMutex.unlock();
 			}
+		}
+	}
+	else if (e.effect_type == event::effect_type::destroy) {
+		SharedPtr<FAssetResource> resource = GetResource(path);
+		if (resource) {
+			resource->OnDeleted();
+			Resources.erase(path);
 		}
 	}
 	//std::this_thread::sleep_for(std::chrono::milliseconds(100));

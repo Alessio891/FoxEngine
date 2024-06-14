@@ -183,9 +183,6 @@
     <ClCompile Include="Source\Private\Graphics\Texture.cpp">
       <Filter>File di origine\Source\Private\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Private\Editor\AssetsLibrary.cpp">
-      <Filter>File di origine\Source\Private\Editor</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Private\GUI\GUI.cpp">
       <Filter>File di origine\Source\Private\GUI</Filter>
     </ClCompile>
@@ -301,6 +298,9 @@
       <Filter>File di origine\Source\Private\LuaIntegration</Filter>
     </ClCompile>
     <ClCompile Include="Source\Private\AssetsLibrary\ScriptAsset.cpp">
+      <Filter>File di origine\Source\Private\AssetsLibrary</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Private\AssetsLibrary\AssetsLibrary.cpp">
       <Filter>File di origine\Source\Private\AssetsLibrary</Filter>
     </ClCompile>
   </ItemGroup>
@@ -437,9 +437,6 @@
     <ClInclude Include="Source\Public\Core\stb_image.h">
       <Filter>File di origine\Source\Public\Core</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Public\Editor\AssetsLibrary.h">
-      <Filter>File di origine\Source\Public\Editor</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Public\GUI\GUI.h">
       <Filter>File di origine\Source\Public\GUI</Filter>
     </ClInclude>
@@ -559,6 +556,9 @@
     </ClInclude>
     <ClInclude Include="Source\Public\Core\watcher.hpp">
       <Filter>File di origine\Source\Public\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\AssetsLibrary\AssetsLibrary.h">
+      <Filter>File di origine\Source\Public\AssetsLibrary</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

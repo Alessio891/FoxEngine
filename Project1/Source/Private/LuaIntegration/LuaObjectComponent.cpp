@@ -8,7 +8,8 @@
 
 void FLuaObjectComponent::SetupLuaScript()
 {
-	LuaComponent = ScriptAsset.Get()->GetNewInstance();
+	if (LuaComponent == nullptr)
+		LuaComponent = ScriptAsset.Get()->GetNewInstance();
 	if (LuaComponent == nullptr) return;
 	
 	BString scriptName = ScriptAsset.Get()->GetOnlyFileName(false);
@@ -19,7 +20,7 @@ void FLuaObjectComponent::SetupLuaScript()
 
 void FLuaObjectComponent::Begin()
 {
-	
+	unique_id = std::rand();
 	if (ScriptAsset.IsValid()) {
 		ScriptAsset.Get()->RegisterOnRecompileCallback([this]() {
 			OnRecompiled();
@@ -53,6 +54,7 @@ void FLuaObjectComponent::DrawInspector()
 {
 	if (LuaComponent == nullptr) return;
 	ImGui::Text("LuaScript");
+	ImGui::PushID("#lua_script_props_" + unique_id);
 	if (ScriptAsset.IsValid()) {
 		//auto ctx = FApplication::Get()->GetLuaContext().lock();
 		auto script = LuaComponent->env[ScriptAsset.Get()->GetOnlyFileName(false)];
@@ -96,6 +98,7 @@ void FLuaObjectComponent::DrawInspector()
 			}
 		}
 	}
+	ImGui::PopID();
 }
 
 void FLuaObjectComponent::OnRecompiled()

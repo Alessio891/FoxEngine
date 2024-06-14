@@ -1,5 +1,5 @@
 #include "AssetsLibrary/AssetResource.h"
-#include "Editor/AssetsLibrary.h"
+#include "AssetsLibrary/AssetsLibrary.h"
 #include <InspectorModule/InspectorModule.h>
 
 void FAssetResource::DrawResourceThumbnail()

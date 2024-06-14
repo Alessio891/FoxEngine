@@ -5,7 +5,7 @@
 #include <chrono>
 #include <format>
 #include "Viewport.h"
-#include <Editor/AssetsLibrary.h>
+#include <AssetsLibrary/AssetsLibrary.h>
 #include <string>
 #include <iostream>
 #include <filesystem>
