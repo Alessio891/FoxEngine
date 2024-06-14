@@ -1,6 +1,12 @@
 #include "AssetsLibrary/AssetResource.h"
 #include "AssetsLibrary/AssetsLibrary.h"
 #include <InspectorModule/InspectorModule.h>
+#include <fstream>
+bool FAssetResource::FileStillExists()
+{
+	std::ifstream f(FilePath.c_str());
+	return f.good();
+}
 
 void FAssetResource::DrawResourceThumbnail()
 {

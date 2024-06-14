@@ -54,6 +54,9 @@ void FAssetsLibrary::HandleFileChanged(event e)
 				AssetsMutex.unlock();
 			}
 		}
+		else {
+			ProcessAsset(path);
+		}
 	}
 	else if (e.effect_type == event::effect_type::destroy) {
 		SharedPtr<FAssetResource> resource = GetResource(path);
@@ -62,6 +65,13 @@ void FAssetsLibrary::HandleFileChanged(event e)
 			Resources.erase(path);
 		}
 	}
+	else if (e.effect_type == event::effect_type::rename) {
+		ProcessAsset(path);
+		RefreshAssetsState();
+	}
+	else if (e.effect_type == event::effect_type::create) {
+		ProcessAsset(path);
+	}
 	//std::this_thread::sleep_for(std::chrono::milliseconds(100));
 }
 
@@ -69,45 +79,10 @@ void FAssetsLibrary::Initialize()
 {
 	BString path = "Resources/";
 
-	
-
 	for (const auto& entry : fs::recursive_directory_iterator(path)) {
 		if (fs::is_regular_file(entry.path())) {
 			BString filePath = entry.path().string();
-			std::replace(filePath.begin(), filePath.end(), '\\', '/');
-			BString extension = entry.path().extension().string();
-			FLogger::LogInfo("Loading Resource " + filePath);
-			
-			bool isImage = (std::find(IMAGE_FILE_EXTENSIONS.begin(), IMAGE_FILE_EXTENSIONS.end(), extension) != IMAGE_FILE_EXTENSIONS.end());
-			bool isMat = (std::find(MAT_FILE_EXTENSIONS.begin(), MAT_FILE_EXTENSIONS.end(), extension) != MAT_FILE_EXTENSIONS.end());
-			bool isTemplate = (std::find(TEMPLATES_FILE_EXTENSIONS.begin(), TEMPLATES_FILE_EXTENSIONS.end(), extension) != TEMPLATES_FILE_EXTENSIONS.end());
-			bool isScript = (std::find(SCRIPTS_FILE_EXTENSIONS.begin(), SCRIPTS_FILE_EXTENSIONS.end(), extension) != SCRIPTS_FILE_EXTENSIONS.end());
-			if (isImage) {
-				Resources[filePath] = SharedPtr<FTexture>(new FTexture(filePath));
-			} else if (isMat) {
-				std::ifstream file(filePath.c_str());
-				auto matJson = json::parse( file );
-				SharedPtr<FBaseMaterial> Material(new FBaseMaterial(filePath, matJson));
-
-				FMaterialLibrary::RegisterMaterial(Material);
-				Resources[filePath] = Material;
-				//MaterialResources[filePath] = SharedPtr<FAssetResource<FBaseMaterial>>(new FAssetResource<FBaseMaterial>(EAssetResourceType::Material, filePath));
-			}
-			else if (isTemplate) {
-				std::ifstream file(filePath.c_str());
-				auto tmpltJson = json::parse(file);
-				SharedPtr<FTemplateAsset> Template(new FTemplateAsset(filePath));
-				Template->LoadFromJson(tmpltJson);
-				Resources[filePath] = Template;
-			}
-			else if (isScript) {
-				SharedPtr<FLuaScriptAsset> resource(new FLuaScriptAsset(filePath));
-				Resources[filePath] = resource;
-			}
-			else {
-				Resources[filePath] = SharedPtr<FAssetResource>(new FAssetResource(EAssetResourceType::Misc, filePath));
-			}
-
+			ProcessAsset(filePath);
 		}
 	}
 
@@ -119,6 +94,7 @@ void FAssetsLibrary::Initialize()
 
 void FAssetsLibrary::Shutdown()
 {
+	AssetWatcher.reset();
 	WatcherThread.join();
 }
 
@@ -126,7 +102,10 @@ void FAssetsLibrary::Update()
 {
 	for (auto res : Resources) {
 		if (res.second->IsDirty) {
-			res.second->ReloadResource(res.second->FilePath);
+			if (AssetsMutex.try_lock()) {
+				res.second->ReloadResource(res.second->FilePath);
+				AssetsMutex.unlock();
+			}
 		}
 	}
 }
@@ -152,28 +131,49 @@ void FAssetsLibrary::ImportFile(BString FilePath, BString TargetFolder)
 
 	try {
 		fs::copy_file(FilePath, dest, fs::copy_options::overwrite_existing);
-		std::replace(dest.begin(), dest.end(), '\\', '/');
-		std::string extension(dest.substr(dest.rfind(".") + 1));
-		bool isImage = (std::find(IMAGE_FILE_EXTENSIONS.begin(), IMAGE_FILE_EXTENSIONS.end(), extension) != IMAGE_FILE_EXTENSIONS.end());
-		bool isMat = (std::find(MAT_FILE_EXTENSIONS.begin(), MAT_FILE_EXTENSIONS.end(), extension) != MAT_FILE_EXTENSIONS.end());
-		if (isImage) {
-			Resources[dest] = SharedPtr<FTexture>(new FTexture(dest));
-		}
-		else if (isMat) {
-			std::ifstream file(dest.c_str());
-			auto matJson = json::parse(file);
-			SharedPtr<FBaseMaterial> Material(new FBaseMaterial(dest, matJson));
-
-			FMaterialLibrary::RegisterMaterial(Material);
-			Resources[dest] = Material;
-			//MaterialResources[filePath] = SharedPtr<FAssetResource<FBaseMaterial>>(new FAssetResource<FBaseMaterial>(EAssetResourceType::Material, filePath));
-		}
-		else {
-			Resources[dest] = SharedPtr<FAssetResource>(new FAssetResource(EAssetResourceType::Misc, dest));
-		}
+		ProcessAsset(FilePath);
 	}
 	catch (std::exception& e) {
 		FLogger::LogError("Error importing file " + FilePath);
+	}
+}
+
+void FAssetsLibrary::ProcessAsset(BString FilePath)
+{
+	std::replace(FilePath.begin(), FilePath.end(), '\\', '/');
+	FLogger::LogInfo("Loading Resource " + FilePath);
+	std::filesystem::path p(FilePath.c_str());
+	BString extension = p.extension().string();
+
+	bool isImage = (std::find(IMAGE_FILE_EXTENSIONS.begin(), IMAGE_FILE_EXTENSIONS.end(), extension) != IMAGE_FILE_EXTENSIONS.end());
+	bool isMat = (std::find(MAT_FILE_EXTENSIONS.begin(), MAT_FILE_EXTENSIONS.end(), extension) != MAT_FILE_EXTENSIONS.end());
+	bool isTemplate = (std::find(TEMPLATES_FILE_EXTENSIONS.begin(), TEMPLATES_FILE_EXTENSIONS.end(), extension) != TEMPLATES_FILE_EXTENSIONS.end());
+	bool isScript = (std::find(SCRIPTS_FILE_EXTENSIONS.begin(), SCRIPTS_FILE_EXTENSIONS.end(), extension) != SCRIPTS_FILE_EXTENSIONS.end());
+	if (isImage) {
+		Resources[FilePath] = SharedPtr<FTexture>(new FTexture(FilePath));
+	}
+	else if (isMat) {
+		std::ifstream file(FilePath.c_str());
+		auto matJson = json::parse(file);
+		SharedPtr<FBaseMaterial> Material(new FBaseMaterial(FilePath, matJson));
+
+		FMaterialLibrary::RegisterMaterial(Material);
+		Resources[FilePath] = Material;
+		//MaterialResources[filePath] = SharedPtr<FAssetResource<FBaseMaterial>>(new FAssetResource<FBaseMaterial>(EAssetResourceType::Material, filePath));
+	}
+	else if (isTemplate) {
+		std::ifstream file(FilePath.c_str());
+		auto tmpltJson = json::parse(file);
+		SharedPtr<FTemplateAsset> Template(new FTemplateAsset(FilePath));
+		Template->LoadFromJson(tmpltJson);
+		Resources[FilePath] = Template;
+	}
+	else if (isScript) {
+		SharedPtr<FLuaScriptAsset> resource(new FLuaScriptAsset(FilePath));
+		Resources[FilePath] = resource;
+	}
+	else {
+		Resources[FilePath] = SharedPtr<FAssetResource>(new FAssetResource(EAssetResourceType::Misc, FilePath));
 	}
 }
 
@@ -199,6 +199,20 @@ void FAssetsLibrary::DeleteAsset(BString Path)
 		FLogger::LogError("Error deleting file " + Path);
 	}
 	
+}
+void FAssetsLibrary::RefreshAssetsState()
+{
+	List<BString> toRemove;
+	for (auto kvp : Resources) {
+		if (!kvp.second->FileStillExists()) {
+			toRemove.push_back(kvp.first);
+		}
+	}
+
+	for (BString f : toRemove) {
+		Resources[f].reset();
+		Resources.erase(f);
+	}
 }
 std::mutex FAssetsLibrary::AssetsMutex;
 BString FAssetsLibrary::LastModifiedFile;

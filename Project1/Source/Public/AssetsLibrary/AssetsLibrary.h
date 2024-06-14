@@ -32,7 +32,9 @@ public:
 	static void HandleDroppedFiles(List<BString> droppedFiles, BString CurrentFolder);
 
 	static void ImportFile(BString FilePath, BString TargetFolder);
+	static void ProcessAsset(BString FilePath);
 	static void DeleteAsset(BString Path);
+	static void RefreshAssetsState();
 
 	static bool AssetExists(BString path) {
 		return Resources.count(path) > 0;

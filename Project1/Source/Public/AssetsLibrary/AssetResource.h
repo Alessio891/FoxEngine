@@ -31,6 +31,7 @@ public:
 	virtual bool IsLoaded(GLFWwindow* context) {
 		return true;
 	}
+	virtual bool FileStillExists();
 
 	virtual void ReloadResource(BString FilePath) {
 		this->FilePath = FilePath;

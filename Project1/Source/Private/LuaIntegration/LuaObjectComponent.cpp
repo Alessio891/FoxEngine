@@ -53,9 +53,9 @@ void FLuaObjectComponent::Tick(float Delta)
 void FLuaObjectComponent::DrawInspector()
 {
 	if (LuaComponent == nullptr) return;
-	ImGui::Text("LuaScript");
 	ImGui::PushID("#lua_script_props_" + unique_id);
 	if (ScriptAsset.IsValid()) {
+		ImGui::SeparatorText(ScriptAsset.Get()->GetOnlyFileName(false).c_str());
 		//auto ctx = FApplication::Get()->GetLuaContext().lock();
 		auto script = LuaComponent->env[ScriptAsset.Get()->GetOnlyFileName(false)];
 		sol::table state = script["Data"];

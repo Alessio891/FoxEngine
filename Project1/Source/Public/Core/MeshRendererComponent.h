@@ -35,14 +35,14 @@ public:
 	List<float> VertexColorsArray;
 
 	void SetColor(Vector3F color);
-
+	
 	virtual void Tick(float Delta) override;
 	virtual void Initialize(FSceneObject* Owner) override;
 
 	virtual void Render(glm::mat4 V, glm::mat4 P);
 	virtual void DrawInspector() override;
 
-	virtual void SetTexture(BString path);
+	void SetTexture(BString path);
 
 	virtual void Deserialize(json json) override;
 

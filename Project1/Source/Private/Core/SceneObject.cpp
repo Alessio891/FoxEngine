@@ -73,16 +73,28 @@ void FSceneObject::DrawInspector()
 	}
 
 	if (ImGui::BeginPopup("#components")) {
-		if (ImGui::Selectable("Test Script")) {
-			FLuaObjectComponent* comp = new FLuaObjectComponent();
-			comp->ScriptAsset.Set(FAssetsLibrary::GetResourceAs<FLuaScriptAsset>("Resources/Scripts/MyFirstScript.lua"));
-			AddComponent(comp);
+		auto scripts = FAssetsLibrary::GetAllResourcesOfType(EAssetResourceType::Script);
+		for (BString script : scripts) {
+			SharedPtr<FLuaScriptAsset> s = FAssetsLibrary::GetResourceAs<FLuaScriptAsset>(script);
+			if (ImGui::Selectable(s->GetOnlyFileName(false).c_str())) {
+				FLuaObjectComponent* comp = new FLuaObjectComponent();
+				comp->ScriptAsset.Set(s);
+				AddComponent(comp);
+				ImGui::CloseCurrentPopup();
+			}
 		}
+		
 		ImGui::EndPopup();
 	}
-	if (ImGui::Button("Add Component", ImVec2(ImGui::GetWindowSize().x - 10, 30))) {
+	float spacing = ImGui::GetWindowWidth() - 250;
+	ImGui::Separator();
+	ImGui::Dummy(ImVec2(spacing/2, 0));
+	ImGui::SameLine();
+	if (ImGui::Button("Add Component", ImVec2(200, 30))) {
 	}
 	ImGui::OpenPopupOnItemClick("#components", ImGuiPopupFlags_MouseButtonLeft);
+	ImGui::SameLine();
+	ImGui::Dummy(ImVec2(spacing / 2, 0));
 }
 
 void FSceneObject::TickComponents(float Delta)

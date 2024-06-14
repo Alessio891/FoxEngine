@@ -39,7 +39,8 @@ FLuaContext::FLuaContext()
 	luaState.new_usertype<FMeshRendererComponent>(
 		"MeshRendererComponent",
 		"Color", &FMeshRendererComponent::Color,
-		"SetColor", &FMeshRendererComponent::SetColor
+		"SetColor", &FMeshRendererComponent::SetColor,
+		"SetTexture", &FMeshRendererComponent::SetTexture
 	);
 
 	luaState.new_usertype<FSceneObject>(
