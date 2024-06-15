@@ -20,63 +20,76 @@
 #include <sol/sol.hpp>
 #include <LuaIntegration/LuaContext.h>
 
+// Called at the start, before any module is loaded
 void FApplication::Init(int argc, char** argv, int width, int height, GLFWwindow* MainWindow)
 {
+	// Register Log Callback for printing logs using printf
 	FLogger::RegisterLogCallback([this](const FLogMessage& msg) {
 		char buffer[80];
 		strftime(buffer, 80, "%I:%M", localtime(&msg.Time));
 		printf("[%s][%d] %s\n", buffer, msg.Severity, msg.Message.c_str());
-		});
+	});
+
 	SetupMainViewport(MainWindow, width, height);
 
 	glfwMakeContextCurrent(MainWindow);
+
+	// Create Lua Context
 	LuaCtx = SharedPtr<FLuaContext>(new FLuaContext());
 
+	// Initialize Libraries
 	FAssetsLibrary::Initialize();
 	FMaterialLibrary::Initialize();
 }
 
+// Called after core modules have been setup
 void FApplication::Start(int argc, char** argv, int width, int height, GLFWwindow* MainWindow)
 {
 }
 
+// Called when the application is closing
 void FApplication::Shutdown()
 {
+	// Clean Libraries
 	FAssetsLibrary::Shutdown();
 }
 
+// Main Logic Loop
 void FApplication::MainIdleLoop(float DeltaTime)
 {
-	/*glfwMakeContextCurrent(MainWindow);
-	ImGui::SetCurrentContext(MainImGuiContext.get());
-
-	for (SharedPtr<FViewport> viewport : Viewports) {
-		glfwMakeContextCurrent(viewport->ViewportContext);
-	//	glfwPollEvents();
-	}*/
+	// Tick Modules
 	for (FApplicationModule* module : ApplicationModules) {
 		module->OnTick(DeltaTime);
 	}
 
+	// Tick Viewports
 	for (SharedPtr<FViewport> viewport : Viewports) {
 		viewport->UpdateViewport();
 	}
 
+	// Update the Input System State
 	FInputSystem::Update(DeltaTime);
+
+	// Update the Assets Library. Here assets are re-processed when set dirty
 	FAssetsLibrary::Update();
 }
 
+// Main Rendering Loop
 void FApplication::MainDisplayLoop()
 {
+	// Start checking for dragged and dropped files
 	HWND hwNative = glfwGetWin32Window(EditorGUIViewport->ViewportContext);
 	DragAcceptFiles(hwNative, TRUE);
+
 	glfwPollEvents();
+
+	// Render Viewports
 	for (SharedPtr<FViewport> viewport : Viewports) {
 		viewport->RenderViewport();
 	}
 
+	// Stop checking for dragged and dropped files
 	DragAcceptFiles(hwNative, FALSE);
-	//glfwMakeContextCurrent(MainWindow);
 }
 
 void FApplication::OnResize(int width, int height)
@@ -87,18 +100,6 @@ void FApplication::OnResize(int width, int height)
 	int sceneWidth = width - inspectorWidth - hierarchyWidth;
 
 	EditorGUIViewport->SetViewportLocation(0, 0, width, height);
-	
-	/*InspectorViewport->SetViewportLocation(
-		0, 0, inspectorWidth, height - consoleHeight
-	);
-	
-	ConsoleViewport->SetViewportLocation(
-		0, height - consoleHeight, width, consoleHeight
-	);
-
-	HierarchyViewport->SetViewportLocation(
-		inspectorWidth + sceneWidth, 0, hierarchyWidth, height - consoleHeight
-	);*/
 }
 
 void FApplication::HandleKeyboardInput(unsigned char Key, int x, int y)
@@ -107,15 +108,6 @@ void FApplication::HandleKeyboardInput(unsigned char Key, int x, int y)
 
 void FApplication::HandleMouseButton(GLFWwindow* Window, int Button, int Action, int Mods)
 {
-	/*if (Window == EditorGUIViewport->ViewportContext) {
-		if (Button == 0)
-			FInputSystem::LeftButtonDown = Action == 1;
-		else if (Button == 1)
-			FInputSystem::RightButtonDown = Action == 1;
-	}
-	else if (Window == EditorGUIViewport->ViewportContext) {
-		EditorGUIViewport->HandleMouseButton(Button, Action, Mods);
-	}*/
 }
 
 void FApplication::HandleMouseMotion(GLFWwindow* Window, double x, double y)

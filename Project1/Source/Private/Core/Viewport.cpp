@@ -1,6 +1,7 @@
 #include "Core.h"
 #include "Viewport.h"
 #include "Application.h"
+
 void FViewport::SetViewportLocation(int x, int y, int width, int height)
 {
 	Width = width;
@@ -15,19 +16,8 @@ void FViewport::InitializeViewport(GLFWwindow* ParentWindow)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
 
-	/*glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
-	glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-	glfwWindowHint(GLFW_FLOATING, GLFW_TRUE);*/
-	ViewportContext = glfwCreateWindow(Width, Height, "FoxEngine Scene", NULL, NULL);
-/*
-	HWND hwNative = glfwGetWin32Window(ViewportContext);
-	HWND hwParent = glfwGetWin32Window(ParentWindow);
-	SetParent(hwNative, hwParent);
-	long style = GetWindowLong(hwNative, GWL_STYLE);
-	style &= ~WS_POPUP; // remove popup style
-	style |= WS_CHILDWINDOW; // add childwindow style
-	SetWindowLong(hwNative, GWL_STYLE, style);
-	*/
+	ViewportContext = glfwCreateWindow(Width, Height, "FoxEngine", NULL, NULL);
+
 	X = 200;
 	Y = 200;
 	glfwSetWindowPos(ViewportContext, X, Y);
@@ -47,8 +37,6 @@ void FViewport::InitializeViewport(GLFWwindow* ParentWindow)
 		if (vp != nullptr)
 			vp->HandleMouseMotion(x, y);
 		});
-		
-	//ShowWindow(hwNative, SW_SHOW);
 }
 
 void FViewport::UpdateViewport()
