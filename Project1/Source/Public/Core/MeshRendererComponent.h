@@ -4,6 +4,7 @@
 #include "Logger.h"
 
 #include "AssetsLibrary/AssetReference.h"
+#include <Graphics/Graphics.h>
 
 struct MeshData {
 
@@ -25,6 +26,7 @@ public:
 	List<int> IndexArray;
 	List<float> NormalsArray;
 	List<float> UVs;
+	FBoundingBox BoundingBox;
 };
 
 class FMeshRendererComponent : public FObjectComponent {

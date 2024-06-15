@@ -12,6 +12,7 @@
 #include <Logger.h>
 #include <LuaIntegration/LuaObjectComponent.h>
 #include "AssetsLibrary/ScriptAsset.h"
+#include <Graphics/Graphics.h>
 
 void FEditorSceneModule::OnStartup()
 {
@@ -47,20 +48,20 @@ void FEditorSceneModule::OnStartup()
 
 	gizmosMesh->DrawType = GL_LINES;
 
-	SharedPtr<FSceneObject> newObj(new FSceneObject("A Cube"));
+	StartCube = SharedPtr<FSceneObject>(new FSceneObject("A Cube"));
 	FMeshRendererComponent* meshRenderer = new FMeshRendererComponent();
 	meshRenderer->MeshDataRef = mData;//CubePrimitive;
 	meshRenderer->Material.Set(FMaterialLibrary::GetMaterial("DefaultLit"));
 	meshRenderer->Texture = FAssetReference<FTexture>(FAssetsLibrary::GetImage("Resources/Images/test.png"), "Resources/Images/test.png");
-	newObj->AddComponent(meshRenderer);
-	newObj->SetupRenderer(meshRenderer);
+	StartCube->AddComponent(meshRenderer);
+	StartCube->SetupRenderer(meshRenderer);
 
 
 	PositionGizmo = SharedPtr<FSceneGizmo>(new FSceneGizmo());
 	PositionGizmo->HideInHierarchy = true;
 	EditorGrid->RenderingQueue = ERenderingQueue::PreRender;
 	Scene->RegisterSceneObject(EditorGrid);
-	FApplication::Get()->GetCurrentScene()->RegisterSceneObject(newObj);
+	FApplication::Get()->GetCurrentScene()->RegisterSceneObject(StartCube);
 	FApplication::Get()->GetCurrentScene()->RegisterSceneObject(PositionGizmo);
 
 	RenderingPipeline = SharedPtr<FRenderingPipeline>(new FRenderingPipeline(SceneViewport));
@@ -128,7 +129,7 @@ void FEditorSceneModule::OnTick(float Delta)
 
 void FEditorSceneModule::OnGUIRender()
 {
-	ImGui::SetNextWindowPos(ImVec2(Position.x, Position.y));
+	/*ImGui::SetNextWindowPos(ImVec2(Position.x, Position.y));
 	ImGui::SetNextWindowSize(ImVec2(Size.x, Size.y));
 	ImGui::SetNextWindowBgAlpha(0.0f);
 	ImGui::Begin("_", NULL, BASE_GUI_WINDOW_FLAGS | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoBringToFrontOnFocus);
@@ -144,7 +145,10 @@ void FEditorSceneModule::OnGUIRender()
 		}
 		ImGui::EndDragDropTarget();
 	}
+
 	ImGui::End();
+	*/
+	Scene->DrawGUI(0.0f);
 
 	ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.6f);
 	
@@ -219,12 +223,6 @@ SharedPtr<FSceneObject> FEditorSceneModule::NewObject(SharedPtr<MeshData> meshDa
 	newObj->SetupRenderer(meshRenderer);
 	newObj->Transform.Position = Scene->CameraTransform.Position + Scene->CameraTransform.GetForwardVector() * 8.0f;
 
-	FLuaObjectComponent* luaComp = new FLuaObjectComponent();
-	if (ObjName == "New Pyramid")
-		luaComp->ScriptAsset.Set(FAssetsLibrary::GetResourceAs<FLuaScriptAsset>("Resources/Scripts/MyFirstScript.lua"));
-	else
-		luaComp->ScriptAsset.Set(FAssetsLibrary::GetResourceAs<FLuaScriptAsset>("Resources/Scripts/Script2.lua"));
-	newObj->AddComponent(luaComp);
 
 	Scene->RegisterSceneObject(newObj);
 	return newObj;

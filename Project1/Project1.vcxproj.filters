@@ -94,6 +94,9 @@
     <Filter Include="File di origine\Source\Private\LuaIntegration">
       <UniqueIdentifier>{5c2c7d13-43b0-40fb-96a3-1316601d2de6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="File di origine\Source\Private\LuaIntegration\LuaImGui">
+      <UniqueIdentifier>{b142f401-943a-43c2-b728-efd888dacb48}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Private\Core\Application.cpp">
@@ -302,6 +305,9 @@
     </ClCompile>
     <ClCompile Include="Source\Private\AssetsLibrary\AssetsLibrary.cpp">
       <Filter>File di origine\Source\Private\AssetsLibrary</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Private\Graphics\Graphics.cpp">
+      <Filter>File di origine\Source\Private\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -559,6 +565,9 @@
     </ClInclude>
     <ClInclude Include="Source\Public\AssetsLibrary\AssetsLibrary.h">
       <Filter>File di origine\Source\Public\AssetsLibrary</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\Graphics\Graphics.h">
+      <Filter>File di origine\Source\Public\Graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

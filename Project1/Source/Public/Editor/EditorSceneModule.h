@@ -33,6 +33,7 @@ private:
 	void HandleCameraInput(float Delta);
 
 	SharedPtr<FSceneObject> EditorGrid;
+	SharedPtr<FSceneObject> StartCube;
 
 	float LastDelta = 0.0f;
 };

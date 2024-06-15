@@ -11,6 +11,7 @@ public:
 	List<SharedPtr<FSceneObject>> GetSceneObjects() { return SceneObjects; }
 
 	virtual void TickScene(float Delta);
+	virtual void DrawGUI(float Delta);
 
 	FScene() {}
 

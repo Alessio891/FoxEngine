@@ -21,4 +21,6 @@ public:
 	virtual void DrawInspector() override;
 
 	virtual void OnRecompiled();
+
+	virtual void OnDrawGUI(float Delta) override;
 };

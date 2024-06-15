@@ -14,8 +14,8 @@ void FLuaObjectComponent::SetupLuaScript()
 	
 	BString scriptName = ScriptAsset.Get()->GetOnlyFileName(false);
 	sol::environment& ctx = LuaComponent->env;
-	ctx[scriptName]["Object"] = SharedPtr<FSceneObject>(Owner);
-	ctx[scriptName]["Begin"]();
+	ctx["Object"] = SharedPtr<FSceneObject>(Owner);
+	ctx["Begin"]();
 }
 
 void FLuaObjectComponent::Begin()
@@ -37,7 +37,7 @@ void FLuaObjectComponent::End()
 	if (LuaComponent == nullptr) return;
 	if (ScriptAsset.IsValid()) {
 		BString scriptName = ScriptAsset.Get()->GetOnlyFileName(false);
-		LuaComponent->env[scriptName]["End"]();
+		LuaComponent->env["End"]();
 	}
 }
 
@@ -46,7 +46,7 @@ void FLuaObjectComponent::Tick(float Delta)
 	if (LuaComponent == nullptr) return;
 	if (ScriptAsset.IsValid()) {
 		BString scriptName = ScriptAsset.Get()->GetOnlyFileName(false);
-		LuaComponent->env[scriptName]["Tick"](12, double(Delta));
+		LuaComponent->env["Tick"](double(Delta));
 	}
 }
 
@@ -57,7 +57,7 @@ void FLuaObjectComponent::DrawInspector()
 	if (ScriptAsset.IsValid()) {
 		ImGui::SeparatorText(ScriptAsset.Get()->GetOnlyFileName(false).c_str());
 		//auto ctx = FApplication::Get()->GetLuaContext().lock();
-		auto script = LuaComponent->env[ScriptAsset.Get()->GetOnlyFileName(false)];
+		auto script = LuaComponent->env;
 		sol::table state = script["Data"];
 		int s = state.size();
 		if (state.valid()) {
@@ -93,6 +93,8 @@ void FLuaObjectComponent::DrawInspector()
 						auto max = v.get_or<float, BString, float>("Max", 0.0f);
 						ImGui::DragFloat(_name.c_str(), &val, speed, min, max);
 						v["Value"] = val;
+						
+						script[kvp.first.as<BString>()] = val;
 					}
 				}
 			}
@@ -107,4 +109,18 @@ void FLuaObjectComponent::OnRecompiled()
 	sol::environment& ctx = LuaComponent->env;
 	//ctx[scriptName]["Object"] = SharedPtr<FSceneObject>(Owner);
 	if (LuaComponent == nullptr) SetupLuaScript();
+}
+
+void FLuaObjectComponent::OnDrawGUI(float Delta)
+{
+	if (LuaComponent == nullptr) return;
+	if (ScriptAsset.IsValid()) {
+		BString scriptName = ScriptAsset.Get()->GetOnlyFileName(false);
+		try {
+			LuaComponent->env["OnDrawGUI"](double(Delta));
+		}
+		catch (std::exception& e) {
+			FLogger::LogError("Error while drawing gui: " + BString(e.what()));
+		}
+	}
 }

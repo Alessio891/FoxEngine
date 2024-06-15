@@ -201,6 +201,7 @@ xcopy "$(ProjectDir)Resources\*.*" "$(SolutionDir)Builds\$(Configuration)\Resour
     <ClCompile Include="Source\Private\Editor\SceneHierarchyModule.cpp" />
     <ClCompile Include="Source\Private\Graphics\BaseMaterial.cpp" />
     <ClCompile Include="Source\Private\Graphics\Fonts.cpp" />
+    <ClCompile Include="Source\Private\Graphics\Graphics.cpp" />
     <ClCompile Include="Source\Private\Graphics\MaterialLibrary.cpp" />
     <ClCompile Include="Source\Private\Graphics\RenderingPipeline.cpp" />
     <ClCompile Include="Source\Private\Graphics\Texture.cpp" />
@@ -291,6 +292,7 @@ xcopy "$(ProjectDir)Resources\*.*" "$(SolutionDir)Builds\$(Configuration)\Resour
     <ClInclude Include="Source\Public\Editor\SceneHierarchyModule.h" />
     <ClInclude Include="Source\Public\Graphics\BaseMaterial.h" />
     <ClInclude Include="Source\Public\Graphics\Fonts.h" />
+    <ClInclude Include="Source\Public\Graphics\Graphics.h" />
     <ClInclude Include="Source\Public\Graphics\MaterialLibrary.h" />
     <ClInclude Include="Source\Public\Graphics\Primitives.h" />
     <ClInclude Include="Source\Public\Graphics\RenderingPipeline.h" />

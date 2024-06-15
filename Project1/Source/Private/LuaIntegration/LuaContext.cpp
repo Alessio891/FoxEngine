@@ -1,9 +1,13 @@
+
 #include "Core.h"
+#include "Application.h"
 #include "LuaIntegration/LuaContext.h"
 #include "LuaIntegration/LuaObjects.h"
 #include "SceneObject.h"
 #include <InputSystem.h>
 #include "MeshRendererComponent.h"
+#include "GUI/GUI.h"
+
 FLuaContext::FLuaContext()
 {
 	luaState.open_libraries(sol::lib::base, sol::lib::table);
@@ -50,7 +54,31 @@ FLuaContext::FLuaContext()
 		"Renderer", &FSceneObject::Renderer
 	);
 
+	
+	luaState.set_function("GuiLabel", &ImGui::Text);
+	luaState.set_function("GuiSetWindowPosition", [](double x, double y) {
+		ImGui::SetNextWindowPos(ImVec2(x, y));
+	});
 
+	luaState.set_function("GuiSetWindowSize", [](double x, double y) {
+		ImGui::SetNextWindowSize(ImVec2(x, y));
+		});
+	luaState.set_function("GuiBeginWindow", [](BString title) {
+		return ImGui::Begin(title.c_str());
+	});
+	luaState.set_function("GuiEndWindow", &ImGui::End);
+	luaState.set_function("GuiColor", [](BString label, Vector3F color) {
+		Vector3F c = color;
+		FGUI::Color(label.c_str(), c);
+		return c;
+	});
+
+	luaState.set_function("Raycast", [](SharedPtr<FSceneObject> obj) {
+		auto scene = FApplication::Get()->GetCurrentScene();
+		float dist = 0.0f;
+		FSceneObject* ref = obj.get();
+		return FGraphics::Raycast( scene->CameraTransform.Position, scene->CameraTransform.GetForwardVector(), ref, dist);
+	});
 
 	/*luaState.new_usertype<FAssetsLibrary>(
 		"AssetsLibrary",
@@ -60,14 +88,23 @@ FLuaContext::FLuaContext()
 	luaState.new_enum("ScriptType",
 		"ObjectComponent", ELuaScriptType::ObjectComponent,
 		"ApplicationModule", ELuaScriptType::ApplicationModule);
-
 	luaState.set_function("IsKeyDown", &FInputSystem::IsKeyDown);
 	luaState.set_function("Lerp", [](float a, float b, float f) {
 		return a + f * (b-a);
 	});
 	
+	luaState.script(
+	"function Set(variable, value)\n"
+	 "  Data[variable].Value = value\n"
+	 "end\n"
+	 "function Get(variable)\n"
+	 "  return Data[variable].Value\n"
+	 "end\n"
+	);
+
 	SetupKeysEnum();
 	
+
 	BeginLuaContext();
 }
 

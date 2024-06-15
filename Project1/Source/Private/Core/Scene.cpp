@@ -38,3 +38,10 @@ void FScene::TickScene(float Delta)
 		object->Tick(Delta);
 	}
 }
+
+void FScene::DrawGUI(float Delta)
+{
+	for (auto object : SceneObjects) {
+		object->OnDrawGUI(Delta);
+	}
+}

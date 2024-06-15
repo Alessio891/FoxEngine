@@ -13,6 +13,9 @@ class FLuaScriptAsset : public FAssetResource {
 protected:
 	List<SharedPtr<LLuaSceneObjectComponent>> envs;
 	List<OnRecompileDelegate> OnRecompileDelegates;
+
+	void PrepareEnvironment(sol::environment& env);
+	
 public:
 	FLuaScriptAsset(BString path);
 	static sol::protected_function_result HandleCompileErrors(lua_State*, sol::protected_function_result pfr);

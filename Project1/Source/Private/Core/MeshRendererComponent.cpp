@@ -198,8 +198,22 @@ MeshData::MeshData(List<float> vertices, List<int> indices, List<float> normals,
 	std::copy(vertices.begin(), vertices.end(), v);
 	std::copy(normals.begin(), normals.end(), n);
 	std::copy(uvs.begin(), uvs.end(), u);
-
+	
+	BoundingBox.Min = Vector3F(0,0,0);
+	BoundingBox.Max = Vector3F(0,0,0);
+	
 	for (size_t i = 0; i < vertices.size(); i += 3) {
+		float x = v[i];
+		float y = v[i+1];
+		float z = v[i+2];
+
+		if (x < BoundingBox.Min.x) BoundingBox.Min.x = x;
+		if (x > BoundingBox.Max.x) BoundingBox.Max.x = x;
+		if (y < BoundingBox.Min.y) BoundingBox.Min.y = y;
+		if (y > BoundingBox.Max.y) BoundingBox.Max.y = y;
+		if (z < BoundingBox.Min.z) BoundingBox.Min.z = z;
+		if (z > BoundingBox.Max.z) BoundingBox.Max.z = z;
+
 		// Vertices
 		actualVertices.push_back(v[i]);
 		actualVertices.push_back(v[i + 1]);

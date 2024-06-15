@@ -32,6 +32,13 @@ void FSceneObject::Draw(glm::mat4 V, glm::mat4 P)
 	}
 }
 
+void FSceneObject::OnDrawGUI(float Delta)
+{
+	for (FObjectComponent* comp : Components) {
+		comp->OnDrawGUI(Delta);
+	}
+}
+
 void FSceneObject::AddComponent(FObjectComponent* Component)
 {
 	if (Component == nullptr) return;

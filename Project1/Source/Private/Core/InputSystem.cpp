@@ -54,6 +54,7 @@ bool FInputSystem::IsMouseButtonDown(int button)
 	ImVec2 size = FEditorSceneModule::Get()->GetSize();
 	ImVec2 pos = FEditorSceneModule::Get()->GetPosition();
 	if (int(x) < pos.x || int(y) < pos.y || int(x) > pos.x + size.x || int(y) > pos.y + size.y) return false;
+	if (ImGui::GetIO().WantCaptureMouse) return false;
 	bool pressed = glfwGetMouseButton(FApplication::Get()->EditorGUIViewport->ViewportContext, button) == GLFW_PRESS;
 
 	return  pressed && !LeftButtonLastFrame;
@@ -66,7 +67,7 @@ bool FInputSystem::IsMouseButtonHeld(int button)
 	ImVec2 size = FEditorSceneModule::Get()->GetSize();
 	ImVec2 pos = FEditorSceneModule::Get()->GetPosition();
 	if (int(x) < pos.x || int(y) < pos.y || int(x) > pos.x + size.x || int(y) > pos.y + size.y) return false;
-
+	if (ImGui::GetIO().WantCaptureMouse) return false;
 	if (ImGui::GetDragDropPayload()) return false;
 
 	bool pressed = glfwGetMouseButton(FApplication::Get()->EditorGUIViewport->ViewportContext, button) != GLFW_RELEASE;

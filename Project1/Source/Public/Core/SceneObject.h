@@ -73,6 +73,7 @@ public:
 	virtual void Tick(float DeltaTime);
 
 	virtual void Draw(glm::mat4 V, glm::mat4 P);
+	virtual void OnDrawGUI(float Delta);
 
 	virtual void AddComponent(FObjectComponent* Component);
 	virtual void RemoveComponent(FObjectComponent* Component);

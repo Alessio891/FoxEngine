@@ -5,10 +5,19 @@
 #include <AssetsLibrary/AssetsLibrary.h>
 
 
+void FLuaScriptAsset::PrepareEnvironment(sol::environment& env)
+{
+	auto ctx = FApplication::Get()->GetLuaContext().lock();
+	sol::function set = ctx->GetState()["Set"];
+	sol::set_environment(env, set);
+	sol::function get = ctx->GetState()["Get"];
+	sol::set_environment(env, get);
+}
+
 FLuaScriptAsset::FLuaScriptAsset(BString path) : FAssetResource(EAssetResourceType::Script, path)
 {
 
-	
+
 }
 
 sol::protected_function_result FLuaScriptAsset::HandleCompileErrors(lua_State*, sol::protected_function_result pfr)
@@ -31,9 +40,8 @@ SharedPtr<LLuaSceneObjectComponent> FLuaScriptAsset::GetNewInstance()
 	auto ctx = FApplication::Get()->GetLuaContext().lock();
 	SharedPtr<LLuaSceneObjectComponent> comp(new LLuaSceneObjectComponent());
 	comp->env = sol::environment(ctx->GetState(), sol::create, ctx->GetState().globals());
+	PrepareEnvironment(comp->env);
 
-
-	comp->env[GetOnlyFileName(false)] = comp;
 	auto result = ctx->GetState().safe_script_file(FilePath, comp->env, &FLuaScriptAsset::HandleCompileErrors);
 	envs.push_back(comp);
 	if (result.valid()) {
@@ -75,32 +83,33 @@ void FLuaScriptAsset::Recompile()
 
 			if (!env.valid()) {
 				env = sol::environment(ctx->GetState(), sol::create, ctx->GetState().globals());
+				PrepareEnvironment(comp->env);
 			}
 
 			BString scriptName = GetOnlyFileName(false);
-			bool scriptExists = (env[scriptName] != sol::nil);
-			if (!scriptExists) {
-				env[scriptName] = comp;
-			}
-			//scriptExists = (env[scriptName] != sol::nil);
+
 			// Cache old props values
-			sol::table oldTable = (scriptExists) ? env[scriptName]["Data"].get<sol::table>() : sol::nil;//.get<sol::table>();
-			
+			sol::table oldTable = env["Data"].get<sol::table>();
+
 			auto result = luaCtx.safe_script_file(FilePath, env, &FLuaScriptAsset::HandleCompileErrors);
 			if (result.valid()) {
 				if (oldTable != sol::nil) {
 					for (const auto& oldData : oldTable) {
-						auto tab = env[scriptName]["Data"];
+						auto tab = env["Data"];
 						if (tab != sol::nil)
 						{
 							BString k = oldData.first.as<BString>();
-							auto val = env[scriptName]["Data"][k];
+							auto val = env["Data"][k];
 							if (val != sol::nil)
-								env[scriptName]["Data"][oldData.first]["Value"] = oldTable[oldData.first]["Value"];
+							{
+								env["Data"][oldData.first]["Value"] = oldTable[oldData.first]["Value"];
+								env[oldData.first] = oldTable[oldData.first]["Value"];
+							}
 						}
 					}
 				}
-			} else return;
+			}
+			else return;
 
 		}
 		for (auto cb : OnRecompileDelegates) {

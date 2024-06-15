@@ -14,6 +14,8 @@ public:
 	virtual void End() {};
 	virtual void Tick(float DeltaTime) {};
 
+	virtual void OnDrawGUI(float Delta)  {};
+
 	virtual void DrawInspector();
 
 	virtual void Deserialize(json json) {};
