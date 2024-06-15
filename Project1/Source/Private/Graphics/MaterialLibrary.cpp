@@ -35,7 +35,7 @@ GLuint FMaterialLibrary::GetShader(BString ShaderPath, GLenum ShaderType)
 		shader = 0;
 	}
 	else {
-		printf("Shader %s compiled with id %d\n", ShaderPath, shader);
+		printf("Shader %s compiled with id %d\n", ShaderPath.c_str(), shader);
 	}
 	CachedShaders[ShaderPath] = shader;
 	
@@ -48,7 +48,7 @@ std::string FMaterialLibrary::LoadShaderSource(BString pathToFile)
 	std::ifstream fileStream(pathToFile, std::ios::in);
 
 	if (!fileStream.is_open()) {
-		printf("Couldn't load shader file %s\n", pathToFile);
+		printf("Couldn't load shader file %s\n", pathToFile.c_str());
 		return "";
 	}
 

@@ -18,7 +18,6 @@ void FTexture::Load(GLFWwindow* ctx, BString Path)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	int nrChannels;
 	unsigned char* data = stbi_load(Path.c_str(), &Width, &Height, NULL, 4);
 	if (data) {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Width, Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);

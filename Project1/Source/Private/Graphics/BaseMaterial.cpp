@@ -1,6 +1,5 @@
 #include "Graphics\BaseMaterial.h"
 #include "Graphics\MaterialLibrary.h"
-#include <fstream>>
 #include <glm/gtc/type_ptr.hpp>
 #include "Core.h"
 #include <Application.h>

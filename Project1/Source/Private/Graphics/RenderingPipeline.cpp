@@ -10,7 +10,7 @@ void FRenderingPipeline::EnqueueRenderer(SharedPtr<FMeshRendererComponent> Rende
 
 void FRenderingPipeline::PrepareForRendering(FTransform PointOfView, SharedPtr<FScene> Scene)
 {
-	EnqueuedRenderers.empty();
+	EnqueuedRenderers.clear();
 
 	// Here we will order rendering to reduce draw calls 
 }

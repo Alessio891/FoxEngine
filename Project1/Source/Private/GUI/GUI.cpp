@@ -36,7 +36,7 @@ void FGUI::Texture(String label, FAssetReference<FTexture>& Texture)
 void FGUI::EnumPopup(String label, int& value, std::vector<BString>& values)
 {
 	if (ImGui::BeginCombo(label, values[value].c_str())) {
-		for(int i = 0; i < values.size(); i++)
+		for(unsigned int i = 0; i < values.size(); i++)
 		{
 			if (ImGui::Selectable(values[i].c_str())) {
 				value = i;
