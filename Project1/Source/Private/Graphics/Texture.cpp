@@ -47,7 +47,7 @@ void FTexture::OnDeleted()
 ImTextureID FTexture::GetThumbnailIcon()
 {
 	auto texture = FAssetsLibrary::GetImage(TexturePath);
-	ImTextureID id = (void*)(intptr_t)texture->GetTextureID(FApplication::Get()->EditorGUIViewport->ViewportContext);
+	ImTextureID id = (void*)(intptr_t)texture->GetTextureID(FApplication::Get()->GameViewport->ViewportContext);
 	texture.reset();
 	return id;
 }

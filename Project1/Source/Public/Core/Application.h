@@ -56,13 +56,10 @@ public:
 
 	//const FViewport& GetViewport() { return *Viewport.get(); }
 
-	SharedPtr<FViewport> EditorGUIViewport;//ConsoleViewport, InspectorViewport, HierarchyViewport;
-	SharedPtr<ImGuiContext> MainImGuiContext;
+	SharedPtr<FViewport> GameViewport;
 
 	float InspectorWidth = 0.15f;
 	float ConsoleHeight = 0.27f;
-
-	//GLFWwindow* MainWindow;
 
 	bool ShouldProcessSceneInputs() const {
 		

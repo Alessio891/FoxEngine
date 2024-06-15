@@ -80,20 +80,20 @@ void SetupModules() {
 
 	// Bottom Side Widget Module
 	// TODO: Rename this from FConsoleModule to a more suited name
-	REGISTER_GUI_MODULE(FConsoleModule, MainApplication->EditorGUIViewport);
+	REGISTER_GUI_MODULE(FConsoleModule, MainApplication->GameViewport);
 	FConsoleModule_Instance->SetPositionAndSize(ImVec2(0, HEIGHT - consoleHeight), ImVec2(WIDTH, consoleHeight));
 
 	// Editor Scene Viewport Module
-	REGISTER_GUI_MODULE(FEditorSceneModule, MainApplication->EditorGUIViewport);
+	REGISTER_GUI_MODULE(FEditorSceneModule, MainApplication->GameViewport);
 	FEditorSceneModule_Instance->SetPositionAndSize(ImVec2(inspectorWidth, 0), ImVec2(sceneWidth, HEIGHT - consoleHeight));
 
 	// Inspector Module
-	REGISTER_GUI_MODULE(FInspectorModule, MainApplication->EditorGUIViewport);
+	REGISTER_GUI_MODULE(FInspectorModule, MainApplication->GameViewport);
 	FInspectorModule_Instance->SetPositionAndSize(ImVec2(0, 0), ImVec2(inspectorWidth, HEIGHT - consoleHeight));
 
 	// Scene Settings Module
 	// TODO: Rename FSceneHierarchyModule to a more suited name
-	REGISTER_GUI_MODULE(FSceneHierarchyModule, MainApplication->EditorGUIViewport);
+	REGISTER_GUI_MODULE(FSceneHierarchyModule, MainApplication->GameViewport);
 	FSceneHierarchyModule_Instance->SetPositionAndSize(ImVec2(inspectorWidth + sceneWidth, 0), ImVec2(inspectorWidth, HEIGHT - consoleHeight));
 }
 
@@ -130,11 +130,11 @@ int main(int argc, char* argv[]) {
 	MainApplication->Start(argc, argv, WIDTH, HEIGHT, MainWindow);
 	
 	// Setup Callback for Drag&Drop Files
-	HWND hwNative = glfwGetWin32Window(MainApplication->EditorGUIViewport->ViewportContext);
+	HWND hwNative = glfwGetWin32Window(MainApplication->GameViewport->ViewportContext);
 	SetWindowSubclass(hwNative, &msgProc, 0, 0);
 
 	// Main Loop
-	while (!glfwWindowShouldClose(MainApplication->EditorGUIViewport->ViewportContext)) {
+	while (!glfwWindowShouldClose(MainApplication->GameViewport->ViewportContext)) {
 		// Game Update
 		mainIdleFunc();
 
@@ -146,7 +146,7 @@ int main(int argc, char* argv[]) {
 	}
 	MainApplication->Shutdown();
 	// Exit, cleanup
-	glfwDestroyWindow(MainApplication->EditorGUIViewport->ViewportContext);
+	glfwDestroyWindow(MainApplication->GameViewport->ViewportContext);
 
 	glfwTerminate();
 	exit(EXIT_SUCCESS);

@@ -17,7 +17,7 @@
 void FEditorSceneModule::OnStartup()
 {
 	Instance = SharedPtr<FEditorSceneModule>(this);
-	SharedPtr<FViewport> SceneViewport = FApplication::Get()->EditorGUIViewport;
+	SharedPtr<FViewport> SceneViewport = FApplication::Get()->GameViewport;
 	glfwMakeContextCurrent(SceneViewport->ViewportContext);
 
 	Scene = SharedPtr<FScene>(new FScene());
@@ -82,7 +82,7 @@ void FEditorSceneModule::OnStartup()
 			float zNear = 0.1f;
 			float zFar = 100.0f;
 			//= ys - 1.0 - y;
-			int y = FApplication::Get()->EditorGUIViewport->GetHeight() - 1 - FInputSystem::LastMouseY;
+			int y = FApplication::Get()->GameViewport->GetHeight() - 1 - FInputSystem::LastMouseY;
 			glReadPixels(FInputSystem::LastMouseX, y, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, &stencil);
 			float depth = _z;                                               // logarithmic
 			depth = (2.0 * depth) - 1.0;                                  // logarithmic NDC

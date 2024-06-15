@@ -62,7 +62,7 @@ void FMeshRendererComponent::Render(glm::mat4 V, glm::mat4 P)
 	Material.Get()->UploadParameters();
 	if (Texture.IsValid()) {
 		
-		auto textureId = Texture.Get()->GetTextureID(FApplication::Get()->EditorGUIViewport->ViewportContext);
+		auto textureId = Texture.Get()->GetTextureID(FApplication::Get()->GameViewport->ViewportContext);
 		glBindTexture(GL_TEXTURE_2D, textureId);
 	}
 	else {

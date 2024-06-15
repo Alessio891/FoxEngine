@@ -33,7 +33,7 @@ public:
 		}
 		else {
 
-			GLFWwindow* editorCtx = FApplication::Get()->EditorGUIViewport->ViewportContext;
+			GLFWwindow* editorCtx = FApplication::Get()->GameViewport->ViewportContext;
 			SharedPtr<FAssetResource> assetRef = std::static_pointer_cast<FAssetResource>(asset.Get());
 			ImGui::Image((void*)(intptr_t)assetRef->GetThumbnailIcon(), ImVec2(60, 60));
 			if (ImGui::BeginDragDropTarget()) {

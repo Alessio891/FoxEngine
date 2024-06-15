@@ -30,7 +30,7 @@ sol::protected_function_result FLuaScriptAsset::HandleCompileErrors(lua_State*, 
 ImTextureID FLuaScriptAsset::GetThumbnailIcon()
 {
 	auto texture = FAssetsLibrary::GetImage("Resources/Images/GUI/script.png");
-	ImTextureID id = (void*)(intptr_t)texture->GetTextureID(FApplication::Get()->EditorGUIViewport->ViewportContext);
+	ImTextureID id = (void*)(intptr_t)texture->GetTextureID(FApplication::Get()->GameViewport->ViewportContext);
 	texture.reset();
 	return id;
 }

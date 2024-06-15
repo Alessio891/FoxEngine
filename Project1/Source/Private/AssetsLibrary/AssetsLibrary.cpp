@@ -5,7 +5,6 @@
 #include <fstream>
 #include "nlohmann/json.hpp"
 #include "Graphics/Texture.h"
-#include <iostream>>
 #include <filesystem>
 #include <exception>
 #include <AssetsLibrary/TemplateAsset.h>
@@ -134,7 +133,7 @@ void FAssetsLibrary::ImportFile(BString FilePath, BString TargetFolder)
 		ProcessAsset(FilePath);
 	}
 	catch (std::exception& e) {
-		FLogger::LogError("Error importing file " + FilePath);
+		FLogger::LogError("Error importing file " + FilePath + "\n" + e.what());
 	}
 }
 
@@ -196,7 +195,7 @@ void FAssetsLibrary::DeleteAsset(BString Path)
 		
 	}
 	catch (std::exception& e) {
-		FLogger::LogError("Error deleting file " + Path);
+		FLogger::LogError("Error deleting file " + Path + "\n" + e.what());
 	}
 	
 }

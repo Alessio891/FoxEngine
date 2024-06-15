@@ -40,7 +40,7 @@ public:
 
 	virtual ImTextureID GetThumbnailIcon() override {
 		auto texture = FAssetsLibrary::GetImage("Resources/Images/GUI/template_icon.png");
-		ImTextureID id = (void*)(intptr_t)texture->GetTextureID(FApplication::Get()->EditorGUIViewport->ViewportContext);
+		ImTextureID id = (void*)(intptr_t)texture->GetTextureID(FApplication::Get()->GameViewport->ViewportContext);
 		texture.reset();
 		return id;
 	}

@@ -40,7 +40,7 @@ void FBaseMaterial::UploadParameters()
 
 void FBaseMaterial::Deserialize(json Json)
 {
-	glfwMakeContextCurrent(FApplication::Get()->EditorGUIViewport->ViewportContext);
+	glfwMakeContextCurrent(FApplication::Get()->GameViewport->ViewportContext);
 	Json["Name"].get_to(Name);	
 	Json["VertexShaderPath"].get_to(VertexShaderPath);
 	Json["FragmentShaderPath"].get_to(FragmentShaderPath);
@@ -79,7 +79,7 @@ void FBaseMaterial::DrawInspector()
 
 	if (ImGui::Button("Recompile")) {
 		auto oldCtx = glfwGetCurrentContext();
-		glfwMakeContextCurrent( FApplication::Get()->EditorGUIViewport->ViewportContext );
+		glfwMakeContextCurrent( FApplication::Get()->GameViewport->ViewportContext );
 		
 		glDeleteProgram(ProgramIndex);
 
@@ -98,5 +98,5 @@ void FBaseMaterial::DrawInspector()
 
 ImTextureID FBaseMaterial::GetThumbnailIcon()
 {
-	return (void*)(intptr_t)FAssetsLibrary::GetImage("Resources/Images/GUI/mat_icon.png")->GetTextureID(FApplication::Get()->EditorGUIViewport->ViewportContext);
+	return (void*)(intptr_t)FAssetsLibrary::GetImage("Resources/Images/GUI/mat_icon.png")->GetTextureID(FApplication::Get()->GameViewport->ViewportContext);
 }

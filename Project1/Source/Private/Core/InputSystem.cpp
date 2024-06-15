@@ -26,7 +26,7 @@ void FInputSystem::Update(float Delta)
 	MouseDeltaX = 0;
 	MouseDeltaY = 0;
 
-	LeftButtonDown = glfwGetMouseButton(FApplication::Get()->EditorGUIViewport->ViewportContext, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
+	LeftButtonDown = glfwGetMouseButton(FApplication::Get()->GameViewport->ViewportContext, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
 }
 
 void FInputSystem::LateUpdate(float Delta)
@@ -36,26 +36,26 @@ void FInputSystem::LateUpdate(float Delta)
 
 bool FInputSystem::IsKeyDown(unsigned char Key)
 {
-	ImGui::SetCurrentContext(FApplication::Get()->EditorGUIViewport->GetGUIContext().get());
+	ImGui::SetCurrentContext(FApplication::Get()->GameViewport->GetGUIContext().get());
 	if (ImGui::GetIO().WantTextInput) return false;
-	return glfwGetKey(FApplication::Get()->EditorGUIViewport->ViewportContext, Key) == GLFW_PRESS;
+	return glfwGetKey(FApplication::Get()->GameViewport->ViewportContext, Key) == GLFW_PRESS;
 }
 
 bool FInputSystem::IsKeyUp(unsigned char Key)
 {
 
-	return glfwGetKey(FApplication::Get()->EditorGUIViewport->ViewportContext, Key) == GLFW_RELEASE;
+	return glfwGetKey(FApplication::Get()->GameViewport->ViewportContext, Key) == GLFW_RELEASE;
 }
 
 bool FInputSystem::IsMouseButtonDown(int button)
 {
 	double x, y;
-	glfwGetCursorPos(FApplication::Get()->EditorGUIViewport->ViewportContext, &x, &y);
+	glfwGetCursorPos(FApplication::Get()->GameViewport->ViewportContext, &x, &y);
 	ImVec2 size = FEditorSceneModule::Get()->GetSize();
 	ImVec2 pos = FEditorSceneModule::Get()->GetPosition();
 	if (int(x) < pos.x || int(y) < pos.y || int(x) > pos.x + size.x || int(y) > pos.y + size.y) return false;
 	if (ImGui::GetIO().WantCaptureMouse) return false;
-	bool pressed = glfwGetMouseButton(FApplication::Get()->EditorGUIViewport->ViewportContext, button) == GLFW_PRESS;
+	bool pressed = glfwGetMouseButton(FApplication::Get()->GameViewport->ViewportContext, button) == GLFW_PRESS;
 
 	return  pressed && !LeftButtonLastFrame;
 }
@@ -63,21 +63,21 @@ bool FInputSystem::IsMouseButtonDown(int button)
 bool FInputSystem::IsMouseButtonHeld(int button)
 {
 	double x, y;
-	glfwGetCursorPos(FApplication::Get()->EditorGUIViewport->ViewportContext, &x, &y);
+	glfwGetCursorPos(FApplication::Get()->GameViewport->ViewportContext, &x, &y);
 	ImVec2 size = FEditorSceneModule::Get()->GetSize();
 	ImVec2 pos = FEditorSceneModule::Get()->GetPosition();
 	if (int(x) < pos.x || int(y) < pos.y || int(x) > pos.x + size.x || int(y) > pos.y + size.y) return false;
 	if (ImGui::GetIO().WantCaptureMouse) return false;
 	if (ImGui::GetDragDropPayload()) return false;
 
-	bool pressed = glfwGetMouseButton(FApplication::Get()->EditorGUIViewport->ViewportContext, button) != GLFW_RELEASE;
+	bool pressed = glfwGetMouseButton(FApplication::Get()->GameViewport->ViewportContext, button) != GLFW_RELEASE;
 	return pressed;
 }
 
 
 void FInputSystem::OnMouseMove(int x, int y)
 {
-	SharedPtr<FViewport> viewport = FApplication::Get()->EditorGUIViewport;
+	SharedPtr<FViewport> viewport = FApplication::Get()->GameViewport;
 	if (viewport != nullptr) {
 		MouseDeltaX = float(x - LastMouseX) / float(viewport->GetWidth());
 		MouseDeltaY = float(y - LastMouseY) / float(viewport->GetHeight());

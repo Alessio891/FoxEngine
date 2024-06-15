@@ -3,7 +3,6 @@
 #include "ConsoleModule/ConsoleModule.h"
 #include <Application.h>
 #include <chrono>
-#include <format>
 #include "Viewport.h"
 #include <AssetsLibrary/AssetsLibrary.h>
 #include <string>
@@ -12,7 +11,6 @@
 #include "InspectorModule/InspectorModule.h"
 
 namespace fs = std::filesystem;
-#define _CRT_SECURE_NO_WARNINGS
 void FConsoleModule::OnStartup()
 {
 	FEditorGUIModule::OnStartup();

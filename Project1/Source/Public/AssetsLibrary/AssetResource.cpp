@@ -75,5 +75,5 @@ void FAssetResource::DrawInspector()
 
 ImTextureID FAssetResource::GetThumbnailIcon()
 {
-	return (void*)(intptr_t)FAssetsLibrary::GetImage("Resources/Images/GUI/unknown.png")->GetTextureID(FApplication::Get()->EditorGUIViewport->ViewportContext);
+	return (void*)(intptr_t)FAssetsLibrary::GetImage("Resources/Images/GUI/unknown.png")->GetTextureID(FApplication::Get()->GameViewport->ViewportContext);
 }
