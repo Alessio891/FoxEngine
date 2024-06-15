@@ -54,6 +54,10 @@ FLuaContext::FLuaContext()
 		"Renderer", &FSceneObject::Renderer
 	);
 
+	luaState.set_function("SpawnObject", [](BString name, BString templatePath) {
+		return FApplication::Get()->GetCurrentScene()->SpawnObject(name, templatePath);
+	});
+
 	
 	luaState.set_function("GuiLabel", &ImGui::Text);
 	luaState.set_function("GuiSetWindowPosition", [](double x, double y) {

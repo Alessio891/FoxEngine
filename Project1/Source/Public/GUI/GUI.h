@@ -10,6 +10,7 @@ public:
 
 	static void Material(String label, FAssetReference<FBaseMaterial>& outMat );
 	static void Texture(String label, FAssetReference<FTexture>& Texture);
+	static void ObjectReference(String label, SharedPtr<FSceneObject>& obj, std::function<bool(SharedPtr<FSceneObject>)> acceptObject = [](SharedPtr<FSceneObject> newRef) {return true;});
 	template<class T>
 	static void AssetReference(String label, FAssetReference<T>& asset, std::function<bool(FAssetResource&)> acceptAsset = [](FAssetResource& newRef) {return true;}) {
 		ImGui::BeginGroup();
@@ -20,7 +21,6 @@ public:
 		ImGui::SetColumnWidth(0, ImGui::GetWindowWidth() * 0.3f);
 		if (!asset.IsValid()) {
 			ImGui::Dummy(ImVec2(60, 60));
-			ImGui::Text("No Asset");
 			if (ImGui::BeginDragDropTarget()) {
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_DRAG")) {
 					auto assetPath = static_cast<const char*>(payload->Data);
@@ -30,6 +30,8 @@ public:
 				}
 				ImGui::EndDragDropTarget();
 			}
+			ImGui::NextColumn();
+			ImGui::Text("No Asset");
 		}
 		else {
 
@@ -49,10 +51,9 @@ public:
 			std::string last_element(assetRef->FilePath.substr(assetRef->FilePath.rfind("/") + 1));
 			ImGui::Text(last_element.c_str());
 
-			ImGui::NextColumn();
-			ImGui::Columns(1);
 		}
-
+		ImGui::NextColumn();
+		ImGui::Columns(1);
 		ImGui::EndGroup();
 		ImGui::Separator();
 	}

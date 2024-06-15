@@ -62,6 +62,11 @@ void FSceneHierarchyModule::DrawSceneHierarchy()
 			if (ImGui::Selectable(st.c_str(), selected)) {
 				SetCurrentSelectedObject(sceneObj);
 			}
+			if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
+				ImGui::Text(sceneObj->Name.c_str());
+				ImGui::SetDragDropPayload("OBJECT_DRAG", &sceneObj, sizeof(sceneObj));
+				ImGui::EndDragDropSource();
+			}
 		}
 	}
 

@@ -30,8 +30,12 @@ void FApplication::Init(int argc, char** argv, int width, int height, GLFWwindow
 	});
 
 	SetupMainViewport(MainWindow, width, height);
-
 	glfwMakeContextCurrent(MainWindow);
+	glfwSetKeyCallback(GameViewport->ViewportContext, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
+		if (action == GLFW_PRESS) FInputSystem::HandleKeyDown(key);
+		else if (action == GLFW_RELEASE) FInputSystem::HandleKeyUp(key);
+	});
+
 
 	// Create Lua Context
 	LuaCtx = SharedPtr<FLuaContext>(new FLuaContext());

@@ -24,6 +24,7 @@ public:
 
 	virtual void OnDeleted() override;
 
+	virtual ImTextureID GetThumbnailIcon() override;
 protected:
 	Map<GLFWwindow*, GLuint> TextureByContext;
 	GLuint TextureID = -1;
@@ -32,5 +33,4 @@ protected:
 	int Width;
 	int Height;
 
-	virtual ImTextureID GetThumbnailIcon() override;
 };

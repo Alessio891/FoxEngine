@@ -151,7 +151,7 @@ void FEditorSceneModule::OnGUIRender()
 	Scene->DrawGUI(0.0f);
 
 	ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.6f);
-	
+
 	ImGui::SetNextWindowPos(ImVec2(Position.x + 10, Position.y + 10));
 	ImGui::SetNextWindowSize(ImVec2(50, 200));
 	ImGui::Begin("TestWin", NULL, BASE_GUI_WINDOW_FLAGS | ImGuiWindowFlags_NoTitleBar);
@@ -159,9 +159,9 @@ void FEditorSceneModule::OnGUIRender()
 	static float targetAlpha = 0.0f;
 	static bool showMenu = false;
 	static float alpha = 0.0f;
-	
+
 	auto primitiveIcon = FAssetsLibrary::GetImage("Resources/Images/GUI/primitive.png");
-	
+
 	if (ImGui::ImageButton((void*)(intptr_t)primitiveIcon->GetTextureID(Viewport->ViewportContext), ImVec2(25, 25))) {
 		FLogger::LogInfo("Clicked " + std::to_string(targetAlpha));
 		showMenu = !showMenu;
@@ -171,7 +171,7 @@ void FEditorSceneModule::OnGUIRender()
 	primitiveIcon.reset();
 
 	if (showMenu) {
-		if (abs(targetAlpha-alpha) > 0.001f) {
+		if (abs(targetAlpha - alpha) > 0.001f) {
 			float delta = targetAlpha - alpha;
 			float step = delta >= 0 ? 0.8f : -0.8f;
 			alpha += step * LastDelta;
@@ -209,7 +209,7 @@ void FEditorSceneModule::OnGUIRender()
 
 	ImGui::End();
 
-	
+
 }
 
 SharedPtr<FSceneObject> FEditorSceneModule::NewObject(SharedPtr<MeshData> meshData, BString ObjName)
@@ -247,22 +247,20 @@ SharedPtr<FSceneObject> FEditorSceneModule::NewObject(SharedPtr<FTemplateAsset> 
 
 void FEditorSceneModule::HandleCameraInput(float Delta)
 {
-	if (FInputSystem::IsKeyDown(GLFW_KEY_W)) {
-		Scene->CameraTransform.Position += Scene->CameraTransform.GetForwardVector() * 0.2f * Delta;
-	}
-	else if (FInputSystem::IsKeyDown(GLFW_KEY_S)) {
-		Scene->CameraTransform.Position += Scene->CameraTransform.GetForwardVector() * -0.2f * Delta;
-	}
-	if (FInputSystem::IsKeyDown(GLFW_KEY_A)) {
-		Scene->CameraTransform.Position -= Scene->CameraTransform.GetRightVector() * 0.2f * Delta;
-	}
-	else if (FInputSystem::IsKeyDown(GLFW_KEY_D)) {
-		Scene->CameraTransform.Position += Scene->CameraTransform.GetRightVector() * 0.2f * Delta;
-	}
-	if (FInputSystem::IsKeyDown(GLFW_KEY_G)) {
-		Scene->CameraTransform.Rotation = Vector3F(0.0f, 0.0f, 0.0f);
-	}
 	if (FInputSystem::IsMouseButtonHeld(GLFW_MOUSE_BUTTON_LEFT)) {
+		if (FInputSystem::IsKeyHeld(GLFW_KEY_W)) {
+			Scene->CameraTransform.Position += Scene->CameraTransform.GetForwardVector() * 0.2f * Delta;
+		}
+		else if (FInputSystem::IsKeyHeld(GLFW_KEY_S)) {
+			Scene->CameraTransform.Position += Scene->CameraTransform.GetForwardVector() * -0.2f * Delta;
+		}
+		if (FInputSystem::IsKeyHeld(GLFW_KEY_A)) {
+			Scene->CameraTransform.Position -= Scene->CameraTransform.GetRightVector() * 0.2f * Delta;
+		}
+		else if (FInputSystem::IsKeyHeld(GLFW_KEY_D)) {
+			Scene->CameraTransform.Position += Scene->CameraTransform.GetRightVector() * 0.2f * Delta;
+		}
+
 		std::string mouseY = std::to_string(FInputSystem::MouseDeltaY);
 		Scene->CameraTransform.Rotation.x -= FInputSystem::MouseDeltaY * Delta * 50.0f;
 		Scene->CameraTransform.Rotation.y -= FInputSystem::MouseDeltaX * Delta * 50.0f;

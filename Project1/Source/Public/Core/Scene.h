@@ -8,6 +8,8 @@ public:
 	virtual void RegisterSceneObject(SharedPtr<FSceneObject> SceneObject);
 	virtual void UnregisterSceneObject(SharedPtr<FSceneObject> SceneObject);
 
+	virtual SharedPtr<FSceneObject> SpawnObject(BString Name, BString TemplatePath);
+
 	List<SharedPtr<FSceneObject>> GetSceneObjects() { return SceneObjects; }
 
 	virtual void TickScene(float Delta);

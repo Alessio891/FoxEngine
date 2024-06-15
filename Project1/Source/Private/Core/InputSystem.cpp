@@ -11,6 +11,10 @@ void FInputSystem::HandleKeyDown(unsigned char Key)
 	if (it == PressedKeys.end()) {
 		PressedKeys.push_back(Key);
 	}
+	std::list<unsigned char>::iterator it2 = std::find(PressedThisFrame.begin(), PressedThisFrame.end(), Key);
+	if (it2 == PressedThisFrame.end()) {
+		PressedThisFrame.push_back(Key);
+	}
 }
 
 void FInputSystem::HandleKeyUp(unsigned char Key)
@@ -25,7 +29,7 @@ void FInputSystem::Update(float Delta)
 {
 	MouseDeltaX = 0;
 	MouseDeltaY = 0;
-
+	PressedThisFrame.clear();
 	LeftButtonDown = glfwGetMouseButton(FApplication::Get()->GameViewport->ViewportContext, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
 }
 
@@ -34,15 +38,25 @@ void FInputSystem::LateUpdate(float Delta)
 	LeftButtonLastFrame = LeftButtonDown;
 }
 
+bool FInputSystem::IsKeyHeld(unsigned char Key)
+{
+	return glfwGetKey(FApplication::Get()->GameViewport->ViewportContext, Key) == GLFW_PRESS;
+}
+
 bool FInputSystem::IsKeyDown(unsigned char Key)
 {
 	ImGui::SetCurrentContext(FApplication::Get()->GameViewport->GetGUIContext().get());
 	if (ImGui::GetIO().WantTextInput) return false;
-	return glfwGetKey(FApplication::Get()->GameViewport->ViewportContext, Key) == GLFW_PRESS;
+	std::list<unsigned char>::iterator it = std::find(PressedThisFrame.begin(), PressedThisFrame.end(), Key);
+	return it != PressedThisFrame.end();
 }
 
 bool FInputSystem::IsKeyUp(unsigned char Key)
 {
+	if (glfwGetKey(FApplication::Get()->GameViewport->ViewportContext, Key) == GLFW_PRESS) return false;
+
+	std::list<unsigned char>::iterator it = std::find(PressedKeys.begin(), PressedKeys.end(), Key);
+
 
 	return glfwGetKey(FApplication::Get()->GameViewport->ViewportContext, Key) == GLFW_RELEASE;
 }

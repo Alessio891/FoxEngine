@@ -22,4 +22,6 @@ public:
 
 protected:
 	FSceneObject* Owner;
+
+	bool CanTick = false;
 };

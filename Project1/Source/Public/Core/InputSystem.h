@@ -10,6 +10,7 @@ public:
 	static void Update(float Delta);
 	static void LateUpdate(float Delta);
 
+	static bool IsKeyHeld(unsigned char Key);
 	static bool IsKeyDown(unsigned char Key);
 	static bool IsKeyUp(unsigned char Key);
 	static bool IsMouseButtonDown(int button);

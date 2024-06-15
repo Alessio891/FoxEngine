@@ -14,6 +14,11 @@ Data = {
 		FloatSpeed = 0.01,
 		Min = -0.3,
 		Max = 2.0
+	},
+	["ObjRef"] = {
+		Name = "ObjRef",
+		Value = nil,
+		Type = "Object"
 	}
 }
 
@@ -25,20 +30,25 @@ OtherSpeed = 0.1
 
 ascending = true
 
+otherObj = nil
+
 function Tick(delta)
 	if IsKeyDown(Key.H) then
 		-- Use Set(varName, value) to correctly set a bound value
 		Set("Speed", Get("Speed") + 0.1 * delta)
+
+		
+		local o = SpawnObject("FromLua", "Resources/Templates/TestTemplate.tmpl")
+		o.Transform.Position.y = 1
+		Data["ObjRef"].Value = o
+		
 	end
-	Object.Transform.Rotation.y = Object.Transform.Rotation.y + Speed * delta
+	--Object.Transform.Rotation.y = Object.Transform.Rotation.y + Speed * delta
 	Object.Transform.Rotation.x = Object.Transform.Rotation.x + OtherSpeed * delta
 
-	if ascending then
-		Object.Transform.Position.y = Object.Transform.Position.y + Speed * delta
-		if Object.Transform.Position.y > 4 then ascending = false end
-	else
-		Object.Transform.Position.y = Object.Transform.Position.y - Speed * delta
-		if Object.Transform.Position.y < 0 then ascending = true end
+	if Get("ObjRef") ~= nil then
+		--FoxLog("ObjRef is " ..Get("ObjRef").Name)
+		Data["ObjRef"].Value.Transform.Rotation.y = Data["ObjRef"].Value.Transform.Rotation.y + Speed * delta
 	end
 end
 

@@ -7,6 +7,11 @@
 #include <InputSystem.h>
 #include <Application.h>
 #include "Viewport.h"
+#include <AssetsLibrary/TemplateAsset.h>
+#include "Logger.h"
+#include "MeshRendererComponent.h"
+#include <LuaIntegration/LuaObjectComponent.h>
+
 void FScene::RegisterSceneObject(SharedPtr<FSceneObject> SceneObject)
 {
 	if (SceneObject == nullptr)
@@ -28,6 +33,35 @@ void FScene::UnregisterSceneObject(SharedPtr<FSceneObject> SceneObject)
 
 	SceneObject->End();
 	SceneObjects.remove(SceneObject);
+}
+
+SharedPtr<FSceneObject> FScene::SpawnObject(BString Name, BString TemplatePath)
+{
+
+	SharedPtr<FTemplateAsset> templ = FAssetsLibrary::GetResourceAs<FTemplateAsset>(TemplatePath);
+	if (templ == nullptr) {
+		FLogger::LogError("Couldn't find template file " + TemplatePath);
+		return nullptr;
+	}
+
+	SharedPtr<FSceneObject> newObj(new FSceneObject(Name.c_str()));
+
+	for (auto& comp : templ->Components) {
+		if (comp.Type == "MeshRenderer") {
+			FMeshRendererComponent* meshRenderer = new FMeshRendererComponent();
+			meshRenderer->Deserialize(comp.ComponentJson);
+			newObj->AddComponent(meshRenderer);
+			newObj->SetupRenderer(meshRenderer);
+		}
+		else if (comp.Type == "LuaComponent") {
+			FLuaObjectComponent* luaComp = new FLuaObjectComponent();
+			luaComp->Deserialize(comp.ComponentJson);
+			newObj->AddComponent(luaComp);
+		}
+	}
+	
+	RegisterSceneObject(newObj);
+	return newObj;
 }
 
 void FScene::TickScene(float Delta)

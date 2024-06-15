@@ -1,8 +1,8 @@
 #pragma once
 #include "Core.h"
 #include "ObjectComponent.h"
+#include "AssetsLibrary/ScriptAsset.h"
 #include "AssetsLibrary/AssetReference.h"
-
 class FLuaObjectComponent : public FObjectComponent {
 protected:
 	SharedPtr<class LLuaSceneObjectComponent> LuaComponent;
@@ -11,7 +11,7 @@ protected:
 	int unique_id = 0;
 public:
 	FLuaObjectComponent() : FObjectComponent() {}
-	FAssetReference<class FLuaScriptAsset> ScriptAsset;
+	FAssetReference<FLuaScriptAsset> ScriptAsset;
 
 	virtual void Begin() override;
 	virtual void End() override;
@@ -23,4 +23,6 @@ public:
 	virtual void OnRecompiled();
 
 	virtual void OnDrawGUI(float Delta) override;
+
+	virtual void Deserialize(json json);
 };
