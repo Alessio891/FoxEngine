@@ -41,7 +41,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -74,7 +74,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <PublicIncludeDirectories>C:\Work Space\BattleFox Studio\C++\FoxEngine\Project1;$(PublicIncludeDirectories)</PublicIncludeDirectories>
     <IncludePath>Source\Public;Source\Public\Core;$(IncludePath)</IncludePath>
-    <OutDir>$(SolutionDir)Builds\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)Builds\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <PublicIncludeDirectories>C:\Work Space\BattleFox Studio\C++\FoxEngine\Project1;$(PublicIncludeDirectories)</PublicIncludeDirectories>
+    <IncludePath>Source\Public;Source\Public\Core;$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)Builds\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -115,13 +121,18 @@ xcopy "$(ProjectDir)Resources\*.*" "$(SolutionDir)Builds\$(Configuration)\Resour
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;FT2_BUILD_LIBRARY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>../imgui;../lua/src;..</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(ProjectDir)Shaders\*.*" "$(SolutionDir)Builds\$(Configuration)\Shaders\" /Y /I /E</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -144,7 +155,6 @@ xcopy "$(ProjectDir)Resources\*.*" "$(SolutionDir)Builds\$(Configuration)\Resour
     <ClCompile Include="..\imgui\imgui_demo.cpp" />
     <ClCompile Include="..\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\imgui\imgui_impl_glfw.cpp" />
-    <ClCompile Include="..\imgui\imgui_impl_glut.cpp" />
     <ClCompile Include="..\imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="..\imgui\imgui_stdlib.cpp" />
     <ClCompile Include="..\imgui\imgui_tables.cpp" />
@@ -231,7 +241,6 @@ xcopy "$(ProjectDir)Resources\*.*" "$(SolutionDir)Builds\$(Configuration)\Resour
     <ClInclude Include="..\imgui\imconfig.h" />
     <ClInclude Include="..\imgui\imgui.h" />
     <ClInclude Include="..\imgui\imgui_impl_glfw.h" />
-    <ClInclude Include="..\imgui\imgui_impl_glut.h" />
     <ClInclude Include="..\imgui\imgui_impl_opengl3.h" />
     <ClInclude Include="..\imgui\imgui_internal.h" />
     <ClInclude Include="..\imgui\imgui_stdlib.h" />

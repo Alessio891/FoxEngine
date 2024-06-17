@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include "Core.h"
 #include "MeshRendererComponent.h"
-#include "GL/glut.h"
+//#include "GL/glut.h"
 #include "Graphics/Primitives.h"
 #include <InputSystem.h>
 #include "Graphics/MaterialLibrary.h"
