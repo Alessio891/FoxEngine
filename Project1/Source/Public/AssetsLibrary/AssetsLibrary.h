@@ -108,4 +108,7 @@ static List<String> TEMPLATES_FILE_EXTENSIONS = {
 static List<String> SCRIPTS_FILE_EXTENSIONS = {
 	".lua"
 };
+static List<String> MODELS_FILE_EXTENSIONS = {
+	".obj", ".stl"
+};
 using FTextureResource = SharedPtr<FTexture>;

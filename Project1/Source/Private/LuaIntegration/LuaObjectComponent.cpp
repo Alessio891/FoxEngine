@@ -6,6 +6,7 @@
 #include <AssetsLibrary/ScriptAsset.h>
 #include "LuaIntegration/LuaObjects.h"
 #include "GUI/GUI.h"
+#include "PropsDrawers/PropDrawer.h"
 
 void FLuaObjectComponent::SetupLuaScript()
 {
@@ -61,31 +62,40 @@ void FLuaObjectComponent::DrawInspector()
 	ImGui::PushID("#lua_script_props_" + unique_id);
 	if (ScriptAsset.IsValid()) {
 		ImGui::SeparatorText(ScriptAsset.Get()->GetOnlyFileName(false).c_str());
+		if (ImGui::BeginPopupContextItem("Actions")) {
+			if (ImGui::Selectable("Remove Component")) {
+				Owner->RemoveComponent(this);
+			}
+			ImGui::EndPopup();
+		}
+
 		//auto ctx = FApplication::Get()->GetLuaContext().lock();
 		auto script = LuaComponent->env;
-		sol::table state = script["Data"];
-		int s = state.size();
-		if (state.valid()) {
+		sol::table state = script.get_or<sol::table, BString, sol::table>("Data", sol::nil);
+		if (state != sol::nil) {
 			for (const auto& kvp : state) {
 				sol::table v = kvp.second;
-				auto type = v["Type"].get<BString>();
-				auto name = v["Name"];
-				auto value = v["Value"];
+				BString key = kvp.first.as<BString>();
+				BString type = v.get_or<BString, BString, BString>("Type", "none");
+				BString name = v.get_or<BString, BString, BString>("Name", key.c_str());
 
-				if (!name.valid()) name = kvp.first;
-				BString _name = name.get<BString>();
+				FPropDrawer::DrawProp(name, v);
+				script[key] = v["Value"];
+				/*
+				LuaProxyValue value = v["Value"];
+
 				auto propType = value.get_type();
 				if (type == "string") {
 					char* buf = new char[100];
 					strcpy(buf, value.get<BString>().c_str());
-					ImGui::InputText(_name.c_str(), buf, 100);
+					ImGui::InputText(name.c_str(), buf, 100);
 					v["Value"] = std::string(buf);
 					free(buf);
 				}
 				else if (type == "int") {
 
 					int val = value.get<int>();
-					ImGui::InputInt(_name.c_str(), &val);
+					ImGui::InputInt(name.c_str(), &val);
 					v["Value"] = val;
 				}
 				else if (type == "float") {
@@ -93,16 +103,16 @@ void FLuaObjectComponent::DrawInspector()
 					auto speed = v.get_or<float, BString, float>("FloatSpeed", 0.5f);
 					auto min = v.get_or<float, BString, float>("Min", 0.0f);
 					auto max = v.get_or<float, BString, float>("Max", 0.0f);
-					ImGui::DragFloat(_name.c_str(), &val, speed, min, max);
+					ImGui::DragFloat(name.c_str(), &val, speed, min, max);
 					v["Value"] = val;
 
 					script[kvp.first.as<BString>()] = val;
 				}
 				else if (type == "Object") {
 					SharedPtr<FSceneObject> val = v.get_or<SharedPtr<FSceneObject>, BString, SharedPtr<FSceneObject>>("Value", SharedPtr<FSceneObject>());
-					FGUI::ObjectReference(_name.c_str(), val);
+					FGUI::ObjectReference(name.c_str(), val);
 					v["Value"] = val;
-				}
+				}*/
 				ImGui::Separator();
 			}
 		}

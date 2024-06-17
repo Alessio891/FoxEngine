@@ -37,12 +37,12 @@ void FApplication::Init(int argc, char** argv, int width, int height, GLFWwindow
 	});
 
 
-	// Create Lua Context
-	LuaCtx = SharedPtr<FLuaContext>(new FLuaContext());
-
 	// Initialize Libraries
 	FAssetsLibrary::Initialize();
 	FMaterialLibrary::Initialize();
+
+	// Create Lua Context
+	LuaCtx = SharedPtr<FLuaContext>(new FLuaContext());
 }
 
 // Called after core modules have been setup

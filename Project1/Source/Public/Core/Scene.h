@@ -8,6 +8,7 @@ public:
 	virtual void RegisterSceneObject(SharedPtr<FSceneObject> SceneObject);
 	virtual void UnregisterSceneObject(SharedPtr<FSceneObject> SceneObject);
 
+	virtual SharedPtr<FSceneObject> SpawnObject(BString Name);
 	virtual SharedPtr<FSceneObject> SpawnObject(BString Name, BString TemplatePath);
 
 	List<SharedPtr<FSceneObject>> GetSceneObjects() { return SceneObjects; }
@@ -25,5 +26,5 @@ public:
 	Vector3F AmbientColor = Vector3F(0.2f, 0.2f, 0.2f);
 protected:
 private:
-	std::list<SharedPtr<FSceneObject>> SceneObjects;
+	List<SharedPtr<FSceneObject>> SceneObjects;
 };

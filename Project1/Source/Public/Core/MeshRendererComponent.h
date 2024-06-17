@@ -4,6 +4,7 @@
 #include "Logger.h"
 
 #include "AssetsLibrary/AssetReference.h"
+#include "AssetsLibrary/ModelAsset.h"
 #include <Graphics/Graphics.h>
 
 struct MeshData {
@@ -32,8 +33,10 @@ public:
 class FMeshRendererComponent : public FObjectComponent {
 
 public:
+	~FMeshRendererComponent() {}
 	SharedPtr<MeshData> MeshDataRef;
 	FAssetReference<class FBaseMaterial> Material;
+	FAssetReference<class FModelAsset> MeshAsset;
 	List<float> VertexColorsArray;
 
 	void SetColor(Vector3F color);
@@ -51,4 +54,6 @@ public:
 	Vector3F Color = Vector3F(1.0f, 1.0f, 1.0f);
 	//SharedPtr<FTexture> Texture;
 	FAssetReference<class FTexture> Texture;
+
+	bool UseMeshAsset = true;
 };

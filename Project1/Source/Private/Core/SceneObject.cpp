@@ -9,6 +9,23 @@
 #include "imgui_stdlib.h"
 #include <LuaIntegration/LuaObjectComponent.h>
 #include <AssetsLibrary/ScriptAsset.h>
+#include <Graphics/MaterialLibrary.h>
+
+FSceneObject::FSceneObject() : Name("[Object]"), IInspectable()
+{
+	FMeshRendererComponent* meshRenderer = new FMeshRendererComponent();
+	meshRenderer->Material.Set(FMaterialLibrary::GetMaterial("DefaultLit"));
+	AddComponent(meshRenderer);
+	SetupRenderer(meshRenderer);
+}
+
+FSceneObject::FSceneObject(String name) : Name(name), IInspectable()
+{
+	FMeshRendererComponent* meshRenderer = new FMeshRendererComponent();
+	meshRenderer->Material.Set(FMaterialLibrary::GetMaterial("DefaultLit"));
+	AddComponent(meshRenderer);
+	SetupRenderer(meshRenderer);
+}
 
 void FSceneObject::Tick(float DeltaTime)
 {
@@ -16,6 +33,16 @@ void FSceneObject::Tick(float DeltaTime)
 	//Rotation.y += 0.1f * DeltaTime;
 	//Rotation.x += 0.2f * DeltaTime;
 	TickComponents(DeltaTime);
+
+	auto element = Components.begin();
+	for (int i = 0; i < Components.size(); i++) {
+		if ((*element)->IsMarkedForRemoval()) {
+			Components.remove(*element);
+		}
+		else {
+			std::advance(element, 1);
+		}
+	}
 }
 
 void FSceneObject::Draw(glm::mat4 V, glm::mat4 P)
@@ -55,7 +82,7 @@ void FSceneObject::RemoveComponent(FObjectComponent* Component)
 {
 	if (Component == nullptr) return;
 	Component->End();
-	Components.remove(Component);
+	Component->MarkForRemoval();
 }
 
 void FSceneObject::SetupRenderer(FMeshRendererComponent* Renderer)
@@ -65,6 +92,7 @@ void FSceneObject::SetupRenderer(FMeshRendererComponent* Renderer)
 
 void FSceneObject::DrawInspector()
 {
+	ImGui::PushID(Name.c_str());
 	ImGui::Text("Name:");
 	ImGui::SameLine();
 	ImGui::InputText("_", &Name);
@@ -72,6 +100,7 @@ void FSceneObject::DrawInspector()
 	if (ImGui::CollapsingHeader("Transform")) {
 		Transform.Position = FImGui::Vec3("Position", Transform.Position);
 		Transform.Rotation = FImGui::Vec3("Rotation", Transform.Rotation);
+
 		Transform.Scale = FImGui::Vec3("Scale", Transform.Scale);
 	}
 
@@ -90,18 +119,19 @@ void FSceneObject::DrawInspector()
 				ImGui::CloseCurrentPopup();
 			}
 		}
-		
+
 		ImGui::EndPopup();
 	}
 	float spacing = ImGui::GetWindowWidth() - 250;
 	ImGui::Separator();
-	ImGui::Dummy(ImVec2(spacing/2, 0));
+	ImGui::Dummy(ImVec2(spacing / 2, 0));
 	ImGui::SameLine();
 	if (ImGui::Button("Add Component", ImVec2(200, 30))) {
 	}
 	ImGui::OpenPopupOnItemClick("#components", ImGuiPopupFlags_MouseButtonLeft);
 	ImGui::SameLine();
 	ImGui::Dummy(ImVec2(spacing / 2, 0));
+	ImGui::PopID();
 }
 
 void FSceneObject::TickComponents(float Delta)
@@ -109,4 +139,22 @@ void FSceneObject::TickComponents(float Delta)
 	for (FObjectComponent* Component : Components) {
 		Component->Tick(Delta);
 	}
+}
+
+void FTransform::LookAt(Vector3F Target)
+{
+	Vector3F direction = Target - Position;
+	glm::vec3 euler;
+	glm::vec3 forward = glm::normalize(direction);
+
+	// Calculate yaw (rotation around Y-axis)
+	euler.y = atan2(forward.x, forward.z);
+
+	// Calculate pitch (rotation around X-axis)
+	euler.x = -asin(forward.y);
+
+	// Roll (rotation around Z-axis) is typically zero for a simple look-at
+	euler.z = 0.0f;
+
+	Rotation = euler;
 }

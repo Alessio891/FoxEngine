@@ -28,6 +28,8 @@ protected:
 	SharedPtr<FSceneObject> NewObject(SharedPtr<MeshData> meshData, BString ObjName = "[NewObject]");
 	SharedPtr<FSceneObject> NewObject(SharedPtr<FTemplateAsset> templ);
 
+	bool RenderWireFrame = false;
+
 private:
 	SharedPtr<FSceneGizmo> PositionGizmo;
 	void HandleCameraInput(float Delta);

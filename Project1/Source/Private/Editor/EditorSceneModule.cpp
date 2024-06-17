@@ -28,11 +28,10 @@ void FEditorSceneModule::OnStartup()
 	FMeshRendererComponent* GridRenderer = new FMeshRendererComponent();
 	SharedPtr<MeshData> GridMeshData(new MeshData(std::list<float>(std::begin(PLANE_MESH_VERTEX_ARRAY), std::end(PLANE_MESH_VERTEX_ARRAY))));
 
-	GridRenderer->MeshDataRef = GridMeshData;
-	GridRenderer->Material.Set(FMaterialLibrary::GetMaterial("GridShader"));
-	EditorGrid->AddComponent(GridRenderer);
-	EditorGrid->SetupRenderer(GridRenderer);
-
+	EditorGrid->Renderer->MeshDataRef = GridMeshData;
+	EditorGrid->Renderer->Material.Set(FMaterialLibrary::GetMaterial("GridShader"));
+	EditorGrid->Renderer->UseMeshAsset = false;
+	
 	Scene->CameraTransform.Position = Vector3F(0, 3, -3);
 
 	SharedPtr<MeshData> mData = SharedPtr<MeshData>(new MeshData(CUBE_MESH_VERTICES, CUBE_MESH_INDICES, CUBE_MESH_NORMALS, CUBE_MESH_UVS));
@@ -49,13 +48,9 @@ void FEditorSceneModule::OnStartup()
 	gizmosMesh->DrawType = GL_LINES;
 
 	StartCube = SharedPtr<FSceneObject>(new FSceneObject("A Cube"));
-	FMeshRendererComponent* meshRenderer = new FMeshRendererComponent();
-	meshRenderer->MeshDataRef = mData;//CubePrimitive;
-	meshRenderer->Material.Set(FMaterialLibrary::GetMaterial("DefaultLit"));
-	meshRenderer->Texture = FAssetReference<FTexture>(FAssetsLibrary::GetImage("Resources/Images/test.png"), "Resources/Images/test.png");
-	StartCube->AddComponent(meshRenderer);
-	StartCube->SetupRenderer(meshRenderer);
-
+	SharedPtr<FModelAsset> model = FAssetsLibrary::GetResourceAs<FModelAsset>("Resources/Models/cube.obj");
+	StartCube->Renderer->MeshAsset.Set(model);
+	
 
 	PositionGizmo = SharedPtr<FSceneGizmo>(new FSceneGizmo());
 	PositionGizmo->HideInHierarchy = true;
@@ -66,14 +61,19 @@ void FEditorSceneModule::OnStartup()
 
 	RenderingPipeline = SharedPtr<FRenderingPipeline>(new FRenderingPipeline(SceneViewport));
 
+	Scene->CameraTransform.Rotation = Vector3F(0.0f,0.0f,0.0f);
 
 	SceneViewport->RegisterRenderCallback([this]() {
 		glLineWidth(3.0f);
 
 		RenderingPipeline->PreRender(Scene->CameraTransform, Scene);
-
+		if (RenderWireFrame) {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		}
 		RenderingPipeline->Render(Scene->CameraTransform, Scene);
-
+		if (RenderWireFrame) {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
 		RenderingPipeline->PostRender(Scene->CameraTransform, Scene);
 
 		if (FInputSystem::IsMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)) {
@@ -129,7 +129,7 @@ void FEditorSceneModule::OnTick(float Delta)
 
 void FEditorSceneModule::OnGUIRender()
 {
-	/*ImGui::SetNextWindowPos(ImVec2(Position.x, Position.y));
+/*	ImGui::SetNextWindowPos(ImVec2(Position.x, Position.y));
 	ImGui::SetNextWindowSize(ImVec2(Size.x, Size.y));
 	ImGui::SetNextWindowBgAlpha(0.0f);
 	ImGui::Begin("_", NULL, BASE_GUI_WINDOW_FLAGS | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoBringToFrontOnFocus);
@@ -162,10 +162,13 @@ void FEditorSceneModule::OnGUIRender()
 
 	auto primitiveIcon = FAssetsLibrary::GetImage("Resources/Images/GUI/primitive.png");
 
-	if (ImGui::ImageButton((void*)(intptr_t)primitiveIcon->GetTextureID(Viewport->ViewportContext), ImVec2(25, 25))) {
+	if (ImGui::ImageButton("objects",(void*)(intptr_t)primitiveIcon->GetTextureID(Viewport->ViewportContext), ImVec2(25, 25))) {
 		FLogger::LogInfo("Clicked " + std::to_string(targetAlpha));
 		showMenu = !showMenu;
 		targetAlpha = showMenu ? 1.0f : 0.0f;
+	}
+	if (ImGui::ImageButton("wireframe", (void*)(intptr_t)primitiveIcon->GetTextureID(Viewport->ViewportContext), ImVec2(25, 25))) {
+		RenderWireFrame = !RenderWireFrame;
 	}
 
 	primitiveIcon.reset();
@@ -187,15 +190,21 @@ void FEditorSceneModule::OnGUIRender()
 		ImGui::Begin("#primitives", NULL, BASE_GUI_WINDOW_FLAGS | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
 		ImGui::PopStyleVar();
 		if (ImGui::ImageButton((void*)(intptr_t)cubeIcon->GetTextureID(Viewport->ViewportContext), ImVec2(20, 20))) {
-			NewObject(SharedPtr<MeshData>(new MeshData(CUBE_MESH_VERTICES, CUBE_MESH_INDICES, CUBE_MESH_NORMALS, CUBE_MESH_UVS)), "New Cube");
+			SharedPtr<FModelAsset> model = FAssetsLibrary::GetResourceAs<FModelAsset>("Resources/Models/cube.obj");
+			SharedPtr<FSceneObject> o = Scene->SpawnObject("Cube");
+			o->Renderer->MeshAsset.Set(model);
 		}
 		ImGui::SameLine();
 		if (ImGui::ImageButton((void*)(intptr_t)pyramidIcon->GetTextureID(Viewport->ViewportContext), ImVec2(20, 20))) {
-			NewObject(SharedPtr<MeshData>(new MeshData(PYRAMID_MESH_VERTICES, PYRAMID_MESH_INDICES, PYRAMID_MESH_NORMALS, PYRAMID_MESH_UVS)), "New Pyramid");
+			SharedPtr<FModelAsset> model = FAssetsLibrary::GetResourceAs<FModelAsset>("Resources/Models/cone.obj");
+			SharedPtr<FSceneObject> o = Scene->SpawnObject("Cone");
+			o->Renderer->MeshAsset.Set(model);
 		}
 		ImGui::SameLine();
 		if (ImGui::ImageButton((void*)(intptr_t)sphereIcon->GetTextureID(Viewport->ViewportContext), ImVec2(20, 20))) {
-			NewObject(generateSphereMesh(0.5f, 30), "New Sphere");
+			SharedPtr<FModelAsset> model = FAssetsLibrary::GetResourceAs<FModelAsset>("Resources/Models/sphere.obj");
+			SharedPtr<FSceneObject> o = Scene->SpawnObject("Sphere");
+			o->Renderer->MeshAsset.Set(model);
 		}
 
 		ImGui::End();
@@ -247,23 +256,24 @@ SharedPtr<FSceneObject> FEditorSceneModule::NewObject(SharedPtr<FTemplateAsset> 
 
 void FEditorSceneModule::HandleCameraInput(float Delta)
 {
+	float camSpeed = 1.5f;
 	if (FInputSystem::IsMouseButtonHeld(GLFW_MOUSE_BUTTON_LEFT)) {
 		if (FInputSystem::IsKeyHeld(GLFW_KEY_W)) {
-			Scene->CameraTransform.Position += Scene->CameraTransform.GetForwardVector() * 0.2f * Delta;
+			Scene->CameraTransform.Position += Scene->CameraTransform.GetForwardVector() * camSpeed * Delta;
 		}
 		else if (FInputSystem::IsKeyHeld(GLFW_KEY_S)) {
-			Scene->CameraTransform.Position += Scene->CameraTransform.GetForwardVector() * -0.2f * Delta;
+			Scene->CameraTransform.Position += Scene->CameraTransform.GetForwardVector() * -camSpeed * Delta;
 		}
 		if (FInputSystem::IsKeyHeld(GLFW_KEY_A)) {
-			Scene->CameraTransform.Position -= Scene->CameraTransform.GetRightVector() * 0.2f * Delta;
+			Scene->CameraTransform.Position -= Scene->CameraTransform.GetRightVector() * camSpeed * Delta;
 		}
 		else if (FInputSystem::IsKeyHeld(GLFW_KEY_D)) {
-			Scene->CameraTransform.Position += Scene->CameraTransform.GetRightVector() * 0.2f * Delta;
+			Scene->CameraTransform.Position += Scene->CameraTransform.GetRightVector() * camSpeed * Delta;
 		}
 
 		std::string mouseY = std::to_string(FInputSystem::MouseDeltaY);
-		Scene->CameraTransform.Rotation.x -= FInputSystem::MouseDeltaY * Delta * 50.0f;
-		Scene->CameraTransform.Rotation.y -= FInputSystem::MouseDeltaX * Delta * 50.0f;
+		Scene->CameraTransform.Rotation.x += FInputSystem::MouseDeltaY * Delta * 90.0f;
+		Scene->CameraTransform.Rotation.y -= FInputSystem::MouseDeltaX * Delta * 90.0f;
 	}
 }
 

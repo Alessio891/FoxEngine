@@ -12,6 +12,7 @@
 #include <algorithm>
 #include <string>
 #include "AssetsLibrary/ScriptAsset.h"
+#include <AssetsLibrary/ModelAsset.h>
 
 using json = nlohmann::json;
 namespace fs = std::filesystem;
@@ -148,6 +149,7 @@ void FAssetsLibrary::ProcessAsset(BString FilePath)
 	bool isMat = (std::find(MAT_FILE_EXTENSIONS.begin(), MAT_FILE_EXTENSIONS.end(), extension) != MAT_FILE_EXTENSIONS.end());
 	bool isTemplate = (std::find(TEMPLATES_FILE_EXTENSIONS.begin(), TEMPLATES_FILE_EXTENSIONS.end(), extension) != TEMPLATES_FILE_EXTENSIONS.end());
 	bool isScript = (std::find(SCRIPTS_FILE_EXTENSIONS.begin(), SCRIPTS_FILE_EXTENSIONS.end(), extension) != SCRIPTS_FILE_EXTENSIONS.end());
+	bool isModel = (std::find(MODELS_FILE_EXTENSIONS.begin(), MODELS_FILE_EXTENSIONS.end(), extension) != MODELS_FILE_EXTENSIONS.end());
 	if (isImage) {
 		Resources[FilePath] = SharedPtr<FTexture>(new FTexture(FilePath));
 	}
@@ -169,6 +171,10 @@ void FAssetsLibrary::ProcessAsset(BString FilePath)
 	}
 	else if (isScript) {
 		SharedPtr<FLuaScriptAsset> resource(new FLuaScriptAsset(FilePath));
+		Resources[FilePath] = resource;
+	}
+	else if (isModel) {
+		SharedPtr<FModelAsset> resource(new FModelAsset(FilePath));
 		Resources[FilePath] = resource;
 	}
 	else {

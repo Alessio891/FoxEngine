@@ -23,6 +23,7 @@ uniform mat4 MVP;
 uniform mat4 _M;
 uniform vec3 _Color;
 uniform float _Unlit;
+uniform int _UseTexture;
 
 out vec3 Color;
 out vec3 Normal;
@@ -30,6 +31,7 @@ out vec3 FragPos;
 out vec2 UVs;
 out LightData Lights;
 out float Unlit;
+out int UseTexture;
 
 void main() {
 	gl_Position = MVP * vec4(aPos, 1.0);
@@ -39,4 +41,5 @@ void main() {
 	Lights = _LightData;
 	UVs = aUVs;
 	Unlit = _Unlit;
+	UseTexture = _UseTexture;
 }

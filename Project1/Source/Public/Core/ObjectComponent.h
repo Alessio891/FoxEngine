@@ -20,8 +20,11 @@ public:
 
 	virtual void Deserialize(json json) {};
 
+	virtual void MarkForRemoval() { MarkedForRemoval = true; }
+	bool IsMarkedForRemoval() const { return MarkedForRemoval; }
+
 protected:
 	FSceneObject* Owner;
-
+	bool MarkedForRemoval = false;
 	bool CanTick = false;
 };

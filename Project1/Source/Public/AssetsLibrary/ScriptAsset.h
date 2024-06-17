@@ -19,10 +19,10 @@ protected:
 public:
 	FLuaScriptAsset(BString path);
 	static sol::protected_function_result HandleCompileErrors(lua_State*, sol::protected_function_result pfr);
-	virtual ImTextureID GetThumbnailIcon() override;
 
 	SharedPtr<LLuaSceneObjectComponent> GetNewInstance();
 
+	virtual ImTextureID GetThumbnailIcon() override;
 	virtual void DrawInspector() override;
 
 	void RegisterOnRecompileCallback(OnRecompileDelegate cb);

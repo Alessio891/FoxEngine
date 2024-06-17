@@ -35,6 +35,14 @@ void FScene::UnregisterSceneObject(SharedPtr<FSceneObject> SceneObject)
 	SceneObjects.remove(SceneObject);
 }
 
+SharedPtr<FSceneObject> FScene::SpawnObject(BString Name)
+{
+	SharedPtr<FSceneObject> newObj(new FSceneObject(Name.c_str()));
+
+	RegisterSceneObject(newObj);
+	return newObj;
+}
+
 SharedPtr<FSceneObject> FScene::SpawnObject(BString Name, BString TemplatePath)
 {
 

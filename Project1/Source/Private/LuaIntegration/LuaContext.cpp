@@ -27,17 +27,31 @@ FLuaContext::FLuaContext()
 		"ScriptType", &LLuaSceneObjectComponent::ScriptType
 	);
 	luaState.new_usertype<Vector3F>(
-		"Vector3F", sol::constructors<Vector3F()>(),
+		"Vector3F", sol::constructors<Vector3F(), Vector3F(float, float, float)>(),
 		"x", &Vector3F::x,
 		"y", &Vector3F::y,
-		"z", &Vector3F::z
+		"z", &Vector3F::z,
+		sol::meta_function::subtraction, [] (const Vector3F& v1, const Vector3F& v2) {
+			return v1 - v2;
+		},
+		sol::meta_function::addition, [](const Vector3F& v1, const Vector3F& v2) { 
+			return v1 + v2;
+		},
+		sol::meta_function::multiplication, [](const Vector3F& v1, const float& scalar) { 
+			return v1 * scalar;
+		}
 	);
+	
 
 	luaState.new_usertype<FTransform>(
 		"Transform", sol::constructors<FTransform()>(),
 		"Position", &FTransform::Position,
 		"Rotation", &FTransform::Rotation,
-		"Scale", &FTransform::Scale
+		"Scale", &FTransform::Scale,
+		"GetRightVector", &FTransform::GetRightVector,
+		"GetUpVector", &FTransform::GetUpVector,
+		"GetForwardVector", &FTransform::GetForwardVector,
+		"LookAt", &FTransform::LookAt
 	);
 
 	luaState.new_usertype<FMeshRendererComponent>(
@@ -53,7 +67,40 @@ FLuaContext::FLuaContext()
 		"Name", &FSceneObject::Name,
 		"Renderer", &FSceneObject::Renderer
 	);
+	luaState.set_function("GetRotationFromDirection", [](Vector3F direction, Vector3F up) { 
+		float      directionLength = glm::length(direction);
 
+		// Check if the direction is valid; Also deals with NaN
+		if (!(directionLength > 0.0001))
+			return glm::eulerAngles(glm::quat(1, 0, 0, 0)); // Just return identity
+
+		// Normalize direction
+		direction /= directionLength;
+
+		// Is the normal up (nearly) parallel to direction?
+		if (glm::abs(glm::dot(direction, up)) > .9999f) {
+			// Use alternative up
+			Vector3F alt(0.0f, 1.0f, 0.0f);
+			return glm::eulerAngles(glm::quatLookAt(direction, alt));
+		}
+		else {
+			return glm::eulerAngles(glm::quatLookAt(direction, up));
+		}
+		//return glm::eulerAngles(glm::quatLookAt(dir, up));
+	});
+	luaState.set_function("Normalize", [](Vector3F& v) {
+		return glm::normalize(v);
+	});
+	luaState.set_function("GetCameraTransform", []() {
+		if (FApplication::Get()->GetCurrentScene() != nullptr) {
+			return FApplication::Get()->GetCurrentScene()->CameraTransform;
+		}
+	});
+	luaState.set_function("SetCameraTransform", [](FTransform& t) {
+		if (FApplication::Get()->GetCurrentScene() != nullptr) {
+			FApplication::Get()->GetCurrentScene()->CameraTransform = t;
+		}
+		});
 	luaState.set_function("SpawnObject", [](BString name, BString templatePath) {
 		return FApplication::Get()->GetCurrentScene()->SpawnObject(name, templatePath);
 	});
@@ -93,6 +140,7 @@ FLuaContext::FLuaContext()
 		"ObjectComponent", ELuaScriptType::ObjectComponent,
 		"ApplicationModule", ELuaScriptType::ApplicationModule);
 	luaState.set_function("IsKeyDown", &FInputSystem::IsKeyDown);
+	luaState.set_function("IsKeyHeld", &FInputSystem::IsKeyHeld);
 	luaState.set_function("Lerp", [](float a, float b, float f) {
 		return a + f * (b-a);
 	});

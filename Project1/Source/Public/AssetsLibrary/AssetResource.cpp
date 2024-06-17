@@ -10,30 +10,35 @@ bool FAssetResource::FileStillExists()
 
 void FAssetResource::DrawResourceThumbnail()
 {
-	BString name = GetOnlyFileName();
-	if (name.size() > 14) {
-		std::string extension(name.substr(name.rfind(".") + 1));
-		name = name.substr(0, 10) + "...." + extension;
+	BString name = GetOnlyFileName(false);
+	if (name.size() > 7) {
+		name = name.substr(0, 5) + "..";
 	}
-	ImVec2 size = ImGui::CalcTextSize(name.c_str());
+	//static BString placeholder = "56789123456789";
+	ImVec2 size(80,15);// = ImGui::CalcTextSize(placeholder.c_str());
+	ImVec2 spacing((size.x-32)/2,0);
 	ImDrawList* drawList = ImGui::GetWindowDrawList();
 	drawList->ChannelsSplit(2);
 	drawList->ChannelsSetCurrent(1);
-	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(1.0f, 1.0f, 0.0f, 1.0f));
 	ImGui::BeginGroup();
-	ImGui::PopStyleColor();
 	ImGui::Dummy(ImVec2(0, 3));
-	ImGui::Dummy(ImVec2(size.x / 2 - 24, 0));
-	ImGui::SameLine();
-	ImGui::Image(GetThumbnailIcon(), ImVec2(48, 48));
-	ImGui::SameLine();
-	ImGui::Dummy(ImVec2(size.x / 2 - 24, 0));
-	ImGui::NewLine();
 
-	ImGui::Spacing();
+	ImGui::Dummy(spacing);
 	ImGui::SameLine();
-	ImGui::TextWrapped(name.c_str());
-	ImGui::Dummy(ImVec2(0,3));
+	
+	ImGui::Image(GetThumbnailIcon(), ImVec2(32, 32));
+	
+	ImGui::SameLine();
+	ImGui::Dummy(spacing);
+	ImGui::NewLine();
+	
+	auto windowWidth = size.x + 12;
+	auto textWidth = ImGui::CalcTextSize(name.c_str()).x;
+	
+	
+	ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ((windowWidth - textWidth)*0.5f ));
+	ImGui::Text(name.c_str());
+
 	ImGui::EndGroup();
 
 	SharedPtr<FInspectorModule> inspector = FInspectorModule::Get();
@@ -63,6 +68,12 @@ void FAssetResource::DrawResourceThumbnail()
 		std::string path = FilePath;
 		ImGui::SetDragDropPayload("ASSET_DRAG", path.c_str(), path.size() + 1);
 		ImGui::EndDragDropSource();
+	}
+	if (ImGui::IsItemHovered()) {
+		if (ImGui::BeginTooltip()) {
+			ImGui::Text(FilePath.c_str());
+			ImGui::EndTooltip();
+		}
 	}
 }
 

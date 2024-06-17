@@ -24,6 +24,10 @@ public:
 	void Set(SharedPtr<T> newRef) {
 		if (!Ref.expired()) Ref.reset();
 		Ref = newRef;
+		if (newRef == nullptr) { 
+			Ref.reset();
+			return;
+		}
 		SharedPtr<FAssetResource> r = std::static_pointer_cast<FAssetResource>(newRef);
 		AssetPath = r->FilePath;
 	}

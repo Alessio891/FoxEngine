@@ -33,6 +33,7 @@ void FSceneGizmo::Begin()
 	ZRenderer = new FMeshRendererComponent();
 	ZRenderer->MeshDataRef = ZAxis;
 
+	YRenderer->UseMeshAsset = XRenderer->UseMeshAsset = ZRenderer->UseMeshAsset = false;
 	YRenderer->Color = Vector3F(0,1,0);
 	XRenderer->Color = Vector3F(1,0,0);
 	ZRenderer->Color = Vector3F(0,0,1);

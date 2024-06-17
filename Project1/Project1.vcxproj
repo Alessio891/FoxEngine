@@ -183,6 +183,7 @@ xcopy "$(ProjectDir)Resources\*.*" "$(SolutionDir)Builds\$(Configuration)\Resour
     <ClCompile Include="..\lua\src\lutf8lib.c" />
     <ClCompile Include="..\lua\src\lvm.c" />
     <ClCompile Include="..\lua\src\lzio.c" />
+    <ClCompile Include="Source\Private\AssetsLibrary\ModelAsset.cpp" />
     <ClCompile Include="Source\Private\AssetsLibrary\ScriptAsset.cpp" />
     <ClCompile Include="Source\Private\ConsoleModule\ConsoleModule.cpp" />
     <ClCompile Include="Source\Private\Core\Application.cpp" />
@@ -209,6 +210,7 @@ xcopy "$(ProjectDir)Resources\*.*" "$(SolutionDir)Builds\$(Configuration)\Resour
     <ClCompile Include="Source\Private\InspectorModule\InspectorModule.cpp" />
     <ClCompile Include="Source\Private\LuaIntegration\LuaContext.cpp" />
     <ClCompile Include="Source\Private\LuaIntegration\LuaObjectComponent.cpp" />
+    <ClCompile Include="Source\Private\PropsDrawers\PropDrawer.cpp" />
     <ClCompile Include="Source\Public\AssetsLibrary\AssetResource.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -268,6 +270,7 @@ xcopy "$(ProjectDir)Resources\*.*" "$(SolutionDir)Builds\$(Configuration)\Resour
     <ClInclude Include="Source\Public\AssetsLibrary\AssetReference.h" />
     <ClInclude Include="Source\Public\AssetsLibrary\AssetResource.h" />
     <ClInclude Include="Source\Public\AssetsLibrary\ISerializedAsset.h" />
+    <ClInclude Include="Source\Public\AssetsLibrary\ModelAsset.h" />
     <ClInclude Include="Source\Public\AssetsLibrary\ScriptAsset.h" />
     <ClInclude Include="Source\Public\AssetsLibrary\TemplateAsset.h" />
     <ClInclude Include="Source\Public\ConsoleModule\ConsoleModule.h" />
@@ -302,6 +305,7 @@ xcopy "$(ProjectDir)Resources\*.*" "$(SolutionDir)Builds\$(Configuration)\Resour
     <ClInclude Include="Source\Public\LuaIntegration\LuaContext.h" />
     <ClInclude Include="Source\Public\LuaIntegration\LuaObjectComponent.h" />
     <ClInclude Include="Source\Public\LuaIntegration\LuaObjects.h" />
+    <ClInclude Include="Source\Public\PropsDrawers\PropDrawer.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="TestInSource.txt" />
@@ -316,6 +320,8 @@ xcopy "$(ProjectDir)Resources\*.*" "$(SolutionDir)Builds\$(Configuration)\Resour
     <Import Project="..\packages\freetype2.2.6.0.1\build\native\freetype2.targets" Condition="Exists('..\packages\freetype2.2.6.0.1\build\native\freetype2.targets')" />
     <Import Project="..\packages\glfw.3.4.0\build\native\glfw.targets" Condition="Exists('..\packages\glfw.3.4.0\build\native\glfw.targets')" />
     <Import Project="..\packages\nlohmann.json.3.11.2\build\native\nlohmann.json.targets" Condition="Exists('..\packages\nlohmann.json.3.11.2\build\native\nlohmann.json.targets')" />
+    <Import Project="..\packages\Assimp.redist.3.0.0\build\native\Assimp.redist.targets" Condition="Exists('..\packages\Assimp.redist.3.0.0\build\native\Assimp.redist.targets')" />
+    <Import Project="..\packages\Assimp.3.0.0\build\native\Assimp.targets" Condition="Exists('..\packages\Assimp.3.0.0\build\native\Assimp.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -329,5 +335,7 @@ xcopy "$(ProjectDir)Resources\*.*" "$(SolutionDir)Builds\$(Configuration)\Resour
     <Error Condition="!Exists('..\packages\freetype2.2.6.0.1\build\native\freetype2.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\freetype2.2.6.0.1\build\native\freetype2.targets'))" />
     <Error Condition="!Exists('..\packages\glfw.3.4.0\build\native\glfw.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\glfw.3.4.0\build\native\glfw.targets'))" />
     <Error Condition="!Exists('..\packages\nlohmann.json.3.11.2\build\native\nlohmann.json.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\nlohmann.json.3.11.2\build\native\nlohmann.json.targets'))" />
+    <Error Condition="!Exists('..\packages\Assimp.redist.3.0.0\build\native\Assimp.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Assimp.redist.3.0.0\build\native\Assimp.redist.targets'))" />
+    <Error Condition="!Exists('..\packages\Assimp.3.0.0\build\native\Assimp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Assimp.3.0.0\build\native\Assimp.targets'))" />
   </Target>
 </Project>

@@ -18,8 +18,19 @@ struct FTransform {
 	Vector3F Position = Vector3F(0.0f,0.0f,0.0f);
 	Vector3F Rotation = Vector3F(0.0f, 0.0f, 0.0f);
 	Vector3F Scale = Vector3F(1.0f,1.0f,1.0f);
+	Quaternion Orientation;
+
+	void LookAt(Vector3F Target);
+
+	glm::mat4 GetRotationMatrix() {
+		return glm::eulerAngleXYZ(Rotation.x, Rotation.y, Rotation.z);
+	}
 
 	Vector3F GetForwardVector() {
+		auto mat = GetRotationMatrix();
+		Vector3F frwd(mat[2][0], mat[2][1], mat[2][2]);
+		return frwd;
+
 		return Vector3F(
 			glm::cos(Rotation.x) * glm::sin(Rotation.y),
 			glm::sin(Rotation.x),
@@ -28,22 +39,29 @@ struct FTransform {
 	}
 
 	Vector3F GetRightVector() {
+		return glm::cross(GetForwardVector(), GetUpVector());
 		Vector3F right(
-			glm::sin(Rotation.y - 3.14f / 2.0f),
+			glm::sin(Rotation.y - 3.14159265359f / 2.0f),
 			0,
-			glm::cos(Rotation.x - 3.4f / 2.0f)
+			glm::cos(Rotation.y - 3.14159265359f / 2.0f)
 		);
+		right = glm::normalize(right);
 		return right;
 	}
 	Vector3F GetUpVector() {
+		auto mat = GetRotationMatrix();
+		Vector3F frwd(0.0f, 1.0f, 0.0f);//mat[0][0], mat[0][1], mat[0][2]);
+		return frwd;
+
 		Vector3F right = GetRightVector();
-		Vector3F up = glm::cross(right, Vector3F(0,0,1));
+		Vector3F up = glm::cross(right, GetForwardVector());
+		up = glm::normalize(up);
 		return up;
 	}
 
 	glm::mat4 GetTransformMatrix() {
 		glm::mat4 ModelMatrix = glm::translate(glm::mat4(1.0f), Position);
-		ModelMatrix *= glm::eulerAngleXYX(Rotation.x, Rotation.y, Rotation.z);
+		ModelMatrix *= GetRotationMatrix();
 		ModelMatrix = glm::scale(ModelMatrix, Scale);
 		return ModelMatrix;
 	}
@@ -57,7 +75,6 @@ struct FTransform {
 			Position + GetForwardVector(),
 			up
 		);
-
 		return CameraMatrix;
 	}
 };
@@ -65,8 +82,8 @@ struct FTransform {
 class FSceneObject : public IInspectable {
 
 public:
-	FSceneObject() : Name("[Object]"), IInspectable() {}
-	FSceneObject(String name) : Name(name), IInspectable() {}
+	FSceneObject();
+	FSceneObject(String name);
 	~FSceneObject() {}
 	virtual void Begin() {};
 	virtual void End() {};
@@ -100,7 +117,7 @@ public:
 
 	SharedPtr<FMeshRendererComponent> Renderer;
 protected:
-	std::list<FObjectComponent*> Components;
+	List<FObjectComponent*> Components;
 
 	virtual void TickComponents(float Delta);
 

@@ -7,11 +7,11 @@
 
 void FInputSystem::HandleKeyDown(unsigned char Key)
 {
-	std::list<unsigned char>::iterator it = std::find(PressedKeys.begin(), PressedKeys.end(), Key);
+	List<unsigned char>::iterator it = std::find(PressedKeys.begin(), PressedKeys.end(), Key);
 	if (it == PressedKeys.end()) {
 		PressedKeys.push_back(Key);
 	}
-	std::list<unsigned char>::iterator it2 = std::find(PressedThisFrame.begin(), PressedThisFrame.end(), Key);
+	List<unsigned char>::iterator it2 = std::find(PressedThisFrame.begin(), PressedThisFrame.end(), Key);
 	if (it2 == PressedThisFrame.end()) {
 		PressedThisFrame.push_back(Key);
 	}
@@ -19,7 +19,7 @@ void FInputSystem::HandleKeyDown(unsigned char Key)
 
 void FInputSystem::HandleKeyUp(unsigned char Key)
 {
-	std::list<unsigned char>::iterator it = std::find(PressedKeys.begin(), PressedKeys.end(), Key);
+	List<unsigned char>::iterator it = std::find(PressedKeys.begin(), PressedKeys.end(), Key);
 	if (it != PressedKeys.end()) {
 		PressedKeys.remove(Key);
 	}

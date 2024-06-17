@@ -89,7 +89,7 @@ void FLuaScriptAsset::Recompile()
 			BString scriptName = GetOnlyFileName(false);
 
 			// Cache old props values
-			sol::table oldTable = env["Data"].get<sol::table>();
+			sol::table oldTable = env.get_or<sol::table, BString, sol::table>("Data", sol::nil);
 
 			auto result = luaCtx.safe_script_file(FilePath, env, &FLuaScriptAsset::HandleCompileErrors);
 			if (result.valid()) {

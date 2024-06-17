@@ -52,7 +52,7 @@ static LRESULT CALLBACK msgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM
 		HDROP hDrop = reinterpret_cast<HDROP>(wParam);
 
 		// extract files here
-		std::list<std::string> files;
+		List<std::string> files;
 		char filename[MAX_PATH];
 
 		UINT count = DragQueryFileA(hDrop, -1, NULL, 0);

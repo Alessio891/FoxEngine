@@ -12,7 +12,6 @@
 void FMeshRendererComponent::SetColor(Vector3F color)
 {
 	Color = color;
-	FLogger::LogInfo("Setting color to " + std::to_string(color.x));
 }
 
 void FMeshRendererComponent::Tick(float Delta)
@@ -33,6 +32,7 @@ void FMeshRendererComponent::Initialize(FSceneObject* Owner)
 void FMeshRendererComponent::Render(glm::mat4 V, glm::mat4 P)
 {
 	if (!Material.IsValid()) return;
+	if (UseMeshAsset && !MeshAsset.IsValid()) return;
 
 	glUseProgram(Material.Get()->GetProgram());
 	
@@ -58,25 +58,46 @@ void FMeshRendererComponent::Render(glm::mat4 V, glm::mat4 P)
 	Material.Get()->SetVec3("_LightData.AmbientColor", FApplication::Get()->GetCurrentScene()->AmbientColor);
 	Material.Get()->SetFloat("_LightData.AmbientIntensity", 1.0f);
 
+	Material.Get()->SetVec3("_CameraPos", FApplication::Get()->GetCurrentScene()->CameraTransform.Position);
 
 	Material.Get()->UploadParameters();
+	GLuint loc = glGetUniformLocation(Material.Get()->GetProgram(), "_UseTexture");
 	if (Texture.IsValid()) {
 		
 		auto textureId = Texture.Get()->GetTextureID(FApplication::Get()->GameViewport->ViewportContext);
 		glBindTexture(GL_TEXTURE_2D, textureId);
+		glUniform1i(loc, 1);
 	}
 	else {
 		glBindTexture(GL_TEXTURE_2D, 0);
+		glUniform1i(loc, 0);
 	}
-	glBindVertexArray(MeshDataRef->VAO);
-	
-	if (MeshDataRef->IndexArray.size() > 0) {
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, MeshDataRef->EBO);
-		glDrawElements(MeshDataRef->DrawType, MeshDataRef->IndexArray.size(), GL_UNSIGNED_INT, 0);
-	}
-	else 
-		glDrawArrays(MeshDataRef->DrawType, 0, MeshDataRef->VertexArray.size() / 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
 
+	if (UseMeshAsset) {
+		for (int i = 0; i < MeshAsset.Get()->GetMeshes().size(); i++) {
+			auto meshData = MeshAsset.Get()->GetMeshes()[i];
+			glBindVertexArray(meshData->VAO);
+	
+			if (meshData->IndexArray.size() > 0) {
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshData->EBO);
+				glDrawElements(meshData->DrawType, meshData->IndexArray.size(), GL_UNSIGNED_INT, 0);
+			}
+			else 
+				glDrawArrays(meshData->DrawType, 0, meshData->VertexArray.size() / 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
+		}
+	}
+	else {
+		auto meshData =MeshDataRef;
+		glBindVertexArray(meshData->VAO);
+
+		if (MeshDataRef->IndexArray.size() > 0) {
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshData->EBO);
+			glDrawElements(meshData->DrawType, meshData->IndexArray.size(), GL_UNSIGNED_INT, 0);
+		}
+		else
+			glDrawArrays(meshData->DrawType, 0, meshData->VertexArray.size() / 3);
+	}
+	
 	// Second Pass
 	// Render the object scaled up, masked with the stencil buffer
 	// Where Stencil != ObjectID
@@ -101,17 +122,36 @@ void FMeshRendererComponent::Render(glm::mat4 V, glm::mat4 P)
 		glStencilMask(0x00);
 		//glDisable(GL_DEPTH_TEST);
 
-		if (MeshDataRef->IndexArray.size() > 0) {
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, MeshDataRef->EBO);
-			glDrawElements(MeshDataRef->DrawType, MeshDataRef->IndexArray.size(), GL_UNSIGNED_INT, 0);
+		if (UseMeshAsset) {
+			for (int i = 0; i < MeshAsset.Get()->GetMeshes().size(); i++) {
+				auto meshData = MeshAsset.Get()->GetMeshes()[i];
+				glBindVertexArray(meshData->VAO);
+
+				if (meshData->IndexArray.size() > 0) {
+					glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshData->EBO);
+					glDrawElements(meshData->DrawType, meshData->IndexArray.size(), GL_UNSIGNED_INT, 0);
+				}
+				else
+					glDrawArrays(meshData->DrawType, 0, meshData->VertexArray.size() / 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
+			}
 		}
-		else
-			glDrawArrays(MeshDataRef->DrawType, 0, MeshDataRef->VertexArray.size() / 3);
+		else {
+			auto meshData = MeshDataRef;
+			glBindVertexArray(meshData->VAO);
+
+			if (MeshDataRef->IndexArray.size() > 0) {
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshData->EBO);
+				glDrawElements(meshData->DrawType, meshData->IndexArray.size(), GL_UNSIGNED_INT, 0);
+			}
+			else
+				glDrawArrays(meshData->DrawType, 0, meshData->VertexArray.size() / 3);
+		}
 
 		glStencilMask(0xFF);
 		glStencilFunc(GL_ALWAYS, 0, 0xFF);
 		glEnable(GL_DEPTH_TEST);
 	}
+	
 }
 
 void FMeshRendererComponent::DrawInspector()
@@ -119,7 +159,7 @@ void FMeshRendererComponent::DrawInspector()
 	ImGui::SeparatorText("Mesh Renderer");
 	static bool matShown = true;
 	if (ImGui::CollapsingHeader("Material", matShown)) {
-		
+
 		FGUI::Material("Material", Material);
 
 		//FGUI::Material("Material", Material);
@@ -139,11 +179,15 @@ void FMeshRendererComponent::DrawInspector()
 			FGUI::Texture("Main Texture", Texture);
 		}
 	}
+	
+	FGUI::AssetReference<FModelAsset>("Mesh", MeshAsset);
 
-	if (ImGui::CollapsingHeader("Mesh Data")) { 
-		std::vector<BString> options = { "Points", "Lines", "Line Loop", "Line Strip", "Triangles", "Triangle Strips", "Triangle Fan", "Quads", "Quad Strip", "Polygon"};
-		FGUI::EnumPopup("DrawType", (int&)MeshDataRef->DrawType, options);
+	if (MeshDataRef != nullptr) {
+		if (ImGui::CollapsingHeader("Mesh Data")) { 
+			std::vector<BString> options = { "Points", "Lines", "Line Loop", "Line Strip", "Triangles", "Triangle Strips", "Triangle Fan", "Quads", "Quad Strip", "Polygon"};
+			FGUI::EnumPopup("DrawType", (int&)MeshDataRef->DrawType, options);
 		
+		}
 	}
 }
 

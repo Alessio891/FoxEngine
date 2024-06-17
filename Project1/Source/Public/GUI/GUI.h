@@ -13,6 +13,7 @@ public:
 	static void ObjectReference(String label, SharedPtr<FSceneObject>& obj, std::function<bool(SharedPtr<FSceneObject>)> acceptObject = [](SharedPtr<FSceneObject> newRef) {return true;});
 	template<class T>
 	static void AssetReference(String label, FAssetReference<T>& asset, std::function<bool(FAssetResource&)> acceptAsset = [](FAssetResource& newRef) {return true;}) {
+		ImGui::PushID(label);
 		ImGui::BeginGroup();
 
 		ImGui::Text(label);
@@ -54,8 +55,14 @@ public:
 		}
 		ImGui::NextColumn();
 		ImGui::Columns(1);
+		if (ImGui::Button("Clear")) {
+		printf("clear\n");
+			asset.Set(nullptr);
+		}
 		ImGui::EndGroup();
 		ImGui::Separator();
+
+		ImGui::PopID();
 	}
 
 	static void EnumPopup(String label, int& value, std::vector<BString>& values);

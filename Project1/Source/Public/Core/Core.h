@@ -3,6 +3,7 @@
 #define GLM_ENABLE_EXPERIMENTAL
 
 #include <list>
+#include <vector>
 #include <map>
 
 #include "imgui.h"
@@ -26,6 +27,7 @@ template <class Key, class T> using Map = std::map<Key, T>;
 
 typedef	glm::vec3 Vector3F;
 typedef	glm::vec2 Vector2F;
+typedef glm::quat Quaternion;
 
 typedef const char* String;
 

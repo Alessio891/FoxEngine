@@ -97,6 +97,12 @@
     <Filter Include="File di origine\Source\Private\LuaIntegration\LuaImGui">
       <UniqueIdentifier>{b142f401-943a-43c2-b728-efd888dacb48}</UniqueIdentifier>
     </Filter>
+    <Filter Include="File di origine\Source\Public\PropsDrawers">
+      <UniqueIdentifier>{6d614e27-c5e7-4c05-a3f8-718f7bc80065}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="File di origine\Source\Private\PropsDrawers">
+      <UniqueIdentifier>{25617d98-1888-4154-855b-8fa811c4fa57}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Private\Core\Application.cpp">
@@ -308,6 +314,12 @@
     </ClCompile>
     <ClCompile Include="Source\Private\Graphics\Graphics.cpp">
       <Filter>File di origine\Source\Private\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Private\AssetsLibrary\ModelAsset.cpp">
+      <Filter>File di origine\Source\Private\AssetsLibrary</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Private\PropsDrawers\PropDrawer.cpp">
+      <Filter>File di origine\Source\Private\PropsDrawers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -568,6 +580,12 @@
     </ClInclude>
     <ClInclude Include="Source\Public\Graphics\Graphics.h">
       <Filter>File di origine\Source\Public\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\AssetsLibrary\ModelAsset.h">
+      <Filter>File di origine\Source\Public\AssetsLibrary</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\PropsDrawers\PropDrawer.h">
+      <Filter>File di origine\Source\Public\PropsDrawers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
