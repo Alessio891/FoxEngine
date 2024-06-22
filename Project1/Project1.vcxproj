@@ -96,8 +96,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(ProjectDir)Shaders\*.*" "$(SolutionDir)Builds\$(Configuration)\Shaders\" /Y /I /E
-xcopy "$(ProjectDir)Resources\*.*" "$(SolutionDir)Builds\$(Configuration)\Resources\" /Y /I /E
+      <Command>xcopy "$(ProjectDir)Shaders\*.*" "$(SolutionDir)Builds\$(Platform)\$(Configuration)\Shaders\" /Y /I /E
+xcopy "$(ProjectDir)Resources\*.*" "$(SolutionDir)Builds\$(Platform)\$(Configuration)\Resources\" /Y /I /E
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -131,7 +131,9 @@ xcopy "$(ProjectDir)Resources\*.*" "$(SolutionDir)Builds\$(Configuration)\Resour
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(ProjectDir)Shaders\*.*" "$(SolutionDir)Builds\$(Configuration)\Shaders\" /Y /I /E</Command>
+      <Command>xcopy "$(ProjectDir)Shaders\*.*" "$(SolutionDir)Builds\$(Platform)\$(Configuration)\Shaders\" /Y /I /E
+xcopy "$(ProjectDir)Resources\*.*" "$(SolutionDir)Builds\$(Platform)\$(Configuration)\Resources\" /Y /I /E
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -202,6 +204,8 @@ xcopy "$(ProjectDir)Resources\*.*" "$(SolutionDir)Builds\$(Configuration)\Resour
     <ClCompile Include="Source\Private\Core\Logger.cpp" />
     <ClCompile Include="Source\Private\Core\MeshRendererComponent.cpp" />
     <ClCompile Include="Source\Private\Core\ObjectComponent.cpp" />
+    <ClCompile Include="Source\Private\Core\Physics.cpp" />
+    <ClCompile Include="Source\Private\Core\PhysicsComponent.cpp" />
     <ClCompile Include="Source\Private\Core\Scene.cpp" />
     <ClCompile Include="Source\Private\Core\SceneObject.cpp" />
     <ClCompile Include="Source\Private\Core\Viewport.cpp" />
@@ -210,6 +214,7 @@ xcopy "$(ProjectDir)Resources\*.*" "$(SolutionDir)Builds\$(Configuration)\Resour
     <ClCompile Include="Source\Private\Editor\EditorSceneModule.cpp" />
     <ClCompile Include="Source\Private\Editor\SceneGizmo.cpp" />
     <ClCompile Include="Source\Private\Editor\SceneHierarchyModule.cpp" />
+    <ClCompile Include="Source\Private\Editor\TopMenuModule.cpp" />
     <ClCompile Include="Source\Private\Graphics\BaseMaterial.cpp" />
     <ClCompile Include="Source\Private\Graphics\Fonts.cpp" />
     <ClCompile Include="Source\Private\Graphics\Graphics.cpp" />
@@ -292,6 +297,8 @@ xcopy "$(ProjectDir)Resources\*.*" "$(SolutionDir)Builds\$(Configuration)\Resour
     <ClInclude Include="Source\Public\Core\Logger.h" />
     <ClInclude Include="Source\Public\Core\MeshRendererComponent.h" />
     <ClInclude Include="Source\Public\Core\ObjectComponent.h" />
+    <ClInclude Include="Source\Public\Core\Physics.h" />
+    <ClInclude Include="Source\Public\Core\PhysicsComponent.h" />
     <ClInclude Include="Source\Public\Core\SceneObject.h" />
     <ClInclude Include="Source\Public\Core\Scene.h" />
     <ClInclude Include="Source\Public\Core\stb_image.h" />
@@ -302,6 +309,7 @@ xcopy "$(ProjectDir)Resources\*.*" "$(SolutionDir)Builds\$(Configuration)\Resour
     <ClInclude Include="Source\Public\Editor\EditorSceneModule.h" />
     <ClInclude Include="Source\Public\Editor\SceneGizmo.h" />
     <ClInclude Include="Source\Public\Editor\SceneHierarchyModule.h" />
+    <ClInclude Include="Source\Public\Editor\TopMenuModule.h" />
     <ClInclude Include="Source\Public\Graphics\BaseMaterial.h" />
     <ClInclude Include="Source\Public\Graphics\Fonts.h" />
     <ClInclude Include="Source\Public\Graphics\Graphics.h" />

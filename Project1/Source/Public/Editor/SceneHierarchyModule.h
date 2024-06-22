@@ -1,6 +1,7 @@
 #pragma once
 #include "Core.h"
 #include "EditorGUIModule.h"
+#include "Scene.h"
 
 class FSceneHierarchyModule : public FEditorGUIModule {
 public:

@@ -2,7 +2,8 @@
 #include <list>
 #include "ApplicationModule.h"
 #include "Viewport.h"
-#include <Scene.h>
+
+class FScene;
 
 #define REGISTER_MODULE(ModuleClass) \
 ModuleClass##* ModuleClass##_Instance = new ModuleClass##(); \

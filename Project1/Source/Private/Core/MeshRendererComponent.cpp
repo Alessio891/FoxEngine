@@ -8,6 +8,7 @@
 #include "Graphics\Texture.h"
 #include "Graphics\Primitives.h"
 #include <Graphics/MaterialLibrary.h>
+#include "Scene.h"
 
 void FMeshRendererComponent::SetColor(Vector3F color)
 {
@@ -191,6 +192,15 @@ void FMeshRendererComponent::DrawInspector()
 	}
 }
 
+FObjectComponent* FMeshRendererComponent::Clone()
+{
+	FMeshRendererComponent* newMesh = new FMeshRendererComponent();
+	newMesh->MeshAsset.Set(MeshAsset.Get());
+	newMesh->Material.Set( Material.Get() );
+	newMesh->Color = Color;
+	return newMesh;
+}
+
 void FMeshRendererComponent::SetTexture(BString path)
 {
 	Texture.Set(FAssetsLibrary::GetImage(path));
@@ -302,14 +312,14 @@ MeshData::MeshData(List<float> vertices, List<int> indices, List<float> normals,
 	float* arr = new float[size];
 	std::copy(VertexArray.begin(), VertexArray.end(), arr);
 
-	glBufferData(GL_ARRAY_BUFFER, sizeof(arr) * VertexArray.size(), arr, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(arr[0]) * VertexArray.size(), arr, GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	const int i_size = IndexArray.size();
 	int* i_arr = new int[i_size];
 	std::copy(IndexArray.begin(), IndexArray.end(), i_arr);
 
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(i_arr) * IndexArray.size(), i_arr, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(i_arr[0]) * IndexArray.size(), i_arr, GL_STATIC_DRAW);
 
 
 	glEnableVertexAttribArray(0);

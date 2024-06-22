@@ -36,6 +36,6 @@ private:
 
 	SharedPtr<FSceneObject> EditorGrid;
 	SharedPtr<FSceneObject> StartCube;
-
+	class GLDebugDrawer* drawer;
 	float LastDelta = 0.0f;
 };

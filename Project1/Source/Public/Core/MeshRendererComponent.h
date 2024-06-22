@@ -46,8 +46,10 @@ public:
 
 	virtual void Render(glm::mat4 V, glm::mat4 P);
 	virtual void DrawInspector() override;
-
+	virtual FObjectComponent* Clone() override;
 	void SetTexture(BString path);
+
+	virtual 
 
 	virtual void Deserialize(json json) override;
 

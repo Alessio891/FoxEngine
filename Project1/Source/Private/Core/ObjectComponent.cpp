@@ -5,3 +5,8 @@ void FObjectComponent::DrawInspector()
 {
 	ImGui::SeparatorText("Component");
 }
+
+FObjectComponent* FObjectComponent::Clone()
+{
+	return nullptr;
+}

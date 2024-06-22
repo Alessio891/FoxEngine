@@ -13,6 +13,8 @@
 #include <LuaIntegration/LuaObjectComponent.h>
 #include "AssetsLibrary/ScriptAsset.h"
 #include <Graphics/Graphics.h>
+#include "Physics.h"
+#include <PhysicsComponent.h>
 
 void FEditorSceneModule::OnStartup()
 {
@@ -20,8 +22,8 @@ void FEditorSceneModule::OnStartup()
 	SharedPtr<FViewport> SceneViewport = FApplication::Get()->GameViewport;
 	glfwMakeContextCurrent(SceneViewport->ViewportContext);
 
-	Scene = SharedPtr<FScene>(new FScene());
-
+	Scene = SharedPtr<FScene>(new FScene("Resources/Scenes/Scene.sc"));
+	Scene->OpenScene();
 	EditorGrid = SharedPtr<FSceneObject>(new FSceneObject());
 	EditorGrid->HideInHierarchy = true;
 
@@ -50,19 +52,50 @@ void FEditorSceneModule::OnStartup()
 	StartCube = SharedPtr<FSceneObject>(new FSceneObject("A Cube"));
 	SharedPtr<FModelAsset> model = FAssetsLibrary::GetResourceAs<FModelAsset>("Resources/Models/cube.obj");
 	StartCube->Renderer->MeshAsset.Set(model);
+	FPhysicsComponent* phys = new FPhysicsComponent();
+	phys->Shape = SharedPtr<FCollisionShape>(new FSphereShape());
+	//phys->IsKinematic = false;
+	StartCube->AddComponent(phys);
+	phys->Rigidbody->setFriction(1.0f);
+	phys->Rigidbody->setRestitution(1.0f);
+	phys->Rigidbody->setRollingFriction(1.0f);
+	{
+		auto c = SharedPtr<FSceneObject>(new FSceneObject("A Cube2"));
+		c->Renderer->MeshAsset.Set(model);
+		FPhysicsComponent* phys2 = new FPhysicsComponent();
+		//phys2->IsKinematic = true;
+		c->Transform.Scale = Vector3F(10.0f, 0.5f, 10.0f);
+		phys2->Mass = 0.0f;
+		c->AddComponent(phys2);
+		phys2->Rigidbody->setRestitution(1.0f);
+		Scene->RegisterSceneObject(c);
+	}
+	{
+		auto c = SharedPtr<FSceneObject>(new FSceneObject("A Cube3"));
+		c->Transform.Position = Vector3F(5, 10, 0);
+		c->Renderer->MeshAsset.Set(model);
+		FPhysicsComponent* phys2 = new FPhysicsComponent();
+		//phys2->IsKinematic = false;
+		c->AddComponent(phys2);
+		Scene->RegisterSceneObject(c);
+	}
+	StartCube->Transform.Position = Vector3F(0, 15, 0);
 	
-
 	PositionGizmo = SharedPtr<FSceneGizmo>(new FSceneGizmo());
 	PositionGizmo->HideInHierarchy = true;
 	EditorGrid->RenderingQueue = ERenderingQueue::PreRender;
 	Scene->RegisterSceneObject(EditorGrid);
-	FApplication::Get()->GetCurrentScene()->RegisterSceneObject(StartCube);
-	FApplication::Get()->GetCurrentScene()->RegisterSceneObject(PositionGizmo);
+	Scene->RegisterSceneObject(StartCube);
+	//Scene->RegisterSceneObject(PositionGizmo);
 
 	RenderingPipeline = SharedPtr<FRenderingPipeline>(new FRenderingPipeline(SceneViewport));
 
 	Scene->CameraTransform.Rotation = Vector3F(0.0f,0.0f,0.0f);
 
+	drawer = new GLDebugDrawer();
+	drawer->setDebugMode(btIDebugDraw::DBG_DrawWireframe);// | btIDebugDraw::DBG_DrawContactPoints);
+	FPhysics::btWorld->setDebugDrawer(drawer);
+	
 	SceneViewport->RegisterRenderCallback([this]() {
 		glLineWidth(3.0f);
 
@@ -74,6 +107,9 @@ void FEditorSceneModule::OnStartup()
 		if (RenderWireFrame) {
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
+
+		
+
 		RenderingPipeline->PostRender(Scene->CameraTransform, Scene);
 
 		if (FInputSystem::IsMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)) {
@@ -92,14 +128,34 @@ void FEditorSceneModule::OnStartup()
 			if (stencil > 0) {
 				auto objects = FApplication::Get()->GetCurrentScene()->GetSceneObjects();
 				List<SharedPtr<FSceneObject>>::const_iterator o = objects.begin();
-				std::advance(o, stencil);
-				if (FSceneHierarchyModule::Get() != nullptr) {
-					FSceneHierarchyModule::Get()->SetCurrentSelectedObject(*o);
+				SharedPtr<FSceneObject> picked;
+				while (o != objects.end()) {
+					if (*o != nullptr && (*o)->ObjectID == stencil) {
+						picked = (*o);
+						break;
+					}
+					o++;
 				}
-				if (FInspectorModule::Get() != nullptr) {
-					FInspectorModule::Get()->SetDisplayedObject(*o);
+				
+				if (FSceneHierarchyModule::Get() != nullptr && picked != nullptr) {
+					FSceneHierarchyModule::Get()->SetCurrentSelectedObject(picked);
+				}
+				if (FInspectorModule::Get() != nullptr && picked != nullptr) {
+					FInspectorModule::Get()->SetDisplayedObject(picked);
 				}
 				FLogger::LogInfo("Selected object " + std::string(o->get()->Name));
+			}
+		}
+		for (auto obj : Scene->GetSceneObjects()) {
+			for (auto c : obj->GetComponents()) {
+				if (auto p = dynamic_cast<FPhysicsComponent*>(c)) {
+					/*btTransform t;
+					auto rot = btQuaternion();
+					rot.setEulerZYX(obj->Transform.Rotation.y, obj->Transform.Rotation.x, obj->Transform.Rotation.z);
+					t.setRotation(rot);
+					t.setOrigin(btVector3(obj->Transform.Position.x, obj->Transform.Position.y, obj->Transform.Position.z));
+					FPhysics::btWorld->debugDrawObject(t, p->Rigidbody->getCollisionShape(), btVector3(0.0f, 1.0f, 0.0f));*/
+				}
 			}
 		}
 
@@ -124,6 +180,7 @@ void FEditorSceneModule::OnTick(float Delta)
 		}
 
 	}
+
 	LastDelta = Delta;
 }
 
@@ -161,16 +218,26 @@ void FEditorSceneModule::OnGUIRender()
 	static float alpha = 0.0f;
 
 	auto primitiveIcon = FAssetsLibrary::GetImage("Resources/Images/GUI/primitive.png");
-
+	auto wireframeIcon = FAssetsLibrary::GetImage("Resources/Images/GUI/wireframe.png");
+	auto playIcon = FAssetsLibrary::GetImage("Resources/Images/GUI/play.png");
+	auto stopIcon = FAssetsLibrary::GetImage("Resources/Images/GUI/stop.png");
+	auto playStop = Scene->IsPlaying() ? stopIcon : playIcon;
 	if (ImGui::ImageButton("objects",(void*)(intptr_t)primitiveIcon->GetTextureID(Viewport->ViewportContext), ImVec2(25, 25))) {
 		FLogger::LogInfo("Clicked " + std::to_string(targetAlpha));
 		showMenu = !showMenu;
 		targetAlpha = showMenu ? 1.0f : 0.0f;
 	}
-	if (ImGui::ImageButton("wireframe", (void*)(intptr_t)primitiveIcon->GetTextureID(Viewport->ViewportContext), ImVec2(25, 25))) {
+	if (ImGui::ImageButton("wireframe", (void*)(intptr_t)wireframeIcon->GetTextureID(Viewport->ViewportContext), ImVec2(25, 25))) {
 		RenderWireFrame = !RenderWireFrame;
 	}
-
+	if (ImGui::ImageButton("play", (void*)(intptr_t)playStop->GetTextureID(Viewport->ViewportContext), ImVec2(25, 25))) {
+		if (Scene->IsPlaying()) {
+			Scene->SetPlayMode(false);
+		}
+		else {
+			Scene->SetPlayMode(true);
+		}
+	}
 	primitiveIcon.reset();
 
 	if (showMenu) {
@@ -270,10 +337,18 @@ void FEditorSceneModule::HandleCameraInput(float Delta)
 		else if (FInputSystem::IsKeyHeld(GLFW_KEY_D)) {
 			Scene->CameraTransform.Position += Scene->CameraTransform.GetRightVector() * camSpeed * Delta;
 		}
-
+		
 		std::string mouseY = std::to_string(FInputSystem::MouseDeltaY);
-		Scene->CameraTransform.Rotation.x += FInputSystem::MouseDeltaY * Delta * 90.0f;
-		Scene->CameraTransform.Rotation.y -= FInputSystem::MouseDeltaX * Delta * 90.0f;
+		Scene->CameraTransform.AddRotation( Vector3F(FInputSystem::MouseDeltaY *  190.0f, -FInputSystem::MouseDeltaX * 190.0f, 0.0f ));
+		//Scene->CameraTransform.Rotation.x += FInputSystem::MouseDeltaY * Delta * 290.0f;
+		//Scene->CameraTransform.Rotation.y -= FInputSystem::MouseDeltaX * Delta * 290.0f;
+	}
+	if (FInputSystem::IsKeyHeld(GLFW_KEY_SPACE)) {
+		for (auto a : StartCube->GetComponents()) {
+			if (auto c = dynamic_cast<FPhysicsComponent*>(a)) {
+				c->Rigidbody->applyForce(btVector3(0, 200, 0), btVector3(StartCube->Transform.Position.x, StartCube->Transform.Position.y, StartCube->Transform.Position.z));
+			}
+		} 
 	}
 }
 

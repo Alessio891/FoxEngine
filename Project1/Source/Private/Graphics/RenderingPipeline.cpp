@@ -1,4 +1,6 @@
 #include "Graphics/RenderingPipeline.h"
+#include <Physics.h>
+#include "Scene.h"
 
 void FRenderingPipeline::EnqueueRenderer(SharedPtr<FMeshRendererComponent> Renderer)
 {
@@ -46,6 +48,11 @@ void FRenderingPipeline::Render(FTransform PointOfView, SharedPtr<FScene> Scene)
 			object->Draw(View, Projection);
 		}
 	}
+
+	
+	//FPhysics::btWorld->debugDrawWorld();
+
+
 	glClear(GL_DEPTH_BUFFER_BIT);
 }
 
@@ -58,6 +65,9 @@ void FRenderingPipeline::PostRender(FTransform PointOfView, SharedPtr<FScene> Sc
 	auto SceneObjects = Scene->GetSceneObjects();
 
 	for (SharedPtr<FSceneObject> object : SceneObjects) {
+		for (auto c : object->GetComponents()) {
+			c->Render();
+		}
 		if (object->RenderingQueue == ERenderingQueue::Overlay)
 		{
 			object->Draw(View, Projection);

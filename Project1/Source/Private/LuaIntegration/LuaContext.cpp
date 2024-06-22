@@ -7,6 +7,7 @@
 #include <InputSystem.h>
 #include "MeshRendererComponent.h"
 #include "GUI/GUI.h"
+#include "Scene.h"
 
 FLuaContext::FLuaContext()
 {

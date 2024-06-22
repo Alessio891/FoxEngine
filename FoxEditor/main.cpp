@@ -5,7 +5,7 @@
 #include "ConsoleModule\ConsoleModule.h"
 #include "Editor\EditorSceneModule.h"
 #include "Editor\SceneHierarchyModule.h"
-
+#include "Editor\TopMenuModule.h"
 #include "windows.h"
 #include "commctrl.h"
 
@@ -77,6 +77,7 @@ void SetupModules() {
 	int consoleHeight = HEIGHT * MainApplication->ConsoleHeight;
 	int inspectorWidth = WIDTH * MainApplication->InspectorWidth;
 	int sceneWidth = WIDTH - inspectorWidth - inspectorWidth;
+	int topMenuHeight = 30;
 
 	// Bottom Side Widget Module
 	// TODO: Rename this from FConsoleModule to a more suited name
@@ -85,16 +86,19 @@ void SetupModules() {
 
 	// Editor Scene Viewport Module
 	REGISTER_GUI_MODULE(FEditorSceneModule, MainApplication->GameViewport);
-	FEditorSceneModule_Instance->SetPositionAndSize(ImVec2(inspectorWidth, 0), ImVec2(sceneWidth, HEIGHT - consoleHeight));
+	FEditorSceneModule_Instance->SetPositionAndSize(ImVec2(inspectorWidth, topMenuHeight), ImVec2(sceneWidth, HEIGHT - consoleHeight - topMenuHeight));
 
 	// Inspector Module
 	REGISTER_GUI_MODULE(FInspectorModule, MainApplication->GameViewport);
-	FInspectorModule_Instance->SetPositionAndSize(ImVec2(0, 0), ImVec2(inspectorWidth, HEIGHT - consoleHeight));
+	FInspectorModule_Instance->SetPositionAndSize(ImVec2(0, topMenuHeight), ImVec2(inspectorWidth, HEIGHT - consoleHeight - topMenuHeight));
 
 	// Scene Settings Module
 	// TODO: Rename FSceneHierarchyModule to a more suited name
 	REGISTER_GUI_MODULE(FSceneHierarchyModule, MainApplication->GameViewport);
-	FSceneHierarchyModule_Instance->SetPositionAndSize(ImVec2(inspectorWidth + sceneWidth, 0), ImVec2(inspectorWidth, HEIGHT - consoleHeight));
+	FSceneHierarchyModule_Instance->SetPositionAndSize(ImVec2(inspectorWidth + sceneWidth, topMenuHeight), ImVec2(inspectorWidth, HEIGHT - consoleHeight));
+
+	REGISTER_GUI_MODULE(FTopMenuModule, MainApplication->GameViewport);
+	FTopMenuModule_Instance->SetPositionAndSize(ImVec2(0,0), ImVec2(WIDTH, topMenuHeight));
 }
 
 int main(int argc, char* argv[]) {

@@ -11,7 +11,9 @@
 #include "Logger.h"
 #include "MeshRendererComponent.h"
 #include <LuaIntegration/LuaObjectComponent.h>
-
+#include "Physics.h"
+#include "nlohmann/json.hpp"
+using json = nlohmann::json;
 void FScene::RegisterSceneObject(SharedPtr<FSceneObject> SceneObject)
 {
 	if (SceneObject == nullptr)
@@ -20,9 +22,11 @@ void FScene::RegisterSceneObject(SharedPtr<FSceneObject> SceneObject)
 	std::list<SharedPtr<FSceneObject>>::iterator it = std::find(SceneObjects.begin(), SceneObjects.end(), SceneObject);
 	if (it == SceneObjects.end())
 	{
-		SceneObject->ObjectID = SceneObjects.size();
+		LastID++;
+		SceneObject->ObjectID = LastID;
 		SceneObjects.push_back(SceneObject);
-		SceneObject->Begin();
+		if (PlayMode)
+			SceneObject->Begin();
 	}
 }
 
@@ -76,9 +80,27 @@ void FScene::TickScene(float Delta)
 {
 	//if (FInputSystem::MouseDeltaX > 0 || FInputSystem::MouseDeltaY > 0)
 		//printf("Delta: %f.2 %f.2\n", FInputSystem::MouseDeltaX, FInputSystem::MouseDeltaY);
-	for (SharedPtr<FSceneObject> object : SceneObjects) {
-		object->Tick(Delta);
+	if (PlayMode) {
+		FPhysics::StepSimulation(Delta);
+
+		for (SharedPtr<FSceneObject> object : SceneObjects) {
+			object->PhysicsTick(Delta);
+		}
+		for (SharedPtr<FSceneObject> object : SceneObjects) {
+			object->Tick(Delta);
+		}
 	}
+	auto obj = SceneObjects.begin();
+	while (obj != SceneObjects.end()) {
+		if ((*obj)->IsMarkedForDestroy()) {
+			(*obj)->End();
+			SceneObjects.erase(obj++);
+		}
+		else {
+			++obj;
+		}
+	}
+	
 }
 
 void FScene::DrawGUI(float Delta)
@@ -86,4 +108,42 @@ void FScene::DrawGUI(float Delta)
 	for (auto object : SceneObjects) {
 		object->OnDrawGUI(Delta);
 	}
+}
+
+void FScene::Deserialize(json Json)
+{
+}
+
+void FScene::Serialize(json& outJson)
+{
+	json rot = LightTransform;
+	outJson["LightTransform"] = rot;
+}
+
+FScene::FScene(BString Path) : FAssetResource(EAssetResourceType::Scene, Path), ISerializedAsset()
+{
+	
+}
+
+void FScene::SetPlayMode(bool play)
+{
+	if (PlayMode != play) {
+		PlayMode = play;
+		if (play) {
+			for (auto o : SceneObjects) {
+				o->Begin();
+			}
+		}
+		else {
+			for (auto o : SceneObjects) {
+				o->End();
+			}
+		}
+	}
+
+}
+
+void FScene::OpenScene()
+{
+	FPhysics::Initialize();
 }

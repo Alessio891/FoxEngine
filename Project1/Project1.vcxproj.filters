@@ -318,6 +318,15 @@
     <ClCompile Include="Source\Private\PropsDrawers\PropDrawer.cpp">
       <Filter>File di origine\Source\Private\PropsDrawers</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Private\Core\Physics.cpp">
+      <Filter>File di origine\Source\Private\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Private\Core\PhysicsComponent.cpp">
+      <Filter>File di origine\Source\Private\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Private\Editor\TopMenuModule.cpp">
+      <Filter>File di origine\Source\Private\Editor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -580,6 +589,15 @@
     </ClInclude>
     <ClInclude Include="Source\Public\PropsDrawers\PropDrawer.h">
       <Filter>File di origine\Source\Public\PropsDrawers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\Core\Physics.h">
+      <Filter>File di origine\Source\Public\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\Core\PhysicsComponent.h">
+      <Filter>File di origine\Source\Public\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\Editor\TopMenuModule.h">
+      <Filter>File di origine\Source\Public\Editor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -14,6 +14,7 @@ enum EAssetResourceType {
 	Text,
 	Material,
 	Template,
+	Scene,
 	Misc
 };
 

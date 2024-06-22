@@ -19,6 +19,9 @@
 #include <GL/gl.h>
 #include "GLFW/glfw3.h"
 
+#include "nlohmann/json.hpp"
+using json = nlohmann::json;
+
 #include <memory>
 #include <string>
 template <class T>
@@ -43,3 +46,12 @@ using UniquePtr = std::unique_ptr<T>;
 
 template <class T>
 using WeakPtr = std::weak_ptr<T>;
+
+static void to_json(json& j, const Vector3F& v) {
+	j = json{ { "X", v.x }, { "Y", v.y }, { "Z", v.z } };
+}
+static void from_json(const json& j, Vector3F& v) {
+	j.at("X").get_to(v.x);
+	j.at("Y").get_to(v.y);
+	j.at("Z").get_to(v.z);
+}

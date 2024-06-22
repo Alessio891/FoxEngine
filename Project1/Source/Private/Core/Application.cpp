@@ -18,6 +18,7 @@
 #define SOL_ALL_SAFETIES_ON 1
 #include <sol/sol.hpp>
 #include <LuaIntegration/LuaContext.h>
+#include "Scene.h"
 
 // Called at the start, before any module is loaded
 void FApplication::Init(int argc, char** argv, int width, int height, GLFWwindow* MainWindow)

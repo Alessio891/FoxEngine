@@ -10,13 +10,16 @@
 #include <LuaIntegration/LuaObjectComponent.h>
 #include <AssetsLibrary/ScriptAsset.h>
 #include <Graphics/MaterialLibrary.h>
-
+#include "Physics.h"
+#include <PhysicsComponent.h>
 FSceneObject::FSceneObject() : Name("[Object]"), IInspectable()
 {
 	FMeshRendererComponent* meshRenderer = new FMeshRendererComponent();
 	meshRenderer->Material.Set(FMaterialLibrary::GetMaterial("DefaultLit"));
 	AddComponent(meshRenderer);
 	SetupRenderer(meshRenderer);
+	Transform.Orientation = glm::quat(glm::radians(Transform.Rotation));
+	ObjectID = -1;
 }
 
 FSceneObject::FSceneObject(String name) : Name(name), IInspectable()
@@ -25,6 +28,22 @@ FSceneObject::FSceneObject(String name) : Name(name), IInspectable()
 	meshRenderer->Material.Set(FMaterialLibrary::GetMaterial("DefaultLit"));
 	AddComponent(meshRenderer);
 	SetupRenderer(meshRenderer);
+	Transform.Orientation = glm::quat(glm::radians(Transform.Rotation));
+	ObjectID = -1;
+}
+
+void FSceneObject::Begin()
+{
+	for (auto c : Components) {
+		c->Begin();
+	}
+}
+
+void FSceneObject::End()
+{
+	for (auto c : Components) {
+		c->End();
+	}
 }
 
 void FSceneObject::Tick(float DeltaTime)
@@ -41,6 +60,16 @@ void FSceneObject::Tick(float DeltaTime)
 		}
 		else {
 			std::advance(element, 1);
+		}
+	}
+
+}
+
+void FSceneObject::PhysicsTick(float DeltaTime)
+{
+	for (auto c : Components) {
+		if (auto ph = dynamic_cast<FPhysicsComponent*>(c)) {
+			ph->ApplyPhysics();
 		}
 	}
 }
@@ -66,6 +95,11 @@ void FSceneObject::OnDrawGUI(float Delta)
 	}
 }
 
+void FSceneObject::Destroy()
+{
+	MarkedForDestroy = true;
+}
+
 void FSceneObject::AddComponent(FObjectComponent* Component)
 {
 	if (Component == nullptr) return;
@@ -74,7 +108,6 @@ void FSceneObject::AddComponent(FObjectComponent* Component)
 	if (it == Components.end()) {
 		Component->Initialize(this);
 		Components.push_back(Component);
-		Component->Begin();
 	}
 }
 
@@ -100,7 +133,7 @@ void FSceneObject::DrawInspector()
 	if (ImGui::CollapsingHeader("Transform")) {
 		Transform.Position = FImGui::Vec3("Position", Transform.Position);
 		Transform.Rotation = FImGui::Vec3("Rotation", Transform.Rotation);
-
+		Transform.Orientation = glm::quat(glm::radians(Transform.Rotation));
 		Transform.Scale = FImGui::Vec3("Scale", Transform.Scale);
 	}
 
@@ -134,6 +167,24 @@ void FSceneObject::DrawInspector()
 	ImGui::PopID();
 }
 
+SharedPtr<FSceneObject> FSceneObject::Clone(FSceneObject& from)
+{
+	SharedPtr<FSceneObject> retVal(new FSceneObject());
+	retVal->Name = from.Name + " (Clone)";
+	retVal->Components.clear();
+	retVal->Renderer.reset();
+	for (auto c : from.Components) {
+		auto clone = c->Clone();
+		retVal->AddComponent(clone);
+		if (FMeshRendererComponent* renderer = dynamic_cast<FMeshRendererComponent*>(clone)) {
+			//retVal->RemoveComponent(retVal->Renderer.get());
+			retVal->Renderer = SharedPtr<FMeshRendererComponent>(renderer);
+		}
+	}
+	retVal->Transform = from.Transform;
+	return retVal;
+}
+
 void FSceneObject::TickComponents(float Delta)
 {
 	for (FObjectComponent* Component : Components) {
@@ -157,4 +208,56 @@ void FTransform::LookAt(Vector3F Target)
 	euler.z = 0.0f;
 
 	Rotation = euler;
+}
+
+void FTransform::AddRotation(Vector3F rotation)
+{
+	Rotation += rotation;
+	Orientation = glm::quat(glm::radians(Rotation));
+	//Orientation = Orientation * rot;
+}
+
+glm::mat4 FTransform::GetRotationMatrix()
+{
+	return glm::toMat4(Orientation); // glm::eulerAngleXYZ(Rotation.x, Rotation.y, Rotation.z);
+}
+
+Vector3F FTransform::GetForwardVector()
+{
+	auto mat = GetRotationMatrix();
+	Vector3F frwd(mat[2][0], mat[2][1], mat[2][2]);
+	return frwd;
+}
+
+Vector3F FTransform::GetRightVector()
+{
+	return glm::cross(GetForwardVector(), GetUpVector());
+}
+
+Vector3F FTransform::GetUpVector()
+{
+	auto mat = GetRotationMatrix();
+	Vector3F frwd(mat[1][0], mat[1][1], mat[1][2]);
+	return frwd;
+}
+
+glm::mat4 FTransform::GetTransformMatrix()
+{
+	glm::mat4 ModelMatrix = glm::translate(glm::mat4(1.0f), Position);
+	ModelMatrix *= GetRotationMatrix();
+	ModelMatrix = glm::scale(ModelMatrix, Scale);
+	return ModelMatrix;
+}
+
+glm::mat4 FTransform::GetPointOfViewMatrix()
+{
+	Vector3F right = GetRightVector();
+	Vector3F up = GetUpVector();
+
+	glm::mat4 CameraMatrix = glm::lookAt(
+		Position,
+		Position + GetForwardVector(),
+		up
+	);
+	return CameraMatrix;
 }

@@ -13,6 +13,7 @@ public:
 	virtual void Begin() {};
 	virtual void End() {};
 	virtual void Tick(float DeltaTime) {};
+	virtual void Render() {};
 
 	virtual void OnDrawGUI(float Delta)  {};
 
@@ -23,6 +24,7 @@ public:
 	virtual void MarkForRemoval() { MarkedForRemoval = true; }
 	bool IsMarkedForRemoval() const { return MarkedForRemoval; }
 
+	virtual FObjectComponent* Clone();
 protected:
 	FSceneObject* Owner;
 	bool MarkedForRemoval = false;

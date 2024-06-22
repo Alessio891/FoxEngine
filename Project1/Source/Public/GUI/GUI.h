@@ -2,7 +2,7 @@
 #include "Core.h"
 #include "AssetsLibrary/AssetsLibrary.h"
 #include "AssetsLibrary/AssetReference.h"
-
+#include "SceneObject.h"
 class FGUI {
 public:
 	static Vector3F Vec3(String label, Vector3F Value);

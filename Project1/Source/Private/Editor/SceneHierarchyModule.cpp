@@ -57,16 +57,34 @@ void FSceneHierarchyModule::DrawSceneHierarchy()
 	if (CurrentScene != nullptr) {
 		for (auto sceneObj : CurrentScene->GetSceneObjects()) {
 			if (sceneObj->HideInHierarchy) continue;
+			ImGui::PushID("_obj_" + sceneObj->ObjectID);
 			bool selected = sceneObj == CurrentSelectedObject;
 			std::string st = "[" + std::to_string(sceneObj->ObjectID) + "] " + sceneObj->Name;
 			if (ImGui::Selectable(st.c_str(), selected)) {
 				SetCurrentSelectedObject(sceneObj);
+			}
+			if (ImGui::BeginPopupContextItem("obj_menu")) {
+				ImGui::Text(sceneObj->Name.c_str());
+				ImGui::Separator();
+				if (ImGui::Selectable("Duplicate")) {
+					SharedPtr<FSceneObject> o = FSceneObject::Clone(*sceneObj);// SharedPtr<FSceneObject>(new FSceneObject(*sceneObj));
+					FApplication::Get()->GetCurrentScene()->RegisterSceneObject(o);
+				}
+				if (ImGui::Selectable("Delete")) {
+					sceneObj->Destroy();
+				}
+				ImGui::Separator();
+				if (ImGui::Selectable("Create Template")) {
+				}
+				ImGui::EndPopup();
 			}
 			if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
 				ImGui::Text(sceneObj->Name.c_str());
 				ImGui::SetDragDropPayload("OBJECT_DRAG", &sceneObj, sizeof(sceneObj));
 				ImGui::EndDragDropSource();
 			}
+
+			ImGui::PopID();
 		}
 	}
 

@@ -3,7 +3,7 @@
 #include "LuaIntegration/LuaContext.h"
 #include "LuaIntegration/LuaObjectComponent.h"
 #include <AssetsLibrary/AssetsLibrary.h>
-
+#include "SceneObject.h"
 
 void FLuaScriptAsset::PrepareEnvironment(sol::environment& env)
 {
